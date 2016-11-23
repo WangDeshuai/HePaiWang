@@ -19,6 +19,7 @@
 #define ScreenHeight [UIScreen mainScreen].bounds.size.height
 #define SERVICE  @"http://101.200.133.10:9089/"
 #define BG_COLOR [UIColor colorWithRed:238/255.0 green:238/255.0 blue:238/255.0 alpha:1]
+#define NSUSE_DEFO [NSUserDefaults standardUserDefaults]
 
 /*
  *   头文件
@@ -27,12 +28,12 @@
 #import "ScanCodeVC.h"
 #import "WeiTuoPaiMaiVC.h"
 #import "MyVC.h"
-
+#import "LoginViewController.h"
 /*
  * 工具类
  */
 #import "Engine.h"
-
+#import "ToolClass.h"
 
 /*
  *   第三方

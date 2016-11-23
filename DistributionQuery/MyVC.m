@@ -7,7 +7,7 @@
 //
 
 #import "MyVC.h"
-
+#import "LoginViewController.h"
 @interface MyVC ()
 
 @end
@@ -17,8 +17,21 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    self.backHomeBtn.hidden=YES;
+    UIButton * btn =[UIButton buttonWithType:UIButtonTypeCustom];
+    btn.backgroundColor=[UIColor redColor];
+    btn.frame=CGRectMake(100, 100, 100, 100);
+    [btn addTarget:self action:@selector(btnn:) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:btn];
+    
+    
 }
-
+-(void)btnn:(UIButton*)btn{
+    LoginViewController * vc =[LoginViewController new];
+    vc.hidesBottomBarWhenPushed=YES;
+    [self.navigationController pushViewController:vc animated:YES];
+    
+}
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.

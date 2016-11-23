@@ -18,8 +18,19 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.view.backgroundColor=BG_COLOR;
-}
+    _backHomeBtn=[UIButton buttonWithType:UIButtonTypeCustom];
+    [_backHomeBtn setImage:[UIImage imageNamed:@"back"] forState:0];
+    _backHomeBtn.frame=CGRectMake(0, 0, 70, 30);
+    _backHomeBtn.contentHorizontalAlignment=UIControlContentHorizontalAlignmentLeft;
+    [_backHomeBtn addTarget:self action:@selector(backPopBtnPop) forControlEvents:UIControlEventTouchUpInside];
+    UIBarButtonItem * leftBtn2 =[[UIBarButtonItem alloc]initWithCustomView:_backHomeBtn];
+    self.navigationItem.leftBarButtonItems=@[leftBtn2];
 
+}
+-(void)backPopBtnPop
+{
+    [self.navigationController popViewControllerAnimated:YES];
+}
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.

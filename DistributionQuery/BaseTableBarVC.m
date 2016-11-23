@@ -12,7 +12,7 @@
 #define kTitleKey   @"title"
 #define kImgKey     @"imageName"
 #define kSelImgKey  @"selectedImageName"
-#define Global_tintColor [UIColor colorWithRed:255/255.0 green:(122 / 255.0) blue:0 alpha:1]
+#define Global_tintColor [UIColor colorWithRed:221/255.0 green:(39 / 255.0) blue:(39 / 255.0) alpha:1]
 @interface BaseTableBarVC ()
 
 @end

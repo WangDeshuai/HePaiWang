@@ -7,7 +7,8 @@
 //
 
 #import "HomeVC.h"
-
+#import "PaiMaiBiaoDiVC.h"
+#import "PaiMaiGongGaoVC.h"
 @interface HomeVC ()<SDCycleScrollViewDelegate,UITableViewDelegate,UITableViewDataSource>
 @property(nonatomic,strong)UIView * headView;
 @property(nonatomic,strong)UITableView * tableView;
@@ -20,10 +21,13 @@
 }
 - (void)viewDidLoad {
     [super viewDidLoad];
+     self.backHomeBtn.hidden=YES;
     // Do any additional setup after loading the view.
      //[self.navigationItem setTitle:@"配电查询"];
     // [self CreatLunBoTu];
    // [self CreatBtn];
+    //self.title=@"";
+    [self.navigationItem setTitle:@""];
     [self CreatNavBtn];
     [self CreatTableView];
    // [self CreatView1];
@@ -35,7 +39,21 @@
     logoBtn.frame=CGRectMake(0, 0, 146/2, 47/2);
     [logoBtn setImage:[UIImage imageNamed:@"logo"] forState:0];
     UIBarButtonItem *leftBtn =[[UIBarButtonItem alloc]initWithCustomView:logoBtn];
-    self.navigationItem.leftBarButtonItems=@[leftBtn];
+    UIButton * logoBtn2 =[UIButton buttonWithType:UIButtonTypeCustom];
+    logoBtn2.frame=CGRectMake(0, 0, 5, 47/2);
+    UIBarButtonItem *leftBtn2 =[[UIBarButtonItem alloc]initWithCustomView:logoBtn2];
+    
+    UIButton * searchBtn =[UIButton buttonWithType:UIButtonTypeCustom];
+    searchBtn.frame=CGRectMake(0, -10, 489/2, 65/2);
+    [searchBtn setBackgroundImage:[UIImage imageNamed:@"search-1"] forState:0];//489   65
+    [searchBtn setTitle:@"搜索标的物" forState:0];
+    [searchBtn setTitleColor:[UIColor lightGrayColor] forState:0];
+    searchBtn.contentHorizontalAlignment=UIControlContentHorizontalAlignmentLeft;
+    searchBtn.titleEdgeInsets=UIEdgeInsetsMake(0, 30, 0, 0);
+    searchBtn.titleLabel.font=[UIFont systemFontOfSize:13];
+    UIBarButtonItem *leftBtn3 =[[UIBarButtonItem alloc]initWithCustomView:searchBtn];
+   // [self.navigationItem setTitleView:searchBtn];
+    self.navigationItem.leftBarButtonItems=@[leftBtn,leftBtn2,leftBtn3];
     
 }
 #pragma mark --区头
@@ -74,6 +92,8 @@
     for (int i=0; i<4; i++) {
         UIButton * btn=[UIButton buttonWithType:UIButtonTypeCustom];
         [btn setImage:[UIImage imageNamed:imageBtnArr[i]] forState:0];
+        btn.tag=i;
+        [btn addTarget:self action:@selector(Forbtn:) forControlEvents:UIControlEventTouchUpInside];
         [view1 sd_addSubviews:@[btn]];
         btn.sd_layout
         .leftSpaceToView(view1,d+(50+d)*i)
@@ -111,30 +131,30 @@
     
     
     //红线条
-    UIImageView * lineImage =[[UIImageView alloc]initWithImage:[UIImage imageNamed:@"1"]];
-    lineImage.backgroundColor=[UIColor redColor];
+    UIImageView * lineImage =[[UIImageView alloc]initWithImage:[UIImage imageNamed:@"home_index"]];
+  //  lineImage.backgroundColor=[UIColor redColor];
     [view2 sd_addSubviews:@[lineImage]];
     lineImage.sd_layout
     .leftSpaceToView(view2,0)
     .rightSpaceToView(view2,0)
     .topSpaceToView(imageBD,10)
-    .heightIs(1);
+    .heightIs(0.5);
     //滚动试图
     UIScrollView * priceScrollview =[[UIScrollView alloc]init];
     priceScrollview.showsHorizontalScrollIndicator = NO;
-   // priceScrollview.backgroundColor=[UIColor yellowColor];
+   priceScrollview.backgroundColor=[UIColor yellowColor];
     priceScrollview.contentSize=CGSizeMake(ScreenWidth+200, 120);
     [view2 sd_addSubviews:@[priceScrollview]];
     priceScrollview.sd_layout
     .leftSpaceToView(view2,0)
     .rightSpaceToView(view2,0)
     .topSpaceToView(lineImage,0)
-    .heightIs(120);
+    .heightIs(150);
     [view2 setupAutoHeightWithBottomView:priceScrollview bottomMargin:10];
    
     for (int i =0; i<5; i++) {
         UIView * bgView =[UIView new];
-        bgView.layer.borderWidth=1;
+        bgView.layer.borderWidth=.5;
         bgView.layer.borderColor=[UIColor colorWithRed:205/255.0 green:131/255.0 blue:137/255.0 alpha:1].CGColor;
         bgView.backgroundColor=[UIColor colorWithRed:247/255.0 green:247/255.0 blue:247/255.0 alpha:1];
         [priceScrollview sd_addSubviews:@[bgView]];
@@ -159,16 +179,35 @@
 //        NSLog(@"%d",d);
 //       _headView.sd_layout.heightIs(d+10);
 //    };
-    _headView.sd_layout.heightIs(459);
+    _headView.sd_layout.heightIs(459+30);
    
     return _headView;
 }
 
-
+#pragma mark --4个按钮点击状态
+-(void)Forbtn:(UIButton*)btn{
+    if (btn.tag==0) {
+        //拍卖标的
+        PaiMaiBiaoDiVC * vc =[PaiMaiBiaoDiVC new];
+        vc.hidesBottomBarWhenPushed=YES;
+        [self.navigationController pushViewController:vc animated:YES];
+    }else if (btn.tag==1){
+        //拍卖公告
+        PaiMaiGongGaoVC * vc =[PaiMaiGongGaoVC new];
+        vc.hidesBottomBarWhenPushed=YES;
+        [self.navigationController pushViewController:vc animated:YES];
+    }else if (btn.tag==2){
+        //拍卖咨询
+    }else{
+       //成交按理
+        
+    }
+   
+}
 #pragma mark --创建表
 -(void)CreatTableView{
     if (!_tableView) {
-        _tableView=[[UITableView alloc]initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight) style:UITableViewStylePlain];
+        _tableView=[[UITableView alloc]initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight-64) style:UITableViewStylePlain];
     }
     _tableView.dataSource=self;
     _tableView.delegate=self;
@@ -220,14 +259,14 @@
     
     
     //红线条
-    UIImageView * lineImage =[[UIImageView alloc]initWithImage:[UIImage imageNamed:@"1"]];
-    lineImage.backgroundColor=[UIColor redColor];
+    UIImageView * lineImage =[[UIImageView alloc]initWithImage:[UIImage imageNamed:@"home_index"]];
+    //lineImage.backgroundColor=[UIColor redColor];
     [view sd_addSubviews:@[lineImage]];
     lineImage.sd_layout
     .leftSpaceToView(view,0)
     .rightSpaceToView(view,0)
     .topSpaceToView(imageBD,10)
-    .heightIs(1);
+    .heightIs(.5);
     
     return view;
 }

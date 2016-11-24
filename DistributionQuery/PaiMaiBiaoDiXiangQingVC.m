@@ -7,7 +7,7 @@
 //
 
 #import "PaiMaiBiaoDiXiangQingVC.h"
-
+#import "ZaiXianJingJiaVC.h"
 @interface PaiMaiBiaoDiXiangQingVC ()<SDCycleScrollViewDelegate,UITableViewDelegate,UITableViewDataSource>
 @property(nonatomic,strong)UIView * view1;
 @property(nonatomic,strong)UIView * view2;
@@ -30,12 +30,16 @@
 -(void)CreatButton{
     UIButton * fabu =[UIButton buttonWithType:UIButtonTypeCustom];
     fabu.backgroundColor=[UIColor whiteColor];
+    [fabu addTarget:self action:@selector(fabu) forControlEvents:UIControlEventTouchUpInside];
     fabu.frame=CGRectMake(0, ScreenHeight-55-64, ScreenWidth, 55);
     [fabu setImage:[UIImage imageNamed:@"biaodi_bt_bottom"] forState:0];
     [self.view addSubview:fabu];
     
 }
-
+-(void)fabu{
+    ZaiXianJingJiaVC * vc =[ZaiXianJingJiaVC new];
+    [self.navigationController pushViewController:vc animated:YES];
+}
 #pragma mark --创建表
 -(void)CreatTableView{
     if (!_tableView) {

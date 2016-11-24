@@ -20,7 +20,7 @@
 #define SERVICE  @"http://101.200.133.10:9089/"
 #define BG_COLOR [UIColor colorWithRed:238/255.0 green:238/255.0 blue:238/255.0 alpha:1]
 #define NSUSE_DEFO [NSUserDefaults standardUserDefaults]
-
+#define JXColor(r, g, b, a) [UIColor colorWithRed:(r)/255.0 green:(g)/255.0 blue:(b)/255.0 alpha:(a)]
 /*
  *   头文件
  */

@@ -142,7 +142,7 @@
     //滚动试图
     UIScrollView * priceScrollview =[[UIScrollView alloc]init];
     priceScrollview.showsHorizontalScrollIndicator = NO;
-   priceScrollview.backgroundColor=[UIColor yellowColor];
+   //priceScrollview.backgroundColor=[UIColor yellowColor];
     priceScrollview.contentSize=CGSizeMake(ScreenWidth+200, 120);
     [view2 sd_addSubviews:@[priceScrollview]];
     priceScrollview.sd_layout

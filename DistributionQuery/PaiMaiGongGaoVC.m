@@ -8,6 +8,8 @@
 
 #import "PaiMaiGongGaoVC.h"
 #import "PaiMaiGongGaoCell.h"
+#import "PaiMaiGongGaoXiangQingVC.h"
+
 @interface PaiMaiGongGaoVC ()<UITableViewDelegate,UITableViewDataSource>
 @property(nonatomic,strong)UITableView *tableView;
 @end
@@ -60,7 +62,10 @@
     PaiMaiGongGaoCell * cell =[PaiMaiGongGaoCell cellWithTableView:tableView CellID:cellID];
     return cell;
 }
-
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    PaiMaiGongGaoXiangQingVC * vc =[PaiMaiGongGaoXiangQingVC new];
+    [self.navigationController pushViewController:vc animated:YES];
+}
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     return 110;
 }

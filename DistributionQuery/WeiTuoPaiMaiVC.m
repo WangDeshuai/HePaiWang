@@ -64,6 +64,13 @@
     _tableView.dataSource=self;
     _tableView.delegate=self;
     [self.view addSubview:_tableView];
+    UITapGestureRecognizer * tap =[[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(tap:)];
+    [_tableView addGestureRecognizer:tap];
+}
+-(void)tap:(UITapGestureRecognizer*)tap{
+    NSLog(@"点击了");
+    [_tableView endEditing:YES];
+   
 }
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
     return _dataArray.count;

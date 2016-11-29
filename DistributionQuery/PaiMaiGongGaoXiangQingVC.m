@@ -29,12 +29,6 @@
         [self CreatTableView];
     }else{
         [self.view addSubview:[self CreatView1]];
-        //[self.view sd_addSubviews:@[[self CreatView1]]];
-//        _view1.sd_layout
-//        .leftSpaceToView(self.view,0)
-//        .rightSpaceToView(self.view,0)
-//        .topSpaceToView(self.view,0)
-//        .heightIs(574);
         [self CreatView2];//拍卖地点
         [self CreatView3];//上一篇下一篇
     }
@@ -45,9 +39,7 @@
 }
 -(void)CreatNameArray{
     _nameArray=[NSMutableArray new];
-//    NSArray * arr1 =@[@"拍卖地点",@"公告详情"];
-//    NSArray *arr2=@[@""];
-//     NSArray *arr3=@[@""];
+
 }
 #pragma mark --创建表
 -(void)CreatTableView{
@@ -62,9 +54,6 @@
     [self.view addSubview:_tableView];
 }
 
--(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
-    return 3;
-}
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     return 10;
@@ -76,6 +65,26 @@
     }
     cell.textLabel.text=[NSString stringWithFormat:@"第%lu行",indexPath.row];
     return cell;
+}
+-(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
+    return 44;
+}
+
+-(UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
+    UIView * bgView =[UIView new];
+    bgView.backgroundColor=[UIColor redColor];
+    UILabel * publicLabel =[UILabel new];
+    publicLabel.text=@"拍卖公告";
+    publicLabel.font=[UIFont systemFontOfSize:15];
+    publicLabel.alpha=.6;
+    [bgView sd_addSubviews:@[publicLabel]];
+    publicLabel.sd_layout
+    .leftSpaceToView(bgView,15)
+    .centerYEqualToView(bgView)
+    .heightIs(20);
+    [publicLabel setSingleLineAutoResizeWithMaxWidth:120];
+    return bgView;
+    
 }
 
 

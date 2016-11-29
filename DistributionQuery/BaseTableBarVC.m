@@ -39,7 +39,7 @@
                                    kSelImgKey : @"home_paimaiclick"},
                                  
                                  @{kClassKey  : @"MyVC",
-                                   kTitleKey  : @"我的",
+                                   kTitleKey  : @"个人中心",
                                    kImgKey    : @"home_my",
                                    kSelImgKey : @"home_myclick"},
                                  

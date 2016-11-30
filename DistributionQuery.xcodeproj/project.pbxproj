@@ -80,6 +80,7 @@
 		8FE219B01DE57AF8000C1D71 /* PaiMaiGongGaoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8FE219AF1DE57AF8000C1D71 /* PaiMaiGongGaoCell.m */; };
 		8FE219B31DE59204000C1D71 /* PaiMaiBiaoDiXiangQingVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 8FE219B21DE59204000C1D71 /* PaiMaiBiaoDiXiangQingVC.m */; };
 		8FE247F11DE3D779006AD175 /* PaiMaiBiaoDiCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8FE247F01DE3D779006AD175 /* PaiMaiBiaoDiCell.m */; };
+		8FE4192F1DEEF03C0089BE9F /* ShiMingRenZhengVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 8FE4192E1DEEF03C0089BE9F /* ShiMingRenZhengVC.m */; };
 		8FE69B3D1DED2A4A001814AD /* MyWeiTuoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8FE69B3C1DED2A4A001814AD /* MyWeiTuoViewController.m */; };
 		8FE69B401DED2B6D001814AD /* MyWeiTuoTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8FE69B3F1DED2B6D001814AD /* MyWeiTuoTableViewCell.m */; };
 		8FE69B441DED349E001814AD /* MyPublicYuGaoVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 8FE69B431DED349E001814AD /* MyPublicYuGaoVC.m */; };
@@ -268,6 +269,8 @@
 		8FE219B21DE59204000C1D71 /* PaiMaiBiaoDiXiangQingVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PaiMaiBiaoDiXiangQingVC.m; sourceTree = "<group>"; };
 		8FE247EF1DE3D779006AD175 /* PaiMaiBiaoDiCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PaiMaiBiaoDiCell.h; sourceTree = "<group>"; };
 		8FE247F01DE3D779006AD175 /* PaiMaiBiaoDiCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PaiMaiBiaoDiCell.m; sourceTree = "<group>"; };
+		8FE4192D1DEEF03C0089BE9F /* ShiMingRenZhengVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShiMingRenZhengVC.h; sourceTree = "<group>"; };
+		8FE4192E1DEEF03C0089BE9F /* ShiMingRenZhengVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ShiMingRenZhengVC.m; sourceTree = "<group>"; };
 		8FE69B3B1DED2A4A001814AD /* MyWeiTuoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyWeiTuoViewController.h; sourceTree = "<group>"; };
 		8FE69B3C1DED2A4A001814AD /* MyWeiTuoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyWeiTuoViewController.m; sourceTree = "<group>"; };
 		8FE69B3E1DED2B6D001814AD /* MyWeiTuoTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyWeiTuoTableViewCell.h; sourceTree = "<group>"; };
@@ -465,8 +468,9 @@
 			children = (
 				8F02FE561DA887CC0051EDFC /* MyVC.h */,
 				8F02FE571DA887CC0051EDFC /* MyVC.m */,
-				8FE69B5E1DED89B4001814AD /* PublicYuGaovc.h */,
-				8FE69B5F1DED89B4001814AD /* PublicYuGaovc.m */,
+				8FE4192D1DEEF03C0089BE9F /* ShiMingRenZhengVC.h */,
+				8FE4192E1DEEF03C0089BE9F /* ShiMingRenZhengVC.m */,
+				8FE4192C1DEEEFDB0089BE9F /* 发布预告 */,
 				8FE69B5D1DED894B001814AD /* 个人信息 */,
 				8FE69B561DED7701001814AD /* 消息列表 */,
 				8FE69B4F1DED6899001814AD /* 已买到的标的 */,
@@ -719,6 +723,15 @@
 				8FE991561DE67F89008AB2EA /* 在线竞价 */,
 			);
 			name = "拍卖标的详情";
+			sourceTree = "<group>";
+		};
+		8FE4192C1DEEEFDB0089BE9F /* 发布预告 */ = {
+			isa = PBXGroup;
+			children = (
+				8FE69B5E1DED89B4001814AD /* PublicYuGaovc.h */,
+				8FE69B5F1DED89B4001814AD /* PublicYuGaovc.m */,
+			);
+			name = "发布预告";
 			sourceTree = "<group>";
 		};
 		8FE69B3A1DED2A2F001814AD /* 注册登录 */ = {
@@ -1000,6 +1013,7 @@
 				8FCD4F9B1DA8B4D300CB113C /* UIButton+AFNetworking.m in Sources */,
 				8FCD4FA31DA8B4D300CB113C /* UITableView+SDAutoTableViewCellHeight.m in Sources */,
 				8FCD4FAB1DA8B4D300CB113C /* UIView+SDExtension.m in Sources */,
+				8FE4192F1DEEF03C0089BE9F /* ShiMingRenZhengVC.m in Sources */,
 				8FE69B521DED692D001814AD /* XiaoXiViewController.m in Sources */,
 				8FCD4F9E1DA8B4D300CB113C /* UIRefreshControl+AFNetworking.m in Sources */,
 				8F676CC51DDE9D2D007A0477 /* RegisteViewController.m in Sources */,

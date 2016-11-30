@@ -40,6 +40,7 @@
     _tableView.dataSource=self;
     _tableView.delegate=self;
     _tableView.backgroundColor=BG_COLOR;
+    _tableView.tableFooterView=[UIView new];
     [self.view addSubview:_tableView];
 }
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{

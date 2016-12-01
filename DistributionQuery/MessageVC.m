@@ -42,6 +42,9 @@
     _tableView.backgroundColor=BG_COLOR;
     _tableView.tableFooterView=[UIView new];
     [self.view addSubview:_tableView];
+    UITapGestureRecognizer * tap =[[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(tap:)];
+    [_tableView addGestureRecognizer:tap];
+
 }
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
     return _dataArray.count;
@@ -55,8 +58,12 @@
     MessageCell * cell =[MessageCell cellWithTableView:tableView CellID:CellIdentifier];
     cell.nameLabel.text=_dataArray[indexPath.section][indexPath.row];
     [self uitableViewCell:cell indexpath:indexPath];
+    
     return cell;
 
+}
+-(void)tap:(UIGestureRecognizer*)tapp{
+    [_tableView endEditing:YES];
 }
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
     return 5;
@@ -70,18 +77,20 @@
     return 44;
 }
 -(void)uitableViewCell:(MessageCell*)cell indexpath:(NSIndexPath*)indexPath{
+    cell.textfield.textAlignment=2;
     if (indexPath.section==0) {
         cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
         cell.headImage.image=[UIImage imageNamed:@"headImage"];
+        cell.textfield.hidden=YES;
     }else if (indexPath.section==1){
-        cell.textfield.placeholder=@"254129572";
+        cell.textfield.placeholder=@"未填写";
     }else if (indexPath.section==2){
         if (indexPath.row==0) {
             //用户名
-            cell.textfield.placeholder=@"请输入用户名";
+            cell.textfield.placeholder=@"未填写";
         }else{
             //真实姓名
-            cell.textfield.placeholder=@"请输入用姓名";
+            cell.textfield.placeholder=@"未填写";
         }
     }else if (indexPath.section==3){
         if (indexPath.row==0) {
@@ -98,20 +107,27 @@
             //账户类型
         cell.textfield.enabled=NO;
         cell.textfield.text=@"个人";
-        cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
+       
+        [cell sd_addSubviews:@[cell.textfield]];
+        cell.textfield.sd_layout
+        .rightSpaceToView(cell,25);
+         cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
     }else if (indexPath.section==5){
         if (indexPath.row==0) {
             //地址
             cell.textfield.enabled=NO;
-            cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
             cell.textfield.text=@"河北石家庄";
+            [cell sd_addSubviews:@[cell.textfield]];
+            cell.textfield.sd_layout
+            .rightSpaceToView(cell,25);
+             cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
         }else{
             //街道
             cell.textfield.placeholder=@"未填写";
         }
     }else{
         //退出
-         cell.textfield.enabled=NO;
+         cell.textfield.hidden=YES;
     }
     
     

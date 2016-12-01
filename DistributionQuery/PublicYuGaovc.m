@@ -113,14 +113,15 @@
     [nameLabel setSingleLineAutoResizeWithMaxWidth:120];
     //button
     UIButton * imageBtn =[UIButton buttonWithType:UIButtonTypeCustom];
-    imageBtn.backgroundColor=[UIColor redColor];
-    [imageBtn setBackgroundImage:[UIImage imageNamed:@""] forState:0];
+   // imageBtn.backgroundColor=[UIColor redColor];
+    [imageBtn setBackgroundImage:[UIImage imageNamed:@"rz_pic"] forState:0];
     [_view2 sd_addSubviews:@[imageBtn]];
     imageBtn.sd_layout
     .leftSpaceToView(nameLabel,15)
     .topSpaceToView(nameLabel,0)
-    .widthIs(100)
-    .heightIs(80);
+    .widthIs(162/2)
+    .heightIs(122/2);
+
     
     
 }

@@ -15,6 +15,7 @@
 #import "XiaoXiViewController.h"//消息列表
 #import "MessageVC.h"//个人信息
 #import "PublicYuGaovc.h"//发布预告
+#import "ShiMingRenZhengVC.h"//实名认证
 @interface MyVC ()<UITableViewDelegate,UITableViewDataSource>
 {
     UIImageView * bgImage;
@@ -142,6 +143,9 @@
             [self.navigationController pushViewController:vc animated:YES];
         }else{
             //实名认证
+            ShiMingRenZhengVC* vc =[ShiMingRenZhengVC new];
+            vc.hidesBottomBarWhenPushed=YES;
+            [self.navigationController pushViewController:vc animated:YES];
         }
         
     }else if (indexPath.section==2){

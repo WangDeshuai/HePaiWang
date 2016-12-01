@@ -9,6 +9,7 @@
 #import "HomeVC.h"
 #import "PaiMaiBiaoDiVC.h"
 #import "PaiMaiGongGaoVC.h"
+#import "PaiMaiZiXunVC.h"
 @interface HomeVC ()<SDCycleScrollViewDelegate,UITableViewDelegate,UITableViewDataSource>
 @property(nonatomic,strong)UIView * headView;
 @property(nonatomic,strong)UITableView * tableView;
@@ -198,6 +199,9 @@
         [self.navigationController pushViewController:vc animated:YES];
     }else if (btn.tag==2){
         //拍卖咨询
+        PaiMaiZiXunVC * vc=[PaiMaiZiXunVC new];
+        vc.hidesBottomBarWhenPushed=YES;
+        [self.navigationController pushViewController:vc animated:YES];
     }else{
        //成交按理
         

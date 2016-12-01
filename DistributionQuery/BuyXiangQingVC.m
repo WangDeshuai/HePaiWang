@@ -7,7 +7,8 @@
 //
 
 #import "BuyXiangQingVC.h"
-
+#import "JiaoGeGuanLiVC.h"//交割管理
+#import "MingXiViewController.h"//交易明细
 @interface BuyXiangQingVC ()<SDCycleScrollViewDelegate,UITableViewDelegate,UITableViewDataSource>
 @property(nonatomic,strong)UIView * view1;
 @property(nonatomic,strong)UIView * view2;
@@ -62,6 +63,31 @@
     cell.selectionStyle=UITableViewCellSelectionStyleNone;
     return cell;
 }
+
+#pragma mark --表格点击
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (indexPath.section==0) {
+        if (indexPath.row==0) {
+            //交易明细
+            MingXiViewController * vc =[MingXiViewController new];
+            [self.navigationController pushViewController:vc animated:YES];
+        }else{
+            //交割管理
+            JiaoGeGuanLiVC * vc =[JiaoGeGuanLiVC new];
+            [self.navigationController pushViewController:vc animated:YES];
+        }
+    }else{
+        if (indexPath.row==0) {
+            //竞买须知
+        }else  if (indexPath.row==1){
+            //竞买公告
+        }else{
+            //标的物介绍
+        }
+    }
+}
+
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
     if (section==0) {

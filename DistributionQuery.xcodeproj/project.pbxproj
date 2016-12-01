@@ -100,6 +100,10 @@
 		8FE991631DE6B777008AB2EA /* 29.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 8FE9915F1DE6B777008AB2EA /* 29.jpg */; };
 		8FE991641DE6B777008AB2EA /* zrx7.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 8FE991601DE6B777008AB2EA /* zrx7.jpg */; };
 		8FE991671DE6C172008AB2EA /* ZaiXianJingJiaCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8FE991661DE6C172008AB2EA /* ZaiXianJingJiaCell.m */; };
+		8FEB11361DEFD1C300F775E2 /* MingXiViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8FEB11351DEFD1C300F775E2 /* MingXiViewController.m */; };
+		8FEB113A1DEFD1F000F775E2 /* JiaoGeGuanLiVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 8FEB11391DEFD1F000F775E2 /* JiaoGeGuanLiVC.m */; };
+		8FEB113E1DF007F700F775E2 /* YuGaoXiangQingVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 8FEB113D1DF007F700F775E2 /* YuGaoXiangQingVC.m */; };
+		8FEB11411DF02E7F00F775E2 /* PaiMaiZiXunVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 8FEB11401DF02E7F00F775E2 /* PaiMaiZiXunVC.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -305,6 +309,14 @@
 		8FE991601DE6B777008AB2EA /* zrx7.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = zrx7.jpg; sourceTree = "<group>"; };
 		8FE991651DE6C172008AB2EA /* ZaiXianJingJiaCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZaiXianJingJiaCell.h; sourceTree = "<group>"; };
 		8FE991661DE6C172008AB2EA /* ZaiXianJingJiaCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZaiXianJingJiaCell.m; sourceTree = "<group>"; };
+		8FEB11341DEFD1C300F775E2 /* MingXiViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MingXiViewController.h; sourceTree = "<group>"; };
+		8FEB11351DEFD1C300F775E2 /* MingXiViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MingXiViewController.m; sourceTree = "<group>"; };
+		8FEB11381DEFD1F000F775E2 /* JiaoGeGuanLiVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JiaoGeGuanLiVC.h; sourceTree = "<group>"; };
+		8FEB11391DEFD1F000F775E2 /* JiaoGeGuanLiVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JiaoGeGuanLiVC.m; sourceTree = "<group>"; };
+		8FEB113C1DF007F700F775E2 /* YuGaoXiangQingVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YuGaoXiangQingVC.h; sourceTree = "<group>"; };
+		8FEB113D1DF007F700F775E2 /* YuGaoXiangQingVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YuGaoXiangQingVC.m; sourceTree = "<group>"; };
+		8FEB113F1DF02E7F00F775E2 /* PaiMaiZiXunVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PaiMaiZiXunVC.h; sourceTree = "<group>"; };
+		8FEB11401DF02E7F00F775E2 /* PaiMaiZiXunVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PaiMaiZiXunVC.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -466,10 +478,8 @@
 		8F02FE5C1DA8881A0051EDFC /* 我的 */ = {
 			isa = PBXGroup;
 			children = (
-				8F02FE561DA887CC0051EDFC /* MyVC.h */,
-				8F02FE571DA887CC0051EDFC /* MyVC.m */,
-				8FE4192D1DEEF03C0089BE9F /* ShiMingRenZhengVC.h */,
-				8FE4192E1DEEF03C0089BE9F /* ShiMingRenZhengVC.m */,
+				8FEB11331DEFC7E900F775E2 /* 个人中心 */,
+				8FEB11321DEFC7D300F775E2 /* 实名认证 */,
 				8FE4192C1DEEEFDB0089BE9F /* 发布预告 */,
 				8FE69B5D1DED894B001814AD /* 个人信息 */,
 				8FE69B561DED7701001814AD /* 消息列表 */,
@@ -699,6 +709,8 @@
 			children = (
 				8F02FE501DA887740051EDFC /* HomeVC.h */,
 				8F02FE511DA887740051EDFC /* HomeVC.m */,
+				8FEB113F1DF02E7F00F775E2 /* PaiMaiZiXunVC.h */,
+				8FEB11401DF02E7F00F775E2 /* PaiMaiZiXunVC.m */,
 			);
 			name = "首页";
 			sourceTree = "<group>";
@@ -763,6 +775,8 @@
 				8FE69B431DED349E001814AD /* MyPublicYuGaoVC.m */,
 				8FE69B451DED48B7001814AD /* MyPublicYuGaoCell.h */,
 				8FE69B461DED48B7001814AD /* MyPublicYuGaoCell.m */,
+				8FEB113C1DF007F700F775E2 /* YuGaoXiangQingVC.h */,
+				8FEB113D1DF007F700F775E2 /* YuGaoXiangQingVC.m */,
 			);
 			name = "我发布的预告";
 			sourceTree = "<group>";
@@ -774,6 +788,8 @@
 				8FE69B4A1DED54B2001814AD /* BuyDaoViewController.m */,
 				8FE69B4C1DED573A001814AD /* BuyXiangQingVC.h */,
 				8FE69B4D1DED573A001814AD /* BuyXiangQingVC.m */,
+				8FEB113B1DEFD1F600F775E2 /* 交割管理 */,
+				8FEB11371DEFD1CB00F775E2 /* 交易明细 */,
 			);
 			name = "已买到的标的";
 			sourceTree = "<group>";
@@ -813,6 +829,42 @@
 				8FE9915B1DE68039008AB2EA /* HeadLineView.m */,
 			);
 			name = "在线竞价";
+			sourceTree = "<group>";
+		};
+		8FEB11321DEFC7D300F775E2 /* 实名认证 */ = {
+			isa = PBXGroup;
+			children = (
+				8FE4192D1DEEF03C0089BE9F /* ShiMingRenZhengVC.h */,
+				8FE4192E1DEEF03C0089BE9F /* ShiMingRenZhengVC.m */,
+			);
+			name = "实名认证";
+			sourceTree = "<group>";
+		};
+		8FEB11331DEFC7E900F775E2 /* 个人中心 */ = {
+			isa = PBXGroup;
+			children = (
+				8F02FE561DA887CC0051EDFC /* MyVC.h */,
+				8F02FE571DA887CC0051EDFC /* MyVC.m */,
+			);
+			name = "个人中心";
+			sourceTree = "<group>";
+		};
+		8FEB11371DEFD1CB00F775E2 /* 交易明细 */ = {
+			isa = PBXGroup;
+			children = (
+				8FEB11341DEFD1C300F775E2 /* MingXiViewController.h */,
+				8FEB11351DEFD1C300F775E2 /* MingXiViewController.m */,
+			);
+			name = "交易明细";
+			sourceTree = "<group>";
+		};
+		8FEB113B1DEFD1F600F775E2 /* 交割管理 */ = {
+			isa = PBXGroup;
+			children = (
+				8FEB11381DEFD1F000F775E2 /* JiaoGeGuanLiVC.h */,
+				8FEB11391DEFD1F000F775E2 /* JiaoGeGuanLiVC.m */,
+			);
+			name = "交割管理";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -957,6 +1009,7 @@
 				8FE9915C1DE68039008AB2EA /* HeadLineView.m in Sources */,
 				8FCD4FA51DA8B4D300CB113C /* TAAbstractDotView.m in Sources */,
 				8FCD4F9D1DA8B4D300CB113C /* UIProgressView+AFNetworking.m in Sources */,
+				8FEB113E1DF007F700F775E2 /* YuGaoXiangQingVC.m in Sources */,
 				8FCD4FA11DA8B4D300CB113C /* LCProgressHUD.m in Sources */,
 				8FCD4F971DA8B4D300CB113C /* UIView+WebCacheOperation.m in Sources */,
 				8FE69B601DED89B4001814AD /* PublicYuGaovc.m in Sources */,
@@ -988,6 +1041,8 @@
 				8FE991591DE68028008AB2EA /* HeadImageView.m in Sources */,
 				8FDD67DE1DEC0D0F00CE295A /* PaiMaiGongGaoXiangQingVC.m in Sources */,
 				8F6A38C81DE2F87300688C83 /* PaiMaiBiaoDiVC.m in Sources */,
+				8FEB11361DEFD1C300F775E2 /* MingXiViewController.m in Sources */,
+				8FEB113A1DEFD1F000F775E2 /* JiaoGeGuanLiVC.m in Sources */,
 				8FCD4F8C1DA8B4D300CB113C /* SDWebImageDecoder.m in Sources */,
 				8FCD4F801DA8B4D300CB113C /* AFHTTPRequestOperationManager.m in Sources */,
 				8FCD4F961DA8B4D300CB113C /* UIImageView+WebCache.m in Sources */,
@@ -996,6 +1051,7 @@
 				8FE69B4E1DED573A001814AD /* BuyXiangQingVC.m in Sources */,
 				8FCD4F7F1DA8B4D300CB113C /* AFHTTPRequestOperation.m in Sources */,
 				8FCD4F871DA8B4D300CB113C /* AFURLSessionManager.m in Sources */,
+				8FEB11411DF02E7F00F775E2 /* PaiMaiZiXunVC.m in Sources */,
 				8F676CC21DDE9CEB007A0477 /* LoginViewController.m in Sources */,
 				8FE69B591DED77A2001814AD /* MessageVC.m in Sources */,
 				8FE219A51DE54B0B000C1D71 /* WeiTuoPaiMaiCell.m in Sources */,

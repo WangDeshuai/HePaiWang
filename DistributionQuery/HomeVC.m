@@ -10,6 +10,7 @@
 #import "PaiMaiBiaoDiVC.h"
 #import "PaiMaiGongGaoVC.h"
 #import "PaiMaiZiXunVC.h"
+#import "ChengJiaoAnLiVC.h"
 @interface HomeVC ()<SDCycleScrollViewDelegate,UITableViewDelegate,UITableViewDataSource>
 @property(nonatomic,strong)UIView * headView;
 @property(nonatomic,strong)UITableView * tableView;
@@ -204,7 +205,9 @@
         [self.navigationController pushViewController:vc animated:YES];
     }else{
        //成交按理
-        
+        ChengJiaoAnLiVC* vc=[ChengJiaoAnLiVC new];
+        vc.hidesBottomBarWhenPushed=YES;
+        [self.navigationController pushViewController:vc animated:YES];
     }
    
 }

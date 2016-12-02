@@ -56,6 +56,7 @@
     _tableView.dataSource=self;
     _tableView.delegate=self;
     _tableView.backgroundColor=BG_COLOR;
+    _tableView.tableFooterView=[UIView new];
     [self.view sd_addSubviews:@[_tableView]];
     
     

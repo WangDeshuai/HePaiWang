@@ -51,12 +51,13 @@
     
     
     _titleLabel.text=@"您已参加稍后的拍卖会，保证金马上到账，请于2016-11-30准时参加拍卖会，您已参加您已参加稍后的拍卖会，保证金马上到账，请于2016-11-30准时参加拍卖会，您已参加";
+    _titleLabel.attributedText=[ToolClass hangJianJuStr:_titleLabel.text JuLi:5];
     _timeLabel.text=@"2016-11-24 10:00";
     _titleLabel.sd_layout
     .leftSpaceToView(self.contentView,15)
     .rightSpaceToView(self.contentView,10)
     .topSpaceToView(self.contentView,15)
-    .heightIs(40);
+    .heightIs(60);
     
     _timeLabel.sd_layout
     .rightSpaceToView(self.contentView,15)

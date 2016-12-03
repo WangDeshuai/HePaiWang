@@ -144,31 +144,79 @@
     //滚动试图
     UIScrollView * priceScrollview =[[UIScrollView alloc]init];
     priceScrollview.showsHorizontalScrollIndicator = NO;
-   //priceScrollview.backgroundColor=[UIColor yellowColor];
+    priceScrollview.userInteractionEnabled=YES;
+   // priceScrollview.backgroundColor=[UIColor yellowColor];
     priceScrollview.contentSize=CGSizeMake(ScreenWidth+200, 120);
     [view2 sd_addSubviews:@[priceScrollview]];
     priceScrollview.sd_layout
     .leftSpaceToView(view2,0)
     .rightSpaceToView(view2,0)
-    .topSpaceToView(lineImage,0)
-    .heightIs(150);
+    .topSpaceToView(lineImage,10)
+    .heightIs(160);
     [view2 setupAutoHeightWithBottomView:priceScrollview bottomMargin:10];
    
     for (int i =0; i<5; i++) {
-        UIView * bgView =[UIView new];
+        UIButton * bgView =[UIButton new];
+        bgView.tag=i;
         bgView.layer.borderWidth=.5;
-        bgView.layer.borderColor=[UIColor colorWithRed:205/255.0 green:131/255.0 blue:137/255.0 alpha:1].CGColor;
-        bgView.backgroundColor=[UIColor colorWithRed:247/255.0 green:247/255.0 blue:247/255.0 alpha:1];
+        bgView.layer.borderColor=JXColor(205, 131, 137, 1).CGColor;
+        bgView.backgroundColor=JXColor(247, 247, 247, 1);
+        [bgView addTarget:self action:@selector(bgviewClick:) forControlEvents:UIControlEventTouchUpInside];
         [priceScrollview sd_addSubviews:@[bgView]];
         bgView.sd_layout
-        .leftSpaceToView(priceScrollview,15+(130+15)*i)
-        .topSpaceToView(priceScrollview,10)
+        .leftSpaceToView(priceScrollview,15+(140+15)*i)
+        .topSpaceToView(priceScrollview,0)
         .bottomSpaceToView(priceScrollview,0)
-        .widthIs(130);
+        .widthIs(140);
+        //图片
+        UIImageView * imageview =[UIImageView new];
+        imageview.image=[UIImage imageNamed:@"banner"];
+        [bgView sd_addSubviews:@[imageview]];
+        imageview.sd_layout
+        .leftSpaceToView(bgView,0)
+        .rightSpaceToView(bgView,0)
+        .topSpaceToView(bgView,0)
+        .heightIs(80);
+        //标题
+        UILabel * titileLabel =[UILabel new];
+        titileLabel.numberOfLines=1;
+        titileLabel.font=[UIFont systemFontOfSize:15];
+        titileLabel.alpha=.8;
+        titileLabel.text=@"一大批闲置机械常淑萍沙发";
+        [bgView sd_addSubviews:@[titileLabel]];
+        titileLabel.sd_layout
+        .leftSpaceToView(bgView,0)
+        .topSpaceToView(imageview,10)
+        .heightIs(15);
+        [titileLabel setSingleLineAutoResizeWithMaxWidth:130];
+        //起拍价
+        UILabel * qiPaiLabel =[UILabel new];
+        qiPaiLabel.numberOfLines=1;
+        qiPaiLabel.font=[UIFont systemFontOfSize:16];
+        qiPaiLabel.alpha=.7;
+        qiPaiLabel.textColor=[UIColor redColor];
+        qiPaiLabel.text=@"起拍价:3.34万";
+        qiPaiLabel.attributedText=[ToolClass attrStrFrom:qiPaiLabel.text intFond:13 Color:[UIColor blackColor] numberStr:@"起拍价:"];
+        [bgView sd_addSubviews:@[qiPaiLabel]];
+        qiPaiLabel.sd_layout
+        .leftSpaceToView(bgView,5)
+        .topSpaceToView(titileLabel,10)
+        .widthIs(130)
+        .heightIs(15);
+       //时间
+        UILabel * timeLabel =[UILabel new];
+        timeLabel.text=@"11月04日 10:05 开始";
+        timeLabel.font=[UIFont systemFontOfSize:13];
+        timeLabel.textColor=[UIColor redColor];
+        timeLabel.alpha=.7;
+        timeLabel.attributedText=[ToolClass attrStrFrom:timeLabel.text intFond:13 Color:[UIColor blackColor] numberStr:@"开始"];
+        [bgView sd_addSubviews:@[timeLabel]];
+        timeLabel.sd_layout
+        .leftSpaceToView(bgView,5)
+        .topSpaceToView(qiPaiLabel,10)
+        .rightSpaceToView(bgView,5)
+        .heightIs(15);
         
-//        UIImageView * imageview =[UIImageView new];
-//        imageview.image=[UIImage imageNamed:@"banner"];
-//        [priceScrollview sd_addSubviews:@[imageview]];
         
         
     }
@@ -181,10 +229,17 @@
 //        NSLog(@"%d",d);
 //       _headView.sd_layout.heightIs(d+10);
 //    };
-    _headView.sd_layout.heightIs(459+30);
+    _headView.sd_layout.heightIs(459+40);
    
     return _headView;
 }
+
+#pragma mark --滚动视图的button
+-(void)bgviewClick:(UIButton*)btn{
+    NSLog(@"btnTage=%lu",btn.tag);
+}
+
+
 
 #pragma mark --4个按钮点击状态
 -(void)Forbtn:(UIButton*)btn{
@@ -243,15 +298,27 @@
 }
 
 -(UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
+    UIView * bgview =[UIView new];
+    bgview.backgroundColor=BG_COLOR;
+    
+    
     UIView * view =[UIView new];
     view.backgroundColor=[UIColor whiteColor];
+    [bgview sd_addSubviews:@[view]];
+    view.sd_layout
+    .leftSpaceToView(bgview,0)
+    .rightSpaceToView(bgview,0)
+    .topSpaceToView(bgview,10)
+    .heightIs(44);
+    
+    
     
     //拍卖标的
     UIImageView * imageBD =[[UIImageView alloc]initWithImage:[UIImage imageNamed:@"home_title12"]];
     [view sd_addSubviews:@[imageBD]];
     imageBD.sd_layout
     .leftSpaceToView(view,15)
-    .topSpaceToView(view,10)
+    .centerYEqualToView(view)
     .widthIs(159/2)
     .heightIs(28/2);
     //更多
@@ -275,12 +342,12 @@
     .topSpaceToView(imageBD,10)
     .heightIs(.5);
     
-    return view;
+    return bgview;
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    return 44;
+    return 54;
 }
 
 

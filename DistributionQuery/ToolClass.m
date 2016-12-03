@@ -56,7 +56,14 @@
     return arrString;
 }
 
-
+#pragma mark --Label行间距设置
++(NSMutableAttributedString *)hangJianJuStr:(NSString*)str JuLi:(int)juli{
+    NSMutableParagraphStyle * paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+    [paragraphStyle setLineSpacing:juli];
+     UIColor *color = [UIColor blackColor];
+     NSAttributedString *string = [[NSAttributedString alloc] initWithString:str attributes:@{NSForegroundColorAttributeName : color, NSParagraphStyleAttributeName: paragraphStyle}];
+    return string;
+}
 
 #pragma mark -- 拨打电话
 +(void)tellPhone:(NSString*)tell{

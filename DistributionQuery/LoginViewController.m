@@ -16,13 +16,13 @@
 @implementation LoginViewController
 -(void)viewWillAppear:(BOOL)animated
 {
-     [[[self.navigationController.navigationBar subviews] objectAtIndex:0] setAlpha:0];
-     [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName:[UIColor redColor],NSFontAttributeName:[UIFont systemFontOfSize:16]}];
+//     [[[self.navigationController.navigationBar subviews] objectAtIndex:0] setAlpha:0];
+//     [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName:[UIColor redColor],NSFontAttributeName:[UIFont systemFontOfSize:16]}];
 }
 -(void)viewWillDisappear:(BOOL)animated
 {
-     [[[self.navigationController.navigationBar subviews] objectAtIndex:0] setAlpha:1];
-     [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName:[UIColor whiteColor],NSFontAttributeName:[UIFont systemFontOfSize:16]}];
+//     [[[self.navigationController.navigationBar subviews] objectAtIndex:0] setAlpha:1];
+//     [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName:[UIColor whiteColor],NSFontAttributeName:[UIFont systemFontOfSize:16]}];
 }
 - (void)viewDidLoad {
     [super viewDidLoad];

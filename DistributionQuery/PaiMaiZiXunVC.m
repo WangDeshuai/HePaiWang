@@ -74,15 +74,17 @@
     
     //内容
     UILabel * contentLabel =(UILabel*)[cell viewWithTag:2];
+    contentLabel.text=_dataArray[indexPath.row];
+    contentLabel.attributedText=[ToolClass hangJianJuStr:contentLabel.text JuLi:8];
     contentLabel.alpha=.6;
     contentLabel.numberOfLines=2;
     contentLabel.font=[UIFont systemFontOfSize:15];
-    contentLabel.text=_dataArray[indexPath.row];
+    
     contentLabel.sd_layout
     .leftEqualToView(titleLabel)
     .topSpaceToView(titleLabel,10)
     .rightSpaceToView(cell,15)
-    .heightIs(40);
+    .heightIs(60);
     
     
     //时间
@@ -107,7 +109,7 @@
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     
-    return 120;
+    return 130;
 }
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

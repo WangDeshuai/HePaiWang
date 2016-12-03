@@ -20,7 +20,7 @@
 +(NSString*)isString:(id)str;
 #pragma mark -- 拨打电话
 +(void)tellPhone:(NSString*)tell;
-#pragma mark --设置字符传不同的颜色
+#pragma mark --设置同一字符串 不同的颜色 不同大小
 /*
  titleStr ：哪条Label要变色
  fond：要变颜色字体的大小
@@ -28,6 +28,17 @@
  numberStr：要变色的字符串
  */
 +(NSMutableAttributedString *)attrStrFrom:(NSString *)titleStr intFond:(int)fond Color:(UIColor*)color numberStr:(NSString *)numberStr;
+
+#pragma mark --Label行间距设置
+/*
+ 默认黑色
+ str:为字符串
+ juli:为行间距距离
+ */
++(NSMutableAttributedString *)hangJianJuStr:(NSString*)str JuLi:(int)juli;
+
+
+
 
 #pragma mark -  计算内容文本的高度方法
 + (CGFloat)HeightForText:(NSString *)text withSizeOfLabelFont:(CGFloat)font withWidthOfContent:(CGFloat)contentWidth;

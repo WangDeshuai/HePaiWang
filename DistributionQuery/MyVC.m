@@ -34,17 +34,15 @@
 }
 -(void)viewWillAppear:(BOOL)animated{
      self.navigationController.navigationBarHidden=YES;
+    _tableView.tableHeaderView=[self tableViewHead];
+
 }
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.backHomeBtn.hidden=YES;
    
-   // UIButton * btn =[UIButton buttonWithType:UIButtonTypeCustom];
-//    btn.backgroundColor=[UIColor redColor];
-//    btn.frame=CGRectMake(100, 100, 100, 100);
-//    [btn addTarget:self action:@selector(btnn:) forControlEvents:UIControlEventTouchUpInside];
-//    [self.view addSubview:btn];
+   
     [self dataArr];
     [self CreatTableView];
     
@@ -73,7 +71,7 @@
     _tableView.delegate=self;
     _tableView.bounces=NO;
     _tableView.backgroundColor=BG_COLOR;
-    _tableView.tableHeaderView=[self tableViewHead];
+   // _tableView.tableHeaderView=[self tableViewHead];
     _tableView.tableFooterView=[UIView new];
     [self.view addSubview:_tableView];
     
@@ -196,18 +194,54 @@
     .centerXEqualToView(bgImage)
     .topSpaceToView(bgImage,30)
     .heightIs(130/2);
-    //立即登录
-    UIButton * loginBtn =[UIButton buttonWithType:UIButtonTypeCustom];
-    [loginBtn setBackgroundImage:[UIImage imageNamed:@"person_login"] forState:0];
-    [loginBtn addTarget:self action:@selector(btnn:) forControlEvents:UIControlEventTouchUpInside];
-    [loginBtn setTitle:@"立即登录" forState:0];
-    loginBtn.titleLabel.font=[UIFont systemFontOfSize:15 weight:15];
-    [bgImage sd_addSubviews:@[loginBtn]];
-    loginBtn.sd_layout
-    .centerXEqualToView(headImage)
-    .topSpaceToView(headImage,10)
-    .widthIs(176/2)
-    .heightIs(56/2);
+    
+    if ([ToolClass isLogin]) {
+        NSDictionary * baseInfoDic =[ToolClass duquPlistWenJianPlistName:@"baseInfo"];
+        
+        //已登录
+        UILabel * accountLab =[UILabel new];
+        accountLab.text=[baseInfoDic objectForKey:@"account"];
+        accountLab.font=[UIFont systemFontOfSize:15];
+        accountLab.textColor=[UIColor whiteColor];
+        [bgImage sd_addSubviews:@[accountLab]];
+        accountLab.sd_layout
+        .centerXEqualToView(headImage)
+        .topSpaceToView(headImage,10)
+        .heightIs(20);
+        [accountLab setSingleLineAutoResizeWithMaxWidth:120];
+        
+        
+        UILabel * nameLabel =[UILabel new];
+        nameLabel.text=[baseInfoDic objectForKey:@"user_name"];
+        nameLabel.font=[UIFont systemFontOfSize:15];
+        nameLabel.textColor=[UIColor whiteColor];
+        [bgImage sd_addSubviews:@[nameLabel]];
+        nameLabel.sd_layout
+        .centerXEqualToView(accountLab)
+        .topSpaceToView(accountLab,5)
+        .heightIs(20);
+        [nameLabel setSingleLineAutoResizeWithMaxWidth:120];
+        
+        
+        [headImage setImageWithURL:[NSURL URLWithString:[baseInfoDic objectForKey:@"head_img"]] placeholderImage:[UIImage imageNamed:@"headImage"]];
+    }else{
+        //未登录
+        //立即登录
+        UIButton * loginBtn =[UIButton buttonWithType:UIButtonTypeCustom];
+        [loginBtn setBackgroundImage:[UIImage imageNamed:@"person_login"] forState:0];
+        [loginBtn addTarget:self action:@selector(btnn:) forControlEvents:UIControlEventTouchUpInside];
+        [loginBtn setTitle:@"立即登录" forState:0];
+        loginBtn.titleLabel.font=[UIFont systemFontOfSize:15 weight:15];
+        [bgImage sd_addSubviews:@[loginBtn]];
+        loginBtn.sd_layout
+        .centerXEqualToView(headImage)
+        .topSpaceToView(headImage,10)
+        .widthIs(176/2)
+        .heightIs(56/2);
+
+    }
+    
+    
     
     
     

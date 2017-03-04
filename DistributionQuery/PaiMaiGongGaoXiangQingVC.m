@@ -9,10 +9,18 @@
 #import "PaiMaiGongGaoXiangQingVC.h"
 
 @interface PaiMaiGongGaoXiangQingVC ()<UITableViewDelegate,UITableViewDataSource>
+{
+    dispatch_source_t _timer;
+}
 @property(nonatomic,strong)UITableView * tableView;
 @property(nonatomic,strong)UIView * view1;
 @property(nonatomic,strong)UIView * view2;
 @property(nonatomic,strong)NSMutableArray * nameArray;
+@property(nonatomic,strong) UILabel *dayLabel;//天
+@property(nonatomic,strong)UILabel *hourLabel;//时
+@property(nonatomic,strong)UILabel *minuteLabel;//分
+@property(nonatomic,strong) UILabel *secondLabel;//秒
+
 @end
 
 @implementation PaiMaiGongGaoXiangQingVC
@@ -160,7 +168,7 @@
     .heightIs(80);
     //局开拍
     UILabel * strLabel=[UILabel new];
-    strLabel.text=@"距开拍";
+    strLabel.text=@"距下班";
     strLabel.font=[UIFont systemFontOfSize:20 weight:17];
     strLabel.alpha=.9;
     strLabel.textColor=[UIColor grayColor];
@@ -171,26 +179,68 @@
     .autoHeightRatio(0);
     [strLabel setSingleLineAutoResizeWithMaxWidth:120];
     //倒计时
-    UILabel * timeDaoLabel=[UILabel new];
-    timeDaoLabel.text=@"3 天 20 时 23 分 50 秒";
-    [timeDaoLabel setTextColor:[UIColor redColor]];
-    timeDaoLabel.font=[UIFont systemFontOfSize:18];
-    timeDaoLabel.attributedText= [ToolClass attrStrFrom:timeDaoLabel.text intFond:18 Color:[UIColor blackColor] numberStr:@"  天   时"];
-    
-    [view22 sd_addSubviews:@[timeDaoLabel]];
-    timeDaoLabel.sd_layout
+    self.dayLabel=[UILabel new];
+    self.dayLabel.font=[UIFont systemFontOfSize:18];
+    self.dayLabel.textColor=[UIColor redColor];
+    [view22 sd_addSubviews:@[self.dayLabel]];
+    self.dayLabel.sd_layout
     .centerYEqualToView(strLabel)
-    .rightSpaceToView(view22,30)
+    .leftSpaceToView(strLabel,30)
     .heightIs(20);
-    [timeDaoLabel setSingleLineAutoResizeWithMaxWidth:320];
-   //线条
+    [self.dayLabel setSingleLineAutoResizeWithMaxWidth:100];
+    //时
+    self.hourLabel=[UILabel new];
+    self.hourLabel.font=[UIFont systemFontOfSize:18];
+    self.hourLabel.textColor=[UIColor redColor];
+    [view22 sd_addSubviews:@[self.hourLabel]];
+    self.hourLabel.sd_layout
+    .centerYEqualToView(strLabel)
+    .leftSpaceToView(self.dayLabel,3)
+    .heightIs(20);
+    [self.hourLabel setSingleLineAutoResizeWithMaxWidth:100];
+    //分
+    self.minuteLabel=[UILabel new];
+    self.minuteLabel.font=[UIFont systemFontOfSize:18];
+    self.minuteLabel.textColor=[UIColor redColor];
+    [view22 sd_addSubviews:@[self.minuteLabel]];
+    self.minuteLabel.sd_layout
+    .centerYEqualToView(strLabel)
+    .leftSpaceToView(self.hourLabel,3)
+    .heightIs(20);
+    [self.minuteLabel setSingleLineAutoResizeWithMaxWidth:100];
+    //秒
+    self.secondLabel=[UILabel new];
+    self.secondLabel.font=[UIFont systemFontOfSize:18];
+    self.secondLabel.textColor=[UIColor redColor];
+    [view22 sd_addSubviews:@[self.secondLabel]];
+    self.secondLabel.sd_layout
+    .centerYEqualToView(strLabel)
+    .leftSpaceToView(self.minuteLabel,3)
+    .heightIs(20);
+    [self.secondLabel setSingleLineAutoResizeWithMaxWidth:100];
+    [self.secondLabel setupAutoWidthWithRightView:view22 rightMargin:20];
+    [self dataRiqi];
+
+//    UILabel * timeDaoLabel=[UILabel new];
+//    timeDaoLabel.text=@"3 天 20 时 23 分 50 秒";
+//    [timeDaoLabel setTextColor:[UIColor redColor]];
+//    timeDaoLabel.font=[UIFont systemFontOfSize:18];
+//    [view22 sd_addSubviews:@[timeDaoLabel]];
+//    timeDaoLabel.sd_layout
+//    .centerYEqualToView(strLabel)
+//    .rightSpaceToView(view22,30)
+//    .heightIs(20);
+//    [timeDaoLabel setSingleLineAutoResizeWithMaxWidth:320];
+  
+    
+    //线条
     UIView * lineView =[UIView new];
     lineView.backgroundColor=BG_COLOR;
     [view22 sd_addSubviews:@[lineView]];
     lineView.sd_layout
     .leftSpaceToView(view22,0)
     .rightSpaceToView(view22,0)
-    .topSpaceToView(timeDaoLabel,15)
+    .topSpaceToView(strLabel,15)
     .heightIs(1);
 
     //赋值
@@ -235,6 +285,87 @@
       return _view1;
     }
 }
+
+-(void)dataRiqi{
+    
+    NSDateFormatter *dateFormatter=[[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+    
+    NSDate *endDate = [dateFormatter dateFromString:@"2016-12-05 18:00:00"];
+    //NSDate *endDate_tomorrow = [[NSDate alloc] initWithTimeIntervalSinceReferenceDate:([endDate timeIntervalSinceReferenceDate] + 24*3600)];
+    NSDate *startDate = [NSDate date];
+    NSTimeInterval timeInterval =[endDate timeIntervalSinceDate:startDate];
+    if (_timer==nil) {
+        __block int timeout = timeInterval; //倒计时时间
+        
+        if (timeout!=0) {
+            dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+            _timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0,queue);
+            dispatch_source_set_timer(_timer,dispatch_walltime(NULL, 0),1.0*NSEC_PER_SEC, 0); //每秒执行
+            dispatch_source_set_event_handler(_timer, ^{
+                if(timeout<=0){ //倒计时结束，关闭
+                    dispatch_source_cancel(_timer);
+                    _timer = nil;
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        self.dayLabel.text = @"";
+                        self.hourLabel.text = @"00 时";
+                        self.minuteLabel.text = @"00 分";
+                        self.secondLabel.text = @"00 秒";
+                        self.hourLabel.attributedText= [ToolClass attrStrFrom: self.hourLabel.text intFond:18 Color:[UIColor blackColor] numberStr:@"时"];
+                        self.minuteLabel.attributedText= [ToolClass attrStrFrom: self.minuteLabel.text intFond:18 Color:[UIColor blackColor] numberStr:@"分"];
+                        self.secondLabel.attributedText= [ToolClass attrStrFrom: self.secondLabel.text intFond:18 Color:[UIColor blackColor] numberStr:@"秒"];
+                        //时间到了，执行这
+                    });
+                }else{
+                    int days = (int)(timeout/(3600*24));
+                    if (days==0) {
+                        self.dayLabel.text = @"";
+                    }
+                    int hours = (int)((timeout-days*24*3600)/3600);
+                    int minute = (int)(timeout-days*24*3600-hours*3600)/60;
+                    int second = timeout-days*24*3600-hours*3600-minute*60;
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        if (days==0) {
+                            self.dayLabel.text = @"0 天";
+                            self.dayLabel.attributedText= [ToolClass attrStrFrom: self.dayLabel.text intFond:18 Color:[UIColor blackColor] numberStr:@"天"];
+                        }else{
+                            self.dayLabel.text = [NSString stringWithFormat:@"%d 天",days];
+                            self.dayLabel.attributedText= [ToolClass attrStrFrom: self.dayLabel.text intFond:18 Color:[UIColor blackColor] numberStr:@"天"];
+                        }
+                        if (hours<10) {
+                            self.hourLabel.text = [NSString stringWithFormat:@"0%d 时",hours];
+                            self.hourLabel.attributedText= [ToolClass attrStrFrom: self.hourLabel.text intFond:18 Color:[UIColor blackColor] numberStr:@"时"];
+                        }else{
+                            self.hourLabel.text = [NSString stringWithFormat:@"%d 时",hours];
+                            self.hourLabel.attributedText= [ToolClass attrStrFrom: self.hourLabel.text intFond:18 Color:[UIColor blackColor] numberStr:@"时"];
+                        }
+                        if (minute<10) {
+                            self.minuteLabel.text = [NSString stringWithFormat:@"0%d 分",minute];
+                            self.minuteLabel.attributedText= [ToolClass attrStrFrom: self.minuteLabel.text intFond:18 Color:[UIColor blackColor] numberStr:@"分"];
+                        }else{
+                            self.minuteLabel.text = [NSString stringWithFormat:@"%d 分",minute];
+                            self.minuteLabel.attributedText= [ToolClass attrStrFrom: self.minuteLabel.text intFond:18 Color:[UIColor blackColor] numberStr:@"分"];
+                        }
+                        if (second<10) {
+                            self.secondLabel.text = [NSString stringWithFormat:@"0%d 秒",second];
+                            self.secondLabel.attributedText= [ToolClass attrStrFrom: self.secondLabel.text intFond:18 Color:[UIColor blackColor] numberStr:@"秒"];
+                        }else{
+                          self.secondLabel.text = [NSString stringWithFormat:@"%d 秒",second];
+                          self.secondLabel.attributedText= [ToolClass attrStrFrom: self.secondLabel.text intFond:18 Color:[UIColor blackColor] numberStr:@"秒"];
+                        }
+                        
+                    });
+                    timeout--;
+                }
+            });
+            dispatch_resume(_timer);
+        }
+    }
+}
+
+
+
+
 //登录之后
 -(void)loginBefo:(UIView*)view22{
     //拍卖地点

@@ -7,7 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "XiaoXiModel.h"
 @interface XiaoXiTableViewCell : UITableViewCell
 +(instancetype)cellWithTableView:(UITableView*)tableView CellID:(NSString*)cellID;
+@property(nonatomic,strong)XiaoXiModel * model;
 @end

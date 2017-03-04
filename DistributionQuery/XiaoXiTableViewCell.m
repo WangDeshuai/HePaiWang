@@ -74,6 +74,12 @@
     frame.size.width-=20;
     [super setFrame:frame];
 }
+-(void)setModel:(XiaoXiModel *)model
+{
+    _model=model;
+     _titleLabel.text=model.contentStr;
+    _timeLabel.text=model.sendTime;
+}
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];
 

@@ -99,7 +99,7 @@
     _leftImage.image=[UIImage imageNamed:@"liebiao_pic1"];
     _titleLabel.text=@"出售海泰500T注塑机王璇山炮大傻子";
     _imagedan.image=[UIImage imageNamed:@"liebiao_qipai"];
-    _qipaiLabel.text=@"起拍价";
+    _qipaiLabel.text=@"起  拍  价";
     _priceLabel.text=@"8000元";
     _imagedw.image=[UIImage imageNamed:@"liebiao_dizhi"];
     _paimaiLabel.text=@"拍卖地区";
@@ -138,7 +138,7 @@
     [_qipaiLabel setSingleLineAutoResizeWithMaxWidth:100];
     //价格
     _priceLabel.sd_layout
-    .leftSpaceToView(_qipaiLabel,25)
+    .leftSpaceToView(_qipaiLabel,10)
     .centerYEqualToView(_imagedan)
     .heightIs(20);
     [_priceLabel setSingleLineAutoResizeWithMaxWidth:250];
@@ -178,10 +178,37 @@
     _timeLabel.sd_layout
     .leftEqualToView(_cityLabel)
     .centerYEqualToView(_strLabel)
-    .heightIs(20);
-     [_strLabel setSingleLineAutoResizeWithMaxWidth:250];
+    .heightIs(20)
+    .rightSpaceToView(self.contentView,5);
+//     [_strLabel setSingleLineAutoResizeWithMaxWidth:250];
     
     [self setupAutoHeightWithBottomView:_strLabel bottomMargin:10];
+}
+-(void)setModel:(ChengJiaoAnLiModel *)model
+{
+    _model=model;
+    /*
+     //赋值
+     _leftImage.image=[UIImage imageNamed:@"liebiao_pic1"];
+     _titleLabel.text=@"出售海泰500T注塑机王璇山炮大傻子";
+     _imagedan.image=[UIImage imageNamed:@"liebiao_qipai"];
+     _qipaiLabel.text=@"起拍价";
+     _priceLabel.text=@"8000元";
+     _imagedw.image=[UIImage imageNamed:@"liebiao_dizhi"];
+     _paimaiLabel.text=@"拍卖地区";
+     _cityLabel.text=@"山东";
+     _strImage.image=[UIImage imageNamed:@"liebiao_tiem"];
+     _strLabel.text=@"开始拍卖";
+     _timeLabel.text=@"2016/11/17";
+     */
+    [_leftImage setImageWithURL:[NSURL URLWithString:model.headImage] placeholderImage:[UIImage imageNamed:@"liebiao_pic1"]];
+    _titleLabel.text=model.nameBiaoDi;
+    _priceLabel.text=model.priceBiaoDi;
+    _cityLabel.text=model.diquBiaoDi;
+    _timeLabel.text=model.strTime;
+    
+    
+    
 }
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];

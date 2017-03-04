@@ -9,6 +9,7 @@
 #import "ShiMingRenZhengVC.h"
 
 @interface ShiMingRenZhengVC ()<UITableViewDelegate,UITableViewDataSource>
+@property(nonatomic,strong)UIScrollView * bgScrollview;
 @property(nonatomic,strong)UIButton * lastBtn;
 @property(nonatomic,strong)UIImageView * imageview;
 @property(nonatomic,strong)NSMutableArray * nameArray;
@@ -23,6 +24,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    self.title=@"实名认证";
     _nameArray=[[NSMutableArray alloc]initWithObjects:@"姓名",@"手机号", nil];
     _nameArray2=[[NSMutableArray alloc]initWithObjects:@"企业名称",@"法人名称",@"法人身份证号",@"代理人姓名",@"手机号", nil];
     [self CreatTopBtn];//最上面2个按钮

@@ -72,11 +72,12 @@
     _phoneText.font=[UIFont systemFontOfSize:16];
     _phoneText.leftView =[self imageViewNameStr:@"zhuce_phone"];
     _phoneText.leftViewMode = UITextFieldViewModeAlways;
+    _phoneText.keyboardType=UIKeyboardTypeNumberPad;
 //    _phoneText.backgroundColor=[UIColor redColor];
     [self.view sd_addSubviews:@[_phoneText]];
     _phoneText.sd_layout
     .leftSpaceToView(self.view,15)
-    .rightSpaceToView(self.view,15)
+    .rightSpaceToView(yanzhengMaBtn,10)
     .topSpaceToView(self.view,10)
     .heightIs(45);
    
@@ -86,6 +87,7 @@
     _codeText.font=[UIFont systemFontOfSize:16];
     _codeText.leftView =[self imageViewNameStr:@"zhuce_yanzheng"];
     _codeText.leftViewMode = UITextFieldViewModeAlways;
+    _codeText.keyboardType=UIKeyboardTypeNumberPad;
 //    _codeText.backgroundColor=[UIColor redColor];
     [self.view sd_addSubviews:@[_codeText]];
     _codeText.sd_layout
@@ -139,8 +141,45 @@
 }
 
 #pragma mark --验证码
--(void)yanZhenMa:(UIButton*)button{
-    
+-(void)yanZhenMa:(UIButton*)sender{
+    [Engine getMessageCodePhone:_phoneText.text success:^(NSDictionary *dic) {
+        [LCProgressHUD showMessage:[dic objectForKey:@"msg"]];
+        NSString * code =[NSString stringWithFormat:@"%@",[dic objectForKey:@"code"]];
+        if ([code isEqualToString:@"1"]) {
+            __block int timeout=60; //倒计时时间
+            dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+            dispatch_source_t _timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0,queue);
+            dispatch_source_set_timer(_timer,dispatch_walltime(NULL, 0),1.0*NSEC_PER_SEC, 0); //每秒执行
+            dispatch_source_set_event_handler(_timer, ^{
+                if(timeout<=0){ //倒计时结束，关闭
+                    dispatch_source_cancel(_timer);
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        //设置界面的按钮显示 根据自己需求设置
+                        [sender setTitle:@"发送验证码" forState:UIControlStateNormal];
+                        sender.userInteractionEnabled = YES;
+                    });
+                }
+                else{
+                    int seconds = timeout % 60;
+                    NSString *strTime = [NSString stringWithFormat:@"%.2d", seconds];
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        //设置界面的按钮显示 根据自己需求设置
+                        //NSLog(@"____%@",strTime);
+                        [UIView beginAnimations:nil context:nil];
+                        [UIView setAnimationDuration:1];
+                        [sender setTitle:[NSString stringWithFormat:@"%@秒后重新发送",strTime] forState:UIControlStateNormal];
+                        [UIView commitAnimations];
+                        sender.userInteractionEnabled = NO;
+                    });
+                    timeout--;
+                }
+            });
+            dispatch_resume(_timer);
+        }
+        
+    } error:^(NSError *error) {
+        
+    }];
 }
 #pragma mark --注册按钮
 -(void)loginBtn{
@@ -148,6 +187,19 @@
     NSLog(@">>>%@",_codeText.text);
     NSLog(@">>>%@",_pwdText.text);
     NSLog(@">>>%@",_pwddText.text);
+    [Engine registPhone:_phoneText.text Password:_pwdText.text password2:_pwddText.text Code:_codeText.text success:^(NSDictionary *dic) {
+        [LCProgressHUD showMessage:[dic objectForKey:@"msg"]];
+        NSString * code =[NSString stringWithFormat:@"%@",[dic objectForKey:@"code"]];
+        if ([code isEqualToString:@"1"]) {
+            self.loginPaswordBlock(_phoneText.text,_pwdText.text);
+            [self.navigationController popViewControllerAnimated:YES];
+            
+        }
+        
+        
+    } error:^(NSError *error) {
+        
+    }];
 }
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

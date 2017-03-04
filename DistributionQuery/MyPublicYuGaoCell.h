@@ -7,7 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "MyPublicYuGaoModel.h"
 @interface MyPublicYuGaoCell : UITableViewCell
 +(instancetype)cellWithTableView:(UITableView*)tableView CellID:(NSString*)cellID;
+@property(nonatomic,strong)MyPublicYuGaoModel * model;
 @end

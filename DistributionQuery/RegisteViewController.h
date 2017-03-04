@@ -9,5 +9,5 @@
 #import "BaseViewController.h"
 
 @interface RegisteViewController : BaseViewController
-
+@property(nonatomic,copy)void(^loginPaswordBlock)(NSString*loginStr,NSString*pswStr);
 @end

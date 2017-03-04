@@ -14,11 +14,7 @@
 @end
 
 @implementation LoginViewController
--(void)viewWillAppear:(BOOL)animated
-{
-//     [[[self.navigationController.navigationBar subviews] objectAtIndex:0] setAlpha:0];
-//     [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName:[UIColor redColor],NSFontAttributeName:[UIFont systemFontOfSize:16]}];
-}
+
 -(void)viewWillDisappear:(BOOL)animated
 {
 //     [[[self.navigationController.navigationBar subviews] objectAtIndex:0] setAlpha:1];
@@ -119,21 +115,50 @@
     
     
 }
+-(void)viewWillAppear:(BOOL)animated
+{
+    _phoneText.text=@"15032735032";
+    _pwdText.text=@"123456";
+}
 #pragma mark --登录按钮
 -(void)loginBtn{
-    [NSUSE_DEFO setObject:@"token" forKey:@"token"];
-    [NSUSE_DEFO synchronize];
-    [self.navigationController popViewControllerAnimated:YES];
+    
+    NSLog(@"登录账户：%@",_phoneText.text);
+    NSLog(@"密码账户：%@",_pwdText.text);
+    
+    [Engine loginAccount:_phoneText.text Password:_pwdText.text success:^(NSDictionary *dic) {
+        [LCProgressHUD showMessage:[dic objectForKey:@"msg"]];
+        NSString * code =[NSString stringWithFormat:@"%@",[dic objectForKey:@"code"]];
+        if ([code isEqualToString:@"1"]) {
+            NSDictionary * dicc =[dic objectForKey:@"content"];
+            NSMutableDictionary * dicAr = [ToolClass isDictionary:dicc];
+            NSLog(@"输出%@",dicAr);
+            //1.把返回的字段内容缓存为plist文件
+            [ToolClass savePlist:dicAr name:@"baseInfo"];
+            //2.把idd当做token存起来，用以判断是否登录
+            NSString * idd =[NSString stringWithFormat:@"%@",[dicc objectForKey:@"id"]];
+            [NSUSE_DEFO setObject:idd forKey:@"token"];
+            [NSUSE_DEFO synchronize];
+            [self.navigationController popViewControllerAnimated:YES];
+        }
+    } error:^(NSError *error) {
+        
+    }];
+    
+
 }
 #pragma mark --忘记密码
 -(void)wangji{
-    [NSUSE_DEFO removeObjectForKey:@"token"];
-    [NSUSE_DEFO synchronize];
-    [self.navigationController popViewControllerAnimated:YES];
+   
 }
 #pragma mark --注册按钮
 -(void)zhuce{
     RegisteViewController * vc =[RegisteViewController new];
+    vc.loginPaswordBlock=^(NSString*login,NSString*psw){
+        _phoneText.text=login;
+        _pwdText.text=psw;
+    };
+    
     [self.navigationController pushViewController:vc animated:YES];
 }
 #pragma mark --文本框前面图片
@@ -148,6 +173,43 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
+//-(NSMutableDictionary*)nsssss:(NSDictionary*)dic{
+//    
+//    
+//    NSMutableArray * valueArr =[NSMutableArray new];
+//    NSMutableArray * keyArr =[NSMutableArray new];
+//    NSMutableDictionary * dicc =[NSMutableDictionary new];
+//    //遍历所有的键值
+//    for (NSString * value in [dic allValues]) {
+//        NSString * str = [NSString stringWithFormat:@"%@",value];
+//        NSString * str1 =[ToolClass isString:str];
+//        [valueArr addObject:str1];
+//
+//    }
+//    
+//    //遍历所有的键名
+//    for (NSString * key in [dic allKeys]) {
+//        [keyArr addObject:key];
+//    }
+//
+//    
+//    if (keyArr.count==valueArr.count) {
+//        
+//        for (int i =0; i<keyArr.count; i++) {
+//            [dicc setObject:valueArr[i] forKey:keyArr[i]];
+//        }
+//        return dicc;
+//    }else{
+//        [LCProgressHUD showMessage:@"键名键值对应不上，请联系开发人员"];
+//        return nil;
+//    }
+//    
+//    
+//    
+//}
+
+
 
 /*
 #pragma mark - Navigation

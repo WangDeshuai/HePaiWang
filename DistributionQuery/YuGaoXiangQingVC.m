@@ -44,7 +44,8 @@
     [namelabel setSingleLineAutoResizeWithMaxWidth:120];
     //contenLabel
     UILabel * contentLabel =[UILabel new];
-    contentLabel.text=@"瓷砖贴膜机 自动磨边机等机器设备一批拍卖公告";
+    contentLabel.text=_model.titleName;//@"瓷砖贴膜机 自动磨边机等机器设备一批拍卖公告";
+    
     contentLabel.numberOfLines=0;
     contentLabel.alpha=.6;
     contentLabel.font=[UIFont systemFontOfSize:16];
@@ -80,7 +81,7 @@
     [namelabel setSingleLineAutoResizeWithMaxWidth:120];
     //name
     UILabel * contentLabel1 =[UILabel new];
-    contentLabel1.text=@"大头旋";
+    contentLabel1.text=_model.yuGaoPeople;//@"大头旋";
     contentLabel1.numberOfLines=0;
     contentLabel1.alpha=.6;
     contentLabel1.font=[UIFont systemFontOfSize:16];
@@ -89,7 +90,7 @@
     .topEqualToView(namelabel)
     .rightSpaceToView(_view2,15)
     .heightIs(20);
-    [contentLabel1 setSingleLineAutoResizeWithMaxWidth:120];
+    [contentLabel1 setSingleLineAutoResizeWithMaxWidth:220];
     
     //线条
     UIView * lineView =[UIView new];
@@ -113,7 +114,7 @@
     [namelabel2 setSingleLineAutoResizeWithMaxWidth:120];
     //name2
     UILabel * contentLabel2 =[UILabel new];
-    contentLabel2.text=@"大头大头大头大头大头大头大头旋大头大头大头旋大头大头大头旋大头大头大头旋大头大头大头旋大头大头大头旋";
+    contentLabel2.text=_model.yuGaoContent;//@"大头大头大头大头大头大头大头旋大头大头大头旋大头大头大头旋大头大头大头旋大头大头大头旋大头大头大头旋";
     contentLabel2.numberOfLines=0;
     contentLabel2.alpha=.6;
     contentLabel2.font=[UIFont systemFontOfSize:16];
@@ -148,7 +149,8 @@
     [namelabel setSingleLineAutoResizeWithMaxWidth:120];
     //图片
     UIImageView * imageview =[[UIImageView alloc]init];
-    imageview.image=[UIImage imageNamed:@"login_logo"];
+   // imageview.image=[UIImage imageNamed:@"login_logo"];
+    [imageview setImageWithURL:[NSURL URLWithString:_model.yuGaoImage] placeholderImage:[UIImage imageNamed:@"login_logo"]];
     [_view3 sd_addSubviews:@[imageview]];
     imageview.sd_layout
     .topSpaceToView(_view3,20)

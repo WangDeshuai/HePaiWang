@@ -9,11 +9,19 @@
 #import "PaiMaiBiaoDiXiangQingVC.h"
 #import "ZaiXianJingJiaVC.h"
 @interface PaiMaiBiaoDiXiangQingVC ()<SDCycleScrollViewDelegate,UITableViewDelegate,UITableViewDataSource>
+{
+     dispatch_source_t _timer;
+}
 @property(nonatomic,strong)UIView * view1;
 @property(nonatomic,strong)UIView * view2;
 @property(nonatomic,strong)UIView * view3;
 @property(nonatomic,strong)UITableView * tableView;
 @property(nonatomic,strong)NSMutableArray * dataArr;
+@property(nonatomic,strong) UILabel *dayLabel;//天
+@property(nonatomic,strong)UILabel *hourLabel;//时
+@property(nonatomic,strong)UILabel *minuteLabel;//分
+@property(nonatomic,strong) UILabel *secondLabel;//秒
+
 @end
 
 @implementation PaiMaiBiaoDiXiangQingVC
@@ -25,7 +33,95 @@
     _dataArr=[[NSMutableArray alloc]initWithObjects:@"竞买须知",@"竞买公告",@"标的物介绍", nil];
     [self CreatTableView];
     [self CreatButton];
+    
+    
+    
+    
+   
+
 }
+
+
+
+-(NSString *)getyyyymmdd{
+    NSDate *now = [NSDate date];
+    NSDateFormatter *formatDay = [[NSDateFormatter alloc] init];
+    formatDay.dateFormat = @"yyyy-MM-dd";
+    NSString *dayStr = [formatDay stringFromDate:now];
+    
+    return dayStr;
+    
+}
+
+-(void)dataRiqi{
+    
+    NSDateFormatter *dateFormatter=[[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+    //在这写上开始时间
+    NSDate *endDate = [dateFormatter dateFromString:@"2017-02-28 12:00:40"];
+    //NSDate *endDate_tomorrow = [[NSDate alloc] initWithTimeIntervalSinceReferenceDate:([endDate timeIntervalSinceReferenceDate] + 24*3600)];
+    NSDate *startDate = [NSDate date];
+    NSTimeInterval timeInterval =[endDate timeIntervalSinceDate:startDate];
+    if (_timer==nil) {
+        __block int timeout = timeInterval; //倒计时时间
+        
+        if (timeout!=0) {
+            dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+            _timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0,queue);
+            dispatch_source_set_timer(_timer,dispatch_walltime(NULL, 0),1.0*NSEC_PER_SEC, 0); //每秒执行
+            dispatch_source_set_event_handler(_timer, ^{
+                if(timeout<=0){ //倒计时结束，关闭
+                    dispatch_source_cancel(_timer);
+                    _timer = nil;
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        self.dayLabel.text = @"0天";
+                        self.hourLabel.text = @"0时";
+                        self.minuteLabel.text = @"0分";
+                        self.secondLabel.text = @"0秒";
+                        //时间到了，执行这
+                    });
+                }else{
+                    int days = (int)(timeout/(3600*24));
+                    if (days==0) {
+                        self.dayLabel.text = @"";
+                    }
+                    int hours = (int)((timeout-days*24*3600)/3600);
+                    int minute = (int)(timeout-days*24*3600-hours*3600)/60;
+                    int second = timeout-days*24*3600-hours*3600-minute*60;
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        if (days==0) {
+                            self.dayLabel.text = @"0天";
+                        }else{
+                            self.dayLabel.text = [NSString stringWithFormat:@"%d天",days];
+                        }
+                        if (hours<10) {
+                            self.hourLabel.text = [NSString stringWithFormat:@"0%d时",hours];
+                        }else{
+                            self.hourLabel.text = [NSString stringWithFormat:@"%d时",hours];
+                        }
+                        if (minute<10) {
+                            self.minuteLabel.text = [NSString stringWithFormat:@"0%d分",minute];
+                        }else{
+                            self.minuteLabel.text = [NSString stringWithFormat:@"%d分",minute];
+                        }
+                        if (second<10) {
+                            self.secondLabel.text = [NSString stringWithFormat:@"0%d秒",second];
+                        }else{
+                            self.secondLabel.text = [NSString stringWithFormat:@"%d秒",second];
+                        }
+                        
+                    });
+                    timeout--;
+                }
+            });
+            dispatch_resume(_timer);
+        }
+    }
+}
+
+
+
+
 #pragma mark --创建按钮
 -(void)CreatButton{
     UIButton * fabu =[UIButton buttonWithType:UIButtonTypeCustom];
@@ -111,33 +207,71 @@
     bgView.sd_layout
     .rightSpaceToView(headView,15)
     .topSpaceToView(headView,10)
-    .widthIs(160/2)
+    .widthIs(100)
     .heightIs(112/2);
 //等带开始
     UILabel * starLabel=[UILabel new];
     starLabel.text=@"等待开始";
     starLabel.textAlignment=1;
     starLabel.textColor=[UIColor whiteColor];
-    starLabel.font=[UIFont systemFontOfSize:18 weight:18];
+    starLabel.font=[UIFont systemFontOfSize:17 weight:18];
     [bgView sd_addSubviews:@[starLabel]];
     starLabel.sd_layout
     .leftSpaceToView(bgView,0)
     .rightSpaceToView(bgView,0)
-    .topSpaceToView(bgView,5)
+    .topSpaceToView(bgView,2)
     .heightIs(20);
     //倒计时时间
-    UILabel * timeLabel =[UILabel new];
-    timeLabel.backgroundColor=[UIColor whiteColor];
-    timeLabel.text=@"0天0时0分";
-    timeLabel.textAlignment=1;
-    timeLabel.textColor=[UIColor blackColor];
-    timeLabel.font=[UIFont systemFontOfSize:14];
-    [bgView sd_addSubviews:@[timeLabel]];
-    timeLabel.sd_layout
+    //(天数)
+    self.dayLabel=[UILabel new];
+    self.dayLabel.textColor=[UIColor blackColor];
+    self.dayLabel.font=[UIFont systemFontOfSize:14];
+    self.dayLabel.backgroundColor=[UIColor whiteColor];
+    [bgView sd_addSubviews:@[self.dayLabel]];
+    self.dayLabel.sd_layout
     .leftSpaceToView(bgView,3)
-    .rightSpaceToView(bgView,3)
     .topSpaceToView(starLabel,3)
     .bottomSpaceToView(bgView,3);
+    [self.dayLabel setSingleLineAutoResizeWithMaxWidth:80];
+    //(时)
+    self.hourLabel=[UILabel new];
+    self.hourLabel.textColor=[UIColor blackColor];
+    self.hourLabel.font=[UIFont systemFontOfSize:14];
+    self.hourLabel.backgroundColor=[UIColor whiteColor];
+    [bgView sd_addSubviews:@[self.hourLabel]];
+    self.hourLabel.sd_layout
+    .leftSpaceToView(_dayLabel,-1)
+    .topSpaceToView(starLabel,3)
+    .bottomSpaceToView(bgView,3);
+    [self.hourLabel setSingleLineAutoResizeWithMaxWidth:80];
+    //分
+    self.minuteLabel=[UILabel new];
+    self.minuteLabel.textColor=[UIColor blackColor];
+    self.minuteLabel.font=[UIFont systemFontOfSize:14];
+    self.minuteLabel.backgroundColor=[UIColor whiteColor];
+    [bgView sd_addSubviews:@[self.minuteLabel]];
+    self.minuteLabel.sd_layout
+    .leftSpaceToView(self.hourLabel,-1)
+    .topSpaceToView(starLabel,3)
+    .bottomSpaceToView(bgView,3);
+    [self.minuteLabel setSingleLineAutoResizeWithMaxWidth:80];
+    [bgView setupAutoWidthWithRightView:self.minuteLabel rightMargin:3];
+    [self dataRiqi];
+    
+    
+    
+//    UILabel * timeLabel =[UILabel new];
+//    timeLabel.backgroundColor=[UIColor whiteColor];
+//    timeLabel.text=@"0天0时0分";
+//    timeLabel.textAlignment=1;
+//    timeLabel.textColor=[UIColor blackColor];
+//    timeLabel.font=[UIFont systemFontOfSize:14];
+//    [bgView sd_addSubviews:@[timeLabel]];
+//    timeLabel.sd_layout
+//    .leftSpaceToView(bgView,3)
+//    .rightSpaceToView(bgView,3)
+//    .topSpaceToView(starLabel,3)
+//    .bottomSpaceToView(bgView,3);
 
     
     

@@ -8,10 +8,12 @@
 
 #import "PublicYuGaovc.h"
 
-@interface PublicYuGaovc ()<UITableViewDelegate,UITableViewDataSource>
+@interface PublicYuGaovc ()<UITableViewDelegate,UITableViewDataSource,UINavigationControllerDelegate,UIImagePickerControllerDelegate>
 @property(nonatomic,strong)UITableView * tableView;
 @property(nonatomic,strong)NSMutableArray * dataArray;
 @property(nonatomic,strong)UIView * view2;
+@property(nonatomic,strong) UIButton * imageBtn;
+@property(nonatomic,strong)UIImage * image1;
 @end
 
 @implementation PublicYuGaovc
@@ -55,35 +57,69 @@
         UITextField * textLabel =[UITextField new];
         textLabel.tag=1;
         [cell sd_addSubviews:@[textLabel]];
+        
+        UITextView * textview =[UITextView new];
+        textview.tag=2;
+        [cell sd_addSubviews:@[textview]];
+        UILabel * titleLabel =[UILabel new];
+        titleLabel.tag=3;
+        [cell sd_addSubviews:@[titleLabel]];
     }
-   
+    UILabel * titleLabel =[cell viewWithTag:3];
+    titleLabel.alpha=.7;
+    titleLabel.text=_dataArray[indexPath.section][indexPath.row];
+    titleLabel.font=[UIFont systemFontOfSize:15];
+    titleLabel.sd_layout
+    .leftSpaceToView(cell,15)
+    .centerYEqualToView(cell)
+    .heightIs(20);
+    [titleLabel setSingleLineAutoResizeWithMaxWidth:100];
     
     UITextField * nameLabel =(UITextField*)[cell viewWithTag:1];
     nameLabel.alpha=.6;
     nameLabel.font=[UIFont systemFontOfSize:15];
     nameLabel.sd_layout
     .rightSpaceToView(cell,15)
-    .leftSpaceToView(cell,90)
+    .leftSpaceToView(titleLabel,10)
     .centerYEqualToView(cell)
     .heightIs(30);
-    
+    nameLabel.backgroundColor=[UIColor redColor];
     cell.selectionStyle=UITableViewCellSelectionStyleNone;
-    cell.textLabel.text=_dataArray[indexPath.section][indexPath.row];
-    cell.textLabel.font=[UIFont systemFontOfSize:15];
-    cell.alpha=.7;
+
+    
+    UITextView * textview =[cell viewWithTag:2];
+    textview.backgroundColor=[UIColor yellowColor];
+    textview.font=[UIFont systemFontOfSize:15];
+    textview.alpha=.6;
+    textview.sd_layout
+    .leftSpaceToView(titleLabel,10)
+    .rightSpaceToView(cell,15)
+    .topSpaceToView(cell,5)
+    .bottomSpaceToView(cell,5);
+    
+   
+    
     
     if (indexPath.section==0) {
         //标题预告
+        nameLabel.hidden=YES;
+        titleLabel.sd_layout
+        .leftSpaceToView(cell,15)
+        .topSpaceToView(cell,13)
+        .heightIs(20);
+        [titleLabel setSingleLineAutoResizeWithMaxWidth:100];
     }
    else if (indexPath.section==1) {
+       textview.hidden=YES;
+        nameLabel.textAlignment=2;
        if (indexPath.row==0) {
            //资产处理人
-            nameLabel.textAlignment=2;
+           nameLabel.placeholder=@"未填写处理人";
        }
        else if (indexPath.row==1) {
            //预告内容
-           nameLabel.enabled=NO;
-           cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
+           nameLabel.placeholder=@"未填写预告内容";
+
         }
     }
     return cell;
@@ -112,11 +148,11 @@
     .heightIs(20);
     [nameLabel setSingleLineAutoResizeWithMaxWidth:120];
     //button
-    UIButton * imageBtn =[UIButton buttonWithType:UIButtonTypeCustom];
-   // imageBtn.backgroundColor=[UIColor redColor];
-    [imageBtn setBackgroundImage:[UIImage imageNamed:@"rz_pic"] forState:0];
-    [_view2 sd_addSubviews:@[imageBtn]];
-    imageBtn.sd_layout
+    _imageBtn =[UIButton buttonWithType:UIButtonTypeCustom];
+    [_imageBtn setBackgroundImage:[UIImage imageNamed:@"rz_pic"] forState:0];
+    [_imageBtn addTarget:self action:@selector(xuanzeImageBtn) forControlEvents:UIControlEventTouchUpInside];
+    [_view2 sd_addSubviews:@[_imageBtn]];
+    _imageBtn.sd_layout
     .leftSpaceToView(nameLabel,15)
     .topSpaceToView(nameLabel,0)
     .widthIs(162/2)
@@ -126,12 +162,44 @@
     
 }
 
+-(void)xuanzeImageBtn{
+    UIAlertController * actionView =[UIAlertController alertControllerWithTitle:@"请选择照片来源" message:@"" preferredStyle:UIAlertControllerStyleActionSheet];
+    UIAlertAction * action1 =[UIAlertAction actionWithTitle:@"相机" style:0 handler:^(UIAlertAction * _Nonnull action) {
+        
+        // 先判断相机是否可用
+        if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera])
+        {
+            // 把imagePicker.sourceType改为相机
+            UIImagePickerController * imagePicker=[[UIImagePickerController alloc]init];
+            imagePicker.delegate =self;
+            imagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
+            [self presentViewController:imagePicker animated:YES completion:nil];
+        }else
+        {
+            [LCProgressHUD showMessage:@"相机不可用"];
+        }
+        
+        
+    }];
+    UIAlertAction * action2 =[UIAlertAction actionWithTitle:@"相册" style:0 handler:^(UIAlertAction * _Nonnull action){
+        [self headImageClick];
+    }];
+    UIAlertAction * action3 =[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil];
+    [actionView addAction:action1];
+    [actionView addAction:action2];
+    [actionView addAction:action3];
+    [self presentViewController:actionView animated:YES completion:nil];
+    
+    
+
+}
 #pragma mark --创建提交按钮
 -(void)commentBtn{
     
     UIButton * imageBtn =[UIButton buttonWithType:UIButtonTypeCustom];
     imageBtn.backgroundColor=BG_COLOR;
     [imageBtn setImage:[UIImage imageNamed:@"fbyg_bt"] forState:0];
+    [imageBtn addTarget:self action:@selector(commentBtnn) forControlEvents:UIControlEventTouchUpInside];
     [self.view sd_addSubviews:@[imageBtn]];
     imageBtn.sd_layout
     .leftSpaceToView(self.view,10)
@@ -140,7 +208,32 @@
     .heightIs(45);
     
 }
-
+-(void)commentBtnn{
+    NSLog(@"4>>>%@",_image1);
+    UITableViewCell * cell0 =[_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+    UITextView * textview =[cell0 viewWithTag:2];
+    NSLog(@"1>>>%@",textview.text);
+    
+    UITableViewCell * cell1 =[_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:1]];
+    UITextField * textfield =[cell1 viewWithTag:1];
+     NSLog(@"2>>>%@",textfield.text);
+    
+    UITableViewCell * cell2 =[_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:1]];
+    UITextField * textfield2 =[cell2 viewWithTag:1];
+    NSLog(@"3>>>%@",textfield2.text);
+    
+    [Engine pubulicYuGaoTitle:[ToolClass isString:[NSString stringWithFormat:@"%@",textview.text]] People:[ToolClass isString:[NSString stringWithFormat:@"%@",textfield.text]] Content:[ToolClass isString:[NSString stringWithFormat:@"%@",textfield2.text]] Pic:_image1 success:^(NSDictionary *dic) {
+        NSString * code =[NSString stringWithFormat:@"%@",[dic objectForKey:@"code"]];
+        [LCProgressHUD showMessage:[dic objectForKey:@"msg"]];
+        if ([code isEqualToString:@"1"]) {
+            [self.navigationController popViewControllerAnimated:YES];
+        }else{
+            
+        }
+    } error:^(NSError *error) {
+        
+    }];
+}
 
 
 
@@ -184,5 +277,26 @@
 */
 -(void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
     [self.view endEditing:YES];
+}
+
+#pragma mark --调用系统相册
+-(void)headImageClick{
+    UIImagePickerController * imagePicker =[UIImagePickerController new];
+    
+    imagePicker.delegate = self;
+    imagePicker.sourceType=UIImagePickerControllerSourceTypeSavedPhotosAlbum;
+    imagePicker.allowsEditing=YES;
+    imagePicker.navigationController.navigationBar.barTintColor = [UIColor redColor];
+    [self presentViewController:imagePicker animated:YES completion:nil];
+    
+}
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingImage:(UIImage *)image editingInfo:(NSDictionary *)editingInfo
+{
+    NSLog(@"%@",editingInfo);
+    
+    [_imageBtn setBackgroundImage:image forState:0];
+    _image1=image;
+    //虚化背景图片
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 @end

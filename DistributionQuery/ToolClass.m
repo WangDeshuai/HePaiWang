@@ -10,6 +10,20 @@
 
 @implementation ToolClass
 
+
+#pragma mark --个人类型转换
++(NSString*)myStype:(NSString*)str{
+    if ([str isEqualToString:@"1"]) {
+        return @"个人";
+    }else if ([str isEqualToString:@"2"]){
+        return @"企业";
+    }else {
+        return @"未认证";
+    }
+    
+}
+
+
 #pragma mark --判断是否登录（登录YES）
 +(BOOL)isLogin{
     NSString * str =[NSUSE_DEFO objectForKey:@"token"];
@@ -35,7 +49,7 @@
 #pragma mark --判断字符串是不是空
 +(NSString*)isString:(id)str{
     NSString * string =nil;
-    if (str==nil || str==[NSNull null] || [str isEqualToString:@"(null)"]) {
+    if (str==nil || str==[NSNull null] || [str isEqualToString:@"(null)"] || [str isEqualToString:@"<null>"]) {
         string=@"";
     }else{
         string=[NSString stringWithFormat:@"%@",str];
@@ -44,6 +58,38 @@
     
     return string;
 }
+
+#pragma mark --把登录返回的字典内容中nil转换成空字符串
++(NSMutableDictionary*)isDictionary:(NSDictionary*)dic{
+    
+    NSMutableArray * valueArr =[NSMutableArray new];
+    NSMutableArray * keyArr =[NSMutableArray new];
+    NSMutableDictionary * dicc =[NSMutableDictionary new];
+    //遍历所有的键值
+    for (NSString * value in [dic allValues]) {
+        NSString * str = [NSString stringWithFormat:@"%@",value];
+        NSString * str1 =[ToolClass isString:str];
+        [valueArr addObject:str1];
+    }
+    //遍历所有的键名
+    for (NSString * key in [dic allKeys]) {
+        [keyArr addObject:key];
+    }
+    
+    if (keyArr.count==valueArr.count) {
+        
+        for (int i =0; i<keyArr.count; i++) {
+            [dicc setObject:valueArr[i] forKey:keyArr[i]];
+        }
+        return dicc;
+    }else{
+        [LCProgressHUD showMessage:@"键名键值对应不上，请联系开发人员"];
+        return nil;
+    }
+}
+
+
+
 
 
 #pragma mark --设置字符传不同的颜色 
@@ -114,9 +160,6 @@
     {
         
         NSData *jsonData = [NSJSONSerialization dataWithJSONObject:object options:0 error:nil];
-        
-        
-        
         return [[NSString alloc]initWithData:jsonData encoding:NSUTF8StringEncoding];
         
     }

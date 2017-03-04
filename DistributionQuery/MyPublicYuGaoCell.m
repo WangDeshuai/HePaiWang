@@ -117,6 +117,15 @@
     
     
 }
+-(void)setModel:(MyPublicYuGaoModel *)model
+{
+    _model=model;
+    
+    [_leftImage setImageWithURL:[NSURL URLWithString:model.headImage] placeholderImage:[UIImage imageNamed:@"fbyg_pc"]];
+    
+    _titleLabel.text=model.titleName;
+    _timeLabel.text=[NSString stringWithFormat:@"发布时间  %@",model.timeName];//@"发布时间  2016-11-28";
+}
 -(void)setFrame:(CGRect)frame
 {
     frame.origin.y+=5;

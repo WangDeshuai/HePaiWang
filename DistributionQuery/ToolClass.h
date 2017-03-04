@@ -10,6 +10,12 @@
 
 @interface ToolClass : NSObject
 
+
+#pragma mark --个人类型转换
++(NSString*)myStype:(NSString*)str;
+
+
+
 #pragma mark --判断是否登录（登录YES）
 +(BOOL)isLogin;
 #pragma mark --适配高度
@@ -20,6 +26,9 @@
 +(NSString*)isString:(id)str;
 #pragma mark -- 拨打电话
 +(void)tellPhone:(NSString*)tell;
+#pragma mark --把登录返回的字典内容中nil转换成空字符串
++(NSMutableDictionary*)isDictionary:(NSDictionary*)dic;
+
 #pragma mark --设置同一字符串 不同的颜色 不同大小
 /*
  titleStr ：哪条Label要变色
@@ -47,7 +56,6 @@
 + (CGFloat)WidthForString:(NSString *)text withSizeOfFont:(CGFloat)font;
 
 #pragma mark -  json转换
-+(id )getObjectFromJsonString:(NSString *)jsonString;
 +(NSString *)getJsonStringFromObject:(id)object;
 
 #pragma mark --存储Plist文件

@@ -53,7 +53,7 @@
     _textfield.sd_layout
     .rightSpaceToView(self.contentView,15)
     .centerYEqualToView(self.contentView)
-    .widthIs(120)
+    .leftSpaceToView(_nameLabel,10)
     .heightIs(20);
     
     _headImage.sd_layout

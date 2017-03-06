@@ -7,7 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "BuyBiaoDiModel.h"
 @interface MyWeiTuoTableViewCell : UITableViewCell
 +(instancetype)cellWithTableView:(UITableView*)tableView CellID:(NSString*)cellID;
+@property(nonatomic,strong)BuyBiaoDiModel * model;
 @end

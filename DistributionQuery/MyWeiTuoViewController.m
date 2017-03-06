@@ -7,10 +7,14 @@
 //
 
 #import "MyWeiTuoViewController.h"
+#import "SGTopTitleView.h"
+#import "MyBiaoDiWeiTuoViC.h"
 #import "MyWeiTuoTableViewCell.h"
-@interface MyWeiTuoViewController ()<UITableViewDelegate,UITableViewDataSource>
-@property(nonatomic,strong)UITableView * tableView;
-@property(nonatomic,strong)UIButton * lastBtn;
+@interface MyWeiTuoViewController ()<UIScrollViewDelegate,SGTopTitleViewDelegate>
+
+@property (nonatomic, strong) SGTopTitleView *topTitleView;
+@property (nonatomic, strong) NSArray *titles;
+@property (nonatomic, strong) UIScrollView *mainScrollView;
 @end
 
 @implementation MyWeiTuoViewController
@@ -19,71 +23,90 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.title=@"我委托的标的";
-    [self CreatTopBtn];
-    [self CreatTableView];
+    //[self CreatTopBtn];
+    //[self CreatTableView];
+    [self setupChildViewController];
+    self.titles = @[@"全部",@"拍卖成交",@"未拍卖",@"流拍"];
+    self.topTitleView = [SGTopTitleView topTitleViewWithFrame:CGRectMake(0, 0,ScreenWidth, 44)];
+    _topTitleView.staticTitleArr = [NSArray arrayWithArray:_titles];
+    _topTitleView.backgroundColor=[UIColor whiteColor];
+    _topTitleView.delegate_SG = self;
+    [self.view addSubview:_topTitleView];
+    // 创建底部滚动视图
+    self.mainScrollView = [[UIScrollView alloc] init];
+    _mainScrollView.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
+    _mainScrollView.contentSize = CGSizeMake(self.view.frame.size.width * _titles.count, 0);
+    _mainScrollView.backgroundColor = [UIColor clearColor];
+    // 开启分页
+    _mainScrollView.pagingEnabled = YES;
+    // 没有弹簧效果
+    _mainScrollView.bounces = NO;
+    // 隐藏水平滚动条
+    _mainScrollView.showsHorizontalScrollIndicator = NO;
+    // 设置代理
+    _mainScrollView.delegate = self;
+    
+    [self.view addSubview:_mainScrollView];
+    
+    MyBiaoDiWeiTuoViC *oneVC = [[MyBiaoDiWeiTuoViC alloc] init];
+    oneVC.tagg=0;
+    [self.mainScrollView addSubview:oneVC.view];
+    [self addChildViewController:oneVC];
+    [self.view insertSubview:_mainScrollView belowSubview:_topTitleView];
+}
+#pragma mark - - - SGTopScrollMenu代理方法
+- (void)SGTopTitleView:(SGTopTitleView *)topTitleView didSelectTitleAtIndex:(NSInteger)index{
+    
+    // 1 计算滚动的位置
+    CGFloat offsetX = index * self.view.frame.size.width;
+    self.mainScrollView.contentOffset = CGPointMake(offsetX, 0);
+    
+    // 2.给对应位置添加对应子控制器
+    [self showVc:index];
+}
+// 显示控制器的view
+- (void)showVc:(NSInteger)index {
+    
+    CGFloat offsetX = index * self.view.frame.size.width;
+    
+    UIViewController *vc = self.childViewControllers[index];
+    
+    // 判断控制器的view有没有加载过,如果已经加载过,就不需要加载
+    if (vc.isViewLoaded) return;
+    
+    [self.mainScrollView addSubview:vc.view];
+    vc.view.frame = CGRectMake(offsetX, 0, self.view.frame.size.width, self.view.frame.size.height);
 }
 
-#pragma mark --创建顶部按钮
--(void)CreatTopBtn{
-    NSArray * nameAr =@[@"全部",@"拍卖成交",@"未拍卖",@"流拍"];
-    
-    
-    int d =(ScreenWidth-120*4)/5;
+// 添加所有子控制器
+- (void)setupChildViewController {
+    //
     for (int i=0; i<4; i++) {
-        UIButton * btn =[UIButton buttonWithType:UIButtonTypeCustom];
-        btn.backgroundColor=[UIColor whiteColor];
-        [btn setTitle:nameAr[i] forState:0];
-        [btn setTitleColor:[UIColor blackColor] forState:0];
-        [btn setTitleColor:[UIColor redColor] forState:UIControlStateSelected];
-        btn.titleLabel.alpha=.7;
-        [btn addTarget:self action:@selector(btnnClick:) forControlEvents:UIControlEventTouchUpInside];
-        btn.titleLabel.font=[UIFont systemFontOfSize:16];
-        if (i==0) {
-            btn.selected=YES;
-            _lastBtn=btn;
-        }
-        [self.view sd_addSubviews:@[btn]];
-        btn.sd_layout
-        .leftSpaceToView(self.view,d+(d+120)*i)
-        .topSpaceToView(self.view,0)
-        .widthIs(120)
-        .heightIs(40);
+        MyBiaoDiWeiTuoViC *oneVC = [[MyBiaoDiWeiTuoViC alloc] init];
+        oneVC.tagg=i;
+        [self addChildViewController:oneVC];
     }
-}
--(void)btnnClick:(UIButton*)button{
-    _lastBtn.selected=NO;
-    button.selected=!button.selected;
-    _lastBtn=button;
-}
-
-#pragma mark --创建表格
--(void)CreatTableView{
-    if (!_tableView) {
-        _tableView=[[UITableView alloc]initWithFrame:CGRectMake(0, 45, ScreenWidth, ScreenHeight-45) style:UITableViewStylePlain];
-    }
-    _tableView.dataSource=self;
-    _tableView.delegate=self;
-    _tableView.backgroundColor=BG_COLOR;
-    [self.view addSubview:_tableView];
-    
     
 }
 
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    return 10;
-}
--(UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+
+#pragma mark - UIScrollViewDelegate
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
     
-    NSString *CellIdentifier = [NSString stringWithFormat:@"Cell%ld%ld", (long)[indexPath section], (long)[indexPath row]];
+    // 计算滚动到哪一页
+    NSInteger index = scrollView.contentOffset.x / scrollView.frame.size.width;
     
-    MyWeiTuoTableViewCell * cell =[MyWeiTuoTableViewCell cellWithTableView:tableView CellID:CellIdentifier];
+    // 1.添加子控制器view
+    [self showVc:index];
     
-    return cell;
+    // 2.把对应的标题选中
+    UILabel *selLabel = self.topTitleView.allTitleLabel[index];
+    
+    // 3.滚动时，改变标题选中
+    [self.topTitleView staticTitleLabelSelecteded:selLabel];
+    
 }
--(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    return 120;
-}
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.

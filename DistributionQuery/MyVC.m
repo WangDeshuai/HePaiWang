@@ -10,9 +10,9 @@
 #import "LoginViewController.h"//登录
 #import "MyWeiTuoViewController.h"//我委托的标的
 #import "MyPublicYuGaoVC.h"//我发布的预告
-#import "BuyDaoViewController.h"//已买到的标的
+#import "BgBuyDaoViewController.h"//已买到的标的
 #import "PaiMaiGongGaoVC.h"//参加的拍卖会
-#import "XiaoXiViewController.h"//消息列表
+#import "BgXiaoXiViewController.h"//消息列表
 #import "MessageVC.h"//个人信息
 #import "PublicYuGaovc.h"//发布预告
 #import "ShiMingRenZhengVC.h"//实名认证
@@ -149,7 +149,7 @@
     }else if (indexPath.section==2){
        
     //消息列表  //账户信息
-     XiaoXiViewController * vc =[XiaoXiViewController new];
+     BgXiaoXiViewController * vc =[BgXiaoXiViewController new];
      vc.tagg=indexPath.row+1;
      vc.hidesBottomBarWhenPushed=YES;
     [self.navigationController pushViewController:vc animated:YES];
@@ -188,6 +188,7 @@
     //头像
     UIImageView * headImage =[[UIImageView alloc]init];
     [headImage setImageWithURL:[NSURL URLWithString:@""] placeholderImage:[UIImage imageNamed:@"headImage"]];
+    headImage.sd_cornerRadius=@(130/4);
     [bgImage sd_addSubviews:@[headImage]];
     headImage.sd_layout
     .widthIs(130/2)
@@ -276,7 +277,7 @@
         [self.navigationController pushViewController:vc animated:YES];
     }else if (btn.tag==2){
         //已买到的标的
-        BuyDaoViewController *vc =[BuyDaoViewController new];
+        BgBuyDaoViewController *vc =[BgBuyDaoViewController new];
         vc.hidesBottomBarWhenPushed=YES;
         [self.navigationController pushViewController:vc animated:YES];
 

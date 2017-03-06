@@ -260,13 +260,14 @@
             [NSUSE_DEFO synchronize];
             //2.清楚plist文件
             [ToolClass deleagtePlistName:@"baseInfo"];
+            [ToolClass deleagtePlistName:@"shiMingInfo"];
             [self.navigationController popViewControllerAnimated:YES];
         }];
         UIAlertAction * action2 =[UIAlertAction actionWithTitle:@"否" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
             
         }];
-        [alertView addAction:action1];
         [alertView addAction:action2];
+        [alertView addAction:action1];
         [self presentViewController:alertView animated:YES completion:nil];
         
        

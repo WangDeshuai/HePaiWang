@@ -55,7 +55,7 @@
     .centerYEqualToView(self.contentView)
     .leftSpaceToView(_nameLabel,10)
     .heightIs(20);
-    
+    _headImage.sd_cornerRadius=@(130/4);
     _headImage.sd_layout
     .rightSpaceToView(self.contentView,15)
     .centerYEqualToView(self.contentView)

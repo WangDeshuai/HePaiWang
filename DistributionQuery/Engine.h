@@ -49,6 +49,12 @@ typedef void (^ErrorBlock)(NSError*error);
 +(void)biaoDiStypesuccess:(SuccessBlock)aSuccess error:(ErrorBlock)aError;
 #pragma mark --16修改个人信息
 +(void)modificationMyMessageKeyDicStr:(NSString*)dicStr success:(SuccessBlock)aSuccess error:(ErrorBlock)aError;
+#pragma mark --17个人中心我已买到的标的标的-1.全部 0.未交割 1.已交割
++(void)myCenterMyBuyBiaoDiStype:(NSString*)stype Page:(NSString*)page success:(SuccessBlock)aSuccess error:(ErrorBlock)aError;
 
+#pragma mark --18获取实名认证资料
++(void)getShiMingMessagesuccess:(SuccessBlock)aSuccess error:(ErrorBlock)aError;
+#pragma mark --20修改实名认证 sy==1个人 2企业
++(void)xiuGaiShiMingRenZhengMessageJsonStr:(NSString*)dicStr  success:(SuccessBlock)aSuccess error:(ErrorBlock)aError;
 
 @end

@@ -1,32 +1,30 @@
 //
-//  ShiMingRenZhengVC.m
+//  BgBuyDaoViewController.m
 //  DistributionQuery
 //
-//  Created by Macx on 16/11/30.
-//  Copyright © 2016年 Macx. All rights reserved.
+//  Created by Macx on 17/3/4.
+//  Copyright © 2017年 Macx. All rights reserved.
 //
 
-#import "ShiMingRenZhengVC.h"
-#import "MySelfViC.h"
-#import "CompanyVC.h"
+#import "BgBuyDaoViewController.h"
 #import "SGTopTitleView.h"
-@interface ShiMingRenZhengVC ()<UIScrollViewDelegate,SGTopTitleViewDelegate>
+#import "BuyDaoViewController.h"
+@interface BgBuyDaoViewController ()<UIScrollViewDelegate,SGTopTitleViewDelegate>
 @property (nonatomic, strong) SGTopTitleView *topTitleView;
 @property (nonatomic, strong) NSArray *titles;
 @property (nonatomic, strong) UIScrollView *mainScrollView;
-@property(nonatomic,copy)NSString * index;
 @end
 
-@implementation ShiMingRenZhengVC
+@implementation BgBuyDaoViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    self.title=@"实名认证";
-//    self.automaticallyAdjustsScrollViewInsets=NO;
-    [self huoQuData];
+    self.title=@"已买到的标的";
+    //[self CreatTopBtn];
+    //[self CreatTableView];
     [self setupChildViewController];
-    self.titles = @[@"个人",@"企业"];
+    self.titles = @[@"全部",@"已交割",@"未交割"];
     self.topTitleView = [SGTopTitleView topTitleViewWithFrame:CGRectMake(0, 0,ScreenWidth, 44)];
     _topTitleView.staticTitleArr = [NSArray arrayWithArray:_titles];
     _topTitleView.backgroundColor=[UIColor whiteColor];
@@ -48,28 +46,12 @@
     
     [self.view addSubview:_mainScrollView];
     
-    
-    
-    MySelfViC *oneVC = [[MySelfViC alloc] init];
+    BuyDaoViewController *oneVC = [[BuyDaoViewController alloc] init];
+    oneVC.tagg=0;
     [self.mainScrollView addSubview:oneVC.view];
     [self addChildViewController:oneVC];
     [self.view insertSubview:_mainScrollView belowSubview:_topTitleView];
-   
 
-}
-
--(void)huoQuData{
-    [Engine getShiMingMessagesuccess:^(NSDictionary *dic) {
-        NSString * code =[NSString stringWithFormat:@"%@",[dic objectForKey:@"code"]];
-        if ([code isEqualToString:@"1"]) {
-            NSDictionary * dicc =[dic objectForKey:@"content"];
-            _index=[NSString stringWithFormat:@"%@",[dicc objectForKey:@"authentication_type"]];
-            NSMutableDictionary * dicAr = [ToolClass isDictionary:dicc];
-            [ToolClass savePlist:dicAr name:@"shiMingInfo"];
-        }
-    } error:^(NSError *error) {
-        
-    }];
 }
 #pragma mark - - - SGTopScrollMenu代理方法
 - (void)SGTopTitleView:(SGTopTitleView *)topTitleView didSelectTitleAtIndex:(NSInteger)index{
@@ -77,7 +59,7 @@
     // 1 计算滚动的位置
     CGFloat offsetX = index * self.view.frame.size.width;
     self.mainScrollView.contentOffset = CGPointMake(offsetX, 0);
-    NSLog(@"哈哈哈%f",offsetX);
+    
     // 2.给对应位置添加对应子控制器
     [self showVc:index];
 }
@@ -98,12 +80,11 @@
 // 添加所有子控制器
 - (void)setupChildViewController {
     //
-    MySelfViC *oneVC = [[MySelfViC alloc] init];
-    [self addChildViewController:oneVC];
-    
-    //
-    CompanyVC *twoVC = [[CompanyVC alloc] init];
-    [self addChildViewController:twoVC];
+    for (int i=0; i<3; i++) {
+        BuyDaoViewController *oneVC = [[BuyDaoViewController alloc] init];
+        oneVC.tagg=i;
+        [self addChildViewController:oneVC];
+    }
     
 }
 
@@ -116,9 +97,8 @@
     
     // 1.添加子控制器view
     [self showVc:index];
-   
+    
     // 2.把对应的标题选中
-   
     UILabel *selLabel = self.topTitleView.allTitleLabel[index];
     
     // 3.滚动时，改变标题选中

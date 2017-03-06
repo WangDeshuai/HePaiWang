@@ -183,7 +183,29 @@
     
     [self setupAutoHeightWithBottomView:_strLabel bottomMargin:10];
 }
-
+-(void)setModel:(BuyBiaoDiModel *)model
+{
+    _model=model;
+    /*
+     _leftImage.image=[UIImage imageNamed:@"liebiao_pic1"];
+     _titleLabel.text=@"出售海泰500T注塑机王璇山炮大傻子";
+     _imagedan.image=[UIImage imageNamed:@"liebiao_qipai"];
+     _qipaiLabel.text=@"起拍价";
+     _priceLabel.text=@"8000元";
+     _imagedw.image=[UIImage imageNamed:@"liebiao_dizhi"];
+     _paimaiLabel.text=@"拍卖地区";
+     _cityLabel.text=@"山东";
+     _strImage.image=[UIImage imageNamed:@"liebiao_tiem"];
+     _strLabel.text=@"开始拍卖";
+     _timeLabel.text=@"2016/11/17";
+     */
+    [_leftImage setImageWithURL:[NSURL URLWithString:model.leftImage] placeholderImage:[UIImage imageNamed:@"liebiao_pic1"]];
+    _titleLabel.text=model.titleName;
+    _priceLabel.text=model.price;
+    _cityLabel.text=model.diqu;
+    _timeLabel.text=model.time;
+    
+}
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];
 

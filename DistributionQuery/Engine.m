@@ -23,6 +23,7 @@
     
     NSMutableDictionary * dicc =[NSMutableDictionary new];
     [dicc setObject:endStr forKey:@"imgCode"];
+    [dicc setObject:@"ios" forKey:@"osType"];
     AFHTTPRequestOperationManager * manager =[AFHTTPRequestOperationManager manager];
     [manager POST:urlStr parameters:dicc success:^(AFHTTPRequestOperation *operation, id responseObject) {
         NSData *data = [NSJSONSerialization dataWithJSONObject:responseObject options:NSJSONWritingPrettyPrinted error:nil];
@@ -41,7 +42,7 @@
     AFHTTPRequestOperationManager * manager =[AFHTTPRequestOperationManager manager];
     NSMutableDictionary * dic =[NSMutableDictionary new];
     [dic setObject:phone forKey:@"telNum"];
-    
+    [dic setObject:@"ios" forKey:@"osType"];
     [manager POST:urlStr parameters:dic success:^(AFHTTPRequestOperation *operation, id responseObject) {
         NSData *data = [NSJSONSerialization dataWithJSONObject:responseObject options:NSJSONWritingPrettyPrinted error:nil];
         NSString *str = [[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding];
@@ -71,6 +72,7 @@
      [dic setObject:psw forKey:@"password"];
      [dic setObject:psw2 forKey:@"password2"];
      [dic setObject:code forKey:@"randomStr"];
+     [dic setObject:@"ios" forKey:@"osType"];
     [manager POST:urlStr parameters:dic success:^(AFHTTPRequestOperation *operation, id responseObject) {
         NSData *data = [NSJSONSerialization dataWithJSONObject:responseObject options:NSJSONWritingPrettyPrinted error:nil];
         NSString *str = [[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding];
@@ -95,7 +97,7 @@
     NSMutableDictionary * dic =[NSMutableDictionary new];
     [dic setObject:phone forKey:@"account"];
     [dic setObject:psw forKey:@"password"];
-   
+    [dic setObject:@"ios" forKey:@"osType"];
     [manager POST:urlStr parameters:dic success:^(AFHTTPRequestOperation *operation, id responseObject) {
         NSData *data = [NSJSONSerialization dataWithJSONObject:responseObject options:NSJSONWritingPrettyPrinted error:nil];
         NSString *str = [[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding];
@@ -121,6 +123,7 @@
         return;
     }else{
         [dic setObject:str forKey:@"user_id"];
+        [dic setObject:@"ios" forKey:@"osType"];
     }
     
     
@@ -146,6 +149,7 @@
     NSMutableDictionary * dic =[NSMutableDictionary new];
     [dic setObject:page forKey:@"pageIndex"];
     [dic setObject:@"10" forKey:@"pageSize"];
+     [dic setObject:@"ios" forKey:@"osType"];
     [manager POST:urlStr parameters:dic success:^(AFHTTPRequestOperation *operation, id responseObject) {
         NSData *data = [NSJSONSerialization dataWithJSONObject:responseObject options:NSJSONWritingPrettyPrinted error:nil];
         NSString *str = [[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding];
@@ -175,6 +179,7 @@
         [dic setObject:stype forKey:@"read_status"];
         [dic setObject:page forKey:@"pageIndex"];
         [dic setObject:@"10" forKey:@"pageSize"];
+         [dic setObject:@"ios" forKey:@"osType"];
     }
     
     [manager POST:urlStr parameters:dic success:^(AFHTTPRequestOperation *operation, id responseObject) {
@@ -203,6 +208,7 @@
      [dic setObject:title forKey:@"trailer_title"];
      [dic setObject:people forKey:@"asset_disposal_person"];
      [dic setObject:content forKey:@"trailer_content"];
+     [dic setObject:@"ios" forKey:@"osType"];
     
     [manager  POST:urlStr parameters:dic constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {//
         NSString *imagetype=@"png";
@@ -234,6 +240,7 @@
     
     AFHTTPRequestOperationManager * manager =[AFHTTPRequestOperationManager manager];
     NSMutableDictionary * dic =[NSMutableDictionary new];
+     [dic setObject:@"ios" forKey:@"osType"];
     [manager POST:urlStr parameters:dic success:^(AFHTTPRequestOperation *operation, id responseObject) {
         NSData *data = [NSJSONSerialization dataWithJSONObject:responseObject options:NSJSONWritingPrettyPrinted error:nil];
         NSString *str = [[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding];
@@ -254,6 +261,7 @@
     AFHTTPRequestOperationManager * manager =[AFHTTPRequestOperationManager manager];
     NSMutableDictionary * dic =[NSMutableDictionary new];
     [dic setObject:provicecode forKey:@"provinceCode"];
+     [dic setObject:@"ios" forKey:@"osType"];
     [manager POST:urlStr parameters:dic success:^(AFHTTPRequestOperation *operation, id responseObject) {
         NSData *data = [NSJSONSerialization dataWithJSONObject:responseObject options:NSJSONWritingPrettyPrinted error:nil];
         NSString *str = [[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding];
@@ -275,6 +283,7 @@
     AFHTTPRequestOperationManager * manager =[AFHTTPRequestOperationManager manager];
     NSMutableDictionary * dic =[NSMutableDictionary new];
     [dic setObject:citycode forKey:@"cityCode"];
+     [dic setObject:@"ios" forKey:@"osType"];
     [manager POST:urlStr parameters:dic success:^(AFHTTPRequestOperation *operation, id responseObject) {
         NSData *data = [NSJSONSerialization dataWithJSONObject:responseObject options:NSJSONWritingPrettyPrinted error:nil];
         NSString *str = [[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding];
@@ -306,6 +315,7 @@
         [dic setObject:str forKey:@"user_id"];
         [dic setObject:@"10" forKey:@"pageSize"];
         [dic setObject:page forKey:@"pageIndex"];
+         [dic setObject:@"ios" forKey:@"osType"];
     }
     [manager POST:urlStr parameters:dic success:^(AFHTTPRequestOperation *operation, id responseObject) {
         NSData *data = [NSJSONSerialization dataWithJSONObject:responseObject options:NSJSONWritingPrettyPrinted error:nil];
@@ -324,6 +334,8 @@
 +(void)biaoDiStypesuccess:(SuccessBlock)aSuccess error:(ErrorBlock)aError{
     NSString * urlStr =[NSString stringWithFormat:@"%@category/qryTargetTypeCategory.action",SER_VICE];
     AFHTTPRequestOperationManager * manager =[AFHTTPRequestOperationManager manager];
+    NSMutableDictionary * dic =[NSMutableDictionary new];
+     [dic setObject:@"ios" forKey:@"osType"];
     [manager POST:urlStr parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
         NSData *data = [NSJSONSerialization dataWithJSONObject:responseObject options:NSJSONWritingPrettyPrinted error:nil];
         NSString *str = [[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding];
@@ -342,7 +354,7 @@
     
     AFHTTPRequestOperationManager * manager =[AFHTTPRequestOperationManager manager];
     NSMutableDictionary * dic =[NSMutableDictionary new];
-    
+     [dic setObject:@"ios" forKey:@"osType"];
     NSString * str =[NSUSE_DEFO objectForKey:@"token"];
     if (str==nil) {
         [LCProgressHUD showMessage:@"16修改个人信息无token"];
@@ -362,8 +374,93 @@
         aError(error);
         
     }];
-    
 
 }
+#pragma mark --17个人中心我已买到的标的
++(void)myCenterMyBuyBiaoDiStype:(NSString*)stype Page:(NSString*)page success:(SuccessBlock)aSuccess error:(ErrorBlock)aError{
+    NSString * urlStr =[NSString stringWithFormat:@"%@entrust/app_qryMyPurchasedTargetInUC.action",SER_VICE];
+    
+    AFHTTPRequestOperationManager * manager =[AFHTTPRequestOperationManager manager];
+    NSMutableDictionary * dic =[NSMutableDictionary new];
+     [dic setObject:@"ios" forKey:@"osType"];
+    NSString * str =[NSUSE_DEFO objectForKey:@"token"];
+    if (str==nil) {
+        [LCProgressHUD showMessage:@"17个人中心我已买到的标的无token"];
+        return;
+    }else{
+        [dic setObject:str forKey:@"user_id"];
+        [dic setObject:stype forKey:@"delivery_status"];
+        [dic setObject:page forKey:@"pageIndex"];
+    }
+    [manager POST:urlStr parameters:dic success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSData *data = [NSJSONSerialization dataWithJSONObject:responseObject options:NSJSONWritingPrettyPrinted error:nil];
+        NSString *str = [[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding];
+        NSLog(@"17个人中心我已买到的标的%@",str);
+        
+        aSuccess(responseObject);
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"17个人中心我已买到的标的%@",error);
+        aError(error);
+        
+    }];
+}
+#pragma mark --18获取实名认证资料
++(void)getShiMingMessagesuccess:(SuccessBlock)aSuccess error:(ErrorBlock)aError{
+    
+    NSString * urlStr =[NSString stringWithFormat:@"%@user/app_qryUserAuthenticationInfo.action",SER_VICE];
+    
+    AFHTTPRequestOperationManager * manager =[AFHTTPRequestOperationManager manager];
+    NSMutableDictionary * dic =[NSMutableDictionary new];
+    [dic setObject:@"ios" forKey:@"osType"];
+    NSString * str =[NSUSE_DEFO objectForKey:@"token"];
+    if (str==nil) {
+        [LCProgressHUD showMessage:@"18获取实名认证资料无token"];
+        return;
+    }else{
+        [dic setObject:str forKey:@"user_id"];
+       
+    }
+    [manager POST:urlStr parameters:dic success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSData *data = [NSJSONSerialization dataWithJSONObject:responseObject options:NSJSONWritingPrettyPrinted error:nil];
+        NSString *str = [[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding];
+        NSLog(@"18获取实名认证资料%@",str);
+        
+        aSuccess(responseObject);
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"18获取实名认证资料%@",error);
+        aError(error);
+        
+    }];
 
+}
+#pragma mark --20修改实名认证
++(void)xiuGaiShiMingRenZhengMessageJsonStr:(NSString*)dicStr success:(SuccessBlock)aSuccess error:(ErrorBlock)aError{
+    NSString * urlStr =[NSString stringWithFormat:@"%@user/app_updateUserAuthenticationInfo.action",SER_VICE];
+    
+    AFHTTPRequestOperationManager * manager =[AFHTTPRequestOperationManager manager];
+    NSMutableDictionary * dic =[NSMutableDictionary new];
+   
+    NSString * str =[NSUSE_DEFO objectForKey:@"token"];
+    if (str==nil) {
+        [LCProgressHUD showMessage:@"20修改实名认证无token"];
+        return;
+    }else{
+        [dic setObject:@"ios" forKey:@"osType"];
+        [dic setObject:str forKey:@"user_id"];
+        [dic setObject:dicStr forKey:@"updateInfoArr"];
+        
+    }
+    [manager POST:urlStr parameters:dic success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSData *data = [NSJSONSerialization dataWithJSONObject:responseObject options:NSJSONWritingPrettyPrinted error:nil];
+        NSString *str = [[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding];
+        NSLog(@"20修改实名认证%@",str);
+        
+        aSuccess(responseObject);
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"20修改实名认证%@",error);
+        aError(error);
+        
+    }];
+
+}
 @end

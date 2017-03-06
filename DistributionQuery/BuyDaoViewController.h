@@ -9,5 +9,10 @@
 #import "BaseViewController.h"
 
 @interface BuyDaoViewController : BaseViewController
-
+/*
+ tagg==0 全部
+ tagg==1 已交割
+ tagg==2 未交割
+ */
+@property(nonatomic,assign)int tagg;
 @end

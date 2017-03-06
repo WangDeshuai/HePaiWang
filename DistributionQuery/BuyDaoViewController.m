@@ -9,9 +9,13 @@
 #import "BuyDaoViewController.h"
 #import "MyWeiTuoTableViewCell.h"
 #import "BuyXiangQingVC.h"
+#import "BuyBiaoDiModel.h"
 @interface BuyDaoViewController ()<UITableViewDelegate,UITableViewDataSource>
 @property(nonatomic,strong)UITableView * tableView;
-@property(nonatomic,strong)UIButton * lastBtn;
+@property(nonatomic,strong)NSMutableArray * dataArray;
+@property(nonatomic,strong)NSArray * styeArr;
+@property(nonatomic,assign)int AAA;
+@property (nonatomic,strong) MJRefreshComponent *myRefreshView;
 @end
 
 @implementation BuyDaoViewController
@@ -20,41 +24,43 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
      self.title=@"已买到的标的";
-    [self CreatTopBtn];
+    _dataArray=[NSMutableArray new];
+    _styeArr=@[@"-1",@"1",@"0"];
+    
     [self CreatTableView];
 }
-#pragma mark --创建顶部按钮
--(void)CreatTopBtn{
-    NSArray * nameAr =@[@"全部",@"已交割",@"未交割"];
-    
-    
-    int d =(ScreenWidth-120*nameAr.count)/(nameAr.count+1);
-    for (int i=0; i<nameAr.count; i++) {
-        UIButton * btn =[UIButton buttonWithType:UIButtonTypeCustom];
-        btn.backgroundColor=[UIColor whiteColor];
-        [btn setTitle:nameAr[i] forState:0];
-        [btn setTitleColor:[UIColor blackColor] forState:0];
-        [btn setTitleColor:[UIColor redColor] forState:UIControlStateSelected];
-        btn.titleLabel.alpha=.7;
-        [btn addTarget:self action:@selector(btnnClick:) forControlEvents:UIControlEventTouchUpInside];
-        btn.titleLabel.font=[UIFont systemFontOfSize:16];
-        if (i==0) {
-            btn.selected=YES;
-            _lastBtn=btn;
+
+#pragma mark --获取网络数据
+-(void)getBuyBiaoDiPage:(NSString*)page{
+    //stype:-1全部 0未交割 1已交割
+    [Engine myCenterMyBuyBiaoDiStype:_styeArr[_tagg] Page:page  success:^(NSDictionary *dic) {
+        NSString * code =[NSString stringWithFormat:@"%@",[dic objectForKey:@"code"]];
+        if ([code isEqualToString:@"1"]) {
+            NSMutableArray * array2 =[NSMutableArray new];
+            NSArray * contentArr =[dic objectForKey:@"content"];
+            for (NSDictionary * dicc in contentArr) {
+                BuyBiaoDiModel * md =[[BuyBiaoDiModel alloc]initWithBiaoDiDic:dicc];
+                [array2 addObject:md];
+            }
+            
+            if (self.myRefreshView ==_tableView.header) {
+                _dataArray=array2;
+                _tableView.footer.hidden=_dataArray.count==0?YES:NO;
+            }else if (self.myRefreshView == _tableView.footer){
+                [_dataArray addObjectsFromArray:array2];
+            }
+            [_tableView reloadData];
+            [_myRefreshView  endRefreshing];
+        }else{
+            [LCProgressHUD showMessage:[dic objectForKey:@"msg"]];
         }
-        [self.view sd_addSubviews:@[btn]];
-        btn.sd_layout
-        .leftSpaceToView(self.view,d+(d+120)*i)
-        .topSpaceToView(self.view,0)
-        .widthIs(120)
-        .heightIs(40);
-    }
+    } error:^(NSError *error) {
+        
+    }];
 }
--(void)btnnClick:(UIButton*)button{
-    _lastBtn.selected=NO;
-    button.selected=!button.selected;
-    _lastBtn=button;
-}
+
+
+
 #pragma mark --创建表格
 -(void)CreatTableView{
     if (!_tableView) {
@@ -63,20 +69,39 @@
     _tableView.dataSource=self;
     _tableView.delegate=self;
     _tableView.backgroundColor=BG_COLOR;
+    _tableView.tableFooterView=[UIView new];
     [self.view addSubview:_tableView];
     
+    __weak typeof (self) weakSelf =self;
+    _tableView.header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
+        weakSelf.myRefreshView = weakSelf.tableView.header;
+        _AAA=1;
+        [self getBuyBiaoDiPage:[NSString stringWithFormat:@"%d",_AAA]];
+        
+    }];
+    
+    [_tableView.header beginRefreshing];
+    //..上拉刷新
+    _tableView.footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
+        weakSelf.myRefreshView = weakSelf.tableView.footer;
+        _AAA=_AAA+1;
+        [self getBuyBiaoDiPage:[NSString stringWithFormat:@"%d",_AAA]];
+    }];
+    
+    _tableView.footer.hidden = YES;
     
 }
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    return 10;
+    return _dataArray.count;
 }
 -(UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     
     NSString *CellIdentifier = [NSString stringWithFormat:@"Cell%ld%ld", (long)[indexPath section], (long)[indexPath row]];
     
     MyWeiTuoTableViewCell * cell =[MyWeiTuoTableViewCell cellWithTableView:tableView CellID:CellIdentifier];
-    
+    BuyBiaoDiModel * md =_dataArray[indexPath.row];
+    cell.model=md;
     return cell;
 }
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath

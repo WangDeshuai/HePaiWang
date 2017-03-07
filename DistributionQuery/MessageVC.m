@@ -33,35 +33,43 @@
     self.title=@"个人信息";
     [self dataArr];
     [self CreatTableView];
-    [self huoQuMessageData];
+   // [self huoQuMessageData];
 }
 -(void)dataArr{
-    NSArray * arr1 =@[@"头像"];
-    NSArray * arr2 =@[@"账户"];
-    NSArray * arr3 =@[@"用户名",@"真实姓名"];
-    NSArray * arr4 =@[@"手机号",@"邮箱",@"邮编"];
+    NSArray * arr1 =@[@"头        像"];
+    NSArray * arr2 =@[@"账        户"];
+    NSArray * arr3 =@[@"用  户  名",@"真实姓名"];
+    NSArray * arr4 =@[@"手  机  号",@"邮        箱",@"邮        编"];
     NSArray * arr5 =@[@"账户类型"];
-    NSArray * arr6 =@[@"地址",@"街道"];
-    NSArray * arr7 =@[@"退出"];
+    NSArray * arr6 =@[@"地        址",@"街        道"];
+    NSArray * arr7 =@[@"退        出"];
     _dataArray=[[NSMutableArray alloc]initWithObjects:arr1,arr2,arr3,arr4,arr5,arr6,arr7, nil];
+    
 }
 
 #pragma mark --获取个人信息
 -(void)huoQuMessageData{
-//    [Engine myMessagesuccess:^(NSDictionary *dic) {
-//        NSString * code =[NSString stringWithFormat:@"%@",[dic objectForKey:@"code"]];
-//        if ([code isEqualToString:@"1"]) {
-//            
-//        }else
-//        {
-//            [LCProgressHUD showMessage:[dic objectForKey:@"msg"]];
-//        }
-//    } error:^(NSError *error) {
-//        
-//    }];
-    
-    NSDictionary * messageDic= [ToolClass duquPlistWenJianPlistName:@"baseInfo"];
-    _messageDic=messageDic;
+    [Engine myMessagesuccess:^(NSDictionary *dic) {
+        NSString * code =[NSString stringWithFormat:@"%@",[dic objectForKey:@"code"]];
+        if ([code isEqualToString:@"1"]) {
+            NSString * code =[NSString stringWithFormat:@"%@",[dic objectForKey:@"code"]];
+            if ([code isEqualToString:@"1"]) {
+                NSDictionary * dicc=[dic objectForKey:@"content"];
+                NSMutableDictionary * dicDic=[ToolClass isDictionary:dicc];
+                [ToolClass savePlist:dicDic name:@"baseInfo"];
+                NSDictionary * messageDic= [ToolClass duquPlistWenJianPlistName:@"baseInfo"];
+                 _messageDic=messageDic;
+            }
+            [_tableView reloadData];
+        }else
+        {
+            [LCProgressHUD showMessage:[dic objectForKey:@"msg"]];
+        }
+    } error:^(NSError *error) {
+        
+    }];
+   //
+   
 }
 
 
@@ -117,63 +125,106 @@
         if (_image1) {
             cell.headImage.image=_image1;
         }else{
-            [cell.headImage setImageWithURL:[NSURL URLWithString:[_messageDic objectForKey:@"head_img"]] placeholderImage:[UIImage imageNamed:@"headImage"]];
+            if (_messageDic) {
+                [cell.headImage setImageWithURL:[NSURL URLWithString:[_messageDic objectForKey:@"head_img"]] placeholderImage:[UIImage imageNamed:@"headImage"]];
+            }
+            
         }
         cell.textfield.hidden=YES;
     }else if (indexPath.section==1){
         //账户，不可更改。
-        cell.textfield.text=[_messageDic objectForKey:@"account"];
+        if (_messageDic) {
+            cell.textfield.text=[_messageDic objectForKey:@"account"];
+            [cell sd_addSubviews:@[cell.textfield]];
+            cell.textfield.sd_layout.rightSpaceToView(cell,30);
+        }
+        
     }else if (indexPath.section==2){
         if (indexPath.row==0) {
             //用户名
-            cell.textfield.placeholder=@"未填写";
-            cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
-            cell.textfield.text=[self stringHouMianText:_nameText InternetText:[_messageDic objectForKey:@"user_name"]];
+            if (_messageDic) {
+                cell.textfield.placeholder=@"未填写";
+                cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
+                cell.textfield.text=[self stringHouMianText:_nameText InternetText:[_messageDic objectForKey:@"user_name"]];
+            }
+            
         }else{
             //真实姓名(不可更改)
-            if ([[_messageDic objectForKey:@"real_name"] isEqualToString:@""]) {
-                cell.textfield.text=@"未认证";
-            }else{
-                cell.textfield.text=[_messageDic objectForKey:@"real_name"];
+            if (_messageDic) {
+                if ([[_messageDic objectForKey:@"real_name"] isEqualToString:@""]) {
+                    cell.textfield.text=@"未认证";
+                }else{
+                    cell.textfield.text=[_messageDic objectForKey:@"real_name"];
+                    [cell sd_addSubviews:@[cell.textfield]];
+                    cell.textfield.sd_layout.rightSpaceToView(cell,30);
+                }
             }
+            
             
         }
     }else if (indexPath.section==3){
         if (indexPath.row==0) {
             //手机号
-            cell.textfield.placeholder=@"未填写";
-            cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
-            cell.textfield.text=[self stringHouMianText:_phoneText InternetText:[_messageDic objectForKey:@"connect_tel"]];
+            if (_messageDic) {
+                cell.textfield.placeholder=@"未填写";
+                cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
+                cell.textfield.text=[self stringHouMianText:_phoneText InternetText:[_messageDic objectForKey:@"connect_tel"]];
+            }
+            
         }else if (indexPath.row==1){
             //邮箱
-            cell.textfield.placeholder=@"未填写";
-            cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
-            cell.textfield.text=[self stringHouMianText:_emailText InternetText:[_messageDic objectForKey:@"mailbox"]];
+            if (_messageDic) {
+                cell.textfield.placeholder=@"未填写";
+                cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
+                cell.textfield.text=[self stringHouMianText:_emailText InternetText:[_messageDic objectForKey:@"mailbox"]];
+            }
+            
         }else{
             //邮编
-            cell.textfield.placeholder=@"未填写";
-            cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
-            cell.textfield.text=[self stringHouMianText:_youBianText InternetText:[_messageDic objectForKey:@"postcode"]];
+            if (_messageDic) {
+                cell.textfield.placeholder=@"未填写";
+                cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
+                cell.textfield.text=[self stringHouMianText:_youBianText InternetText:[_messageDic objectForKey:@"postcode"]];
+            }
+            
         }
     }else if (indexPath.section==4){
             //账户类型（不可更改）
-        cell.textfield.text=[ToolClass myStype:[_messageDic objectForKey:@"authentication_type"]];
+        if (_messageDic) {
+            cell.textfield.text=[ToolClass myStype:[_messageDic objectForKey:@"authentication_type"]];
+            [cell sd_addSubviews:@[cell.textfield]];
+            cell.textfield.sd_layout.rightSpaceToView(cell,30);
+        }
+       
     }else if (indexPath.section==5){
         if (indexPath.row==0) {
             //地址
-            cell.textfield.enabled=NO;
-            cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
-            NSString * str =[NSString stringWithFormat:@"%@-%@-%@",[_messageDic objectForKey:@"provname"],[_messageDic objectForKey:@"cityname"],[_messageDic objectForKey:@"districtname"]];
-            cell.textfield.text=[self stringHouMianText:_diquText InternetText:str];
+            if (_messageDic) {
+                cell.textfield.enabled=NO;
+                cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
+                NSString * str =[NSString stringWithFormat:@"%@-%@-%@",[_messageDic objectForKey:@"provname"],[_messageDic objectForKey:@"cityname"],[_messageDic objectForKey:@"districtname"]];
+                cell.textfield.text=[self stringHouMianText:_diquText InternetText:str];
+            }
+            
         }else{
             //街道
-            cell.textfield.placeholder=@"未填写";
-            cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
-            cell.textfield.text=[self stringHouMianText:_jieDaoText InternetText:[_messageDic objectForKey:@"detailed_addr"]];
+            if (_messageDic) {
+                cell.textfield.placeholder=@"未填写";
+                cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
+                cell.textfield.text=[self stringHouMianText:_jieDaoText InternetText:[_messageDic objectForKey:@"detailed_addr"]];
+            }
+            
         }
     }else{
         //退出
          cell.textfield.hidden=YES;
+        [cell sd_addSubviews:@[cell.nameLabel]];
+        cell.nameLabel.textAlignment=1;
+        cell.nameLabel.alpha=.8;
+        cell.nameLabel.font=[UIFont systemFontOfSize:17 weight:1];
+        cell.nameLabel.textColor=[UIColor redColor];
+        cell.nameLabel.sd_layout.rightSpaceToView(cell,30)
+        .widthIs(ScreenWidth-60).heightIs(40);
     }
     
     
@@ -254,7 +305,7 @@
     }else if (indexPath.section==6){
         
         UIAlertController * alertView =[UIAlertController alertControllerWithTitle:@"" message:@"是否确认退出" preferredStyle:UIAlertControllerStyleAlert];
-        UIAlertAction * action1 =[UIAlertAction actionWithTitle:@"是" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        UIAlertAction * action1 =[UIAlertAction actionWithTitle:@"是" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
             //1.清楚token
             [NSUSE_DEFO removeObjectForKey:@"token"];
             [NSUSE_DEFO synchronize];

@@ -58,6 +58,21 @@
         [item setTitleTextAttributes:@{NSForegroundColorAttributeName : Global_tintColor} forState:UIControlStateSelected];
         [self addChildViewController:nav];
     }];
+//
+//    [childItemsArray enumerateObjectsUsingBlock:^(NSDictionary *dict, NSUInteger idx, BOOL *stop) {
+//       
+//        UIViewController *vc = [NSClassFromString(dict[kClassKey]) new];
+//        vc.title = dict[kTitleKey];
+//        BaseNavigationController *nav = [[BaseNavigationController alloc] initWithRootViewController:vc];
+//        UITabBarItem *item = nav.tabBarItem;
+//        item.title = dict[kTitleKey];
+//        item.image = [UIImage imageNamed:dict[kImgKey]];
+//        item.selectedImage = [[UIImage imageNamed:dict[kSelImgKey]] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+//       
+//        [item setTitleTextAttributes:@{NSForegroundColorAttributeName : Global_tintColor} forState:UIControlStateSelected];
+//        
+//        [self addChildViewController:nav];
+//    }];
 
 }
 

@@ -98,8 +98,48 @@
     MyPublicYuGaoCell * cell =[MyPublicYuGaoCell cellWithTableView:tableView CellID:CellIdentifier];
     cell.selectionStyle=UITableViewCellSelectionStyleNone;
     cell.model=_dataArray[indexPath.row];
+    cell.deleteBtn.tag=indexPath.row;
+    cell.xiangQingBtn.tag=indexPath.row;
+    [cell.deleteBtn addTarget:self action:@selector(deletebutton:) forControlEvents:UIControlEventTouchUpInside];
+    [cell.xiangQingBtn addTarget:self action:@selector(xiangQingBtnn:) forControlEvents:UIControlEventTouchUpInside];
     return cell;
 }
+
+#pragma mark --删除按钮
+-(void)deletebutton:(UIButton*)btn{
+    
+    
+    UIAlertController * actionView =[UIAlertController alertControllerWithTitle:@"" message:@"是否确认删除" preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction * action1 =[UIAlertAction actionWithTitle:@"否" style:UIAlertActionStyleDefault handler:nil];
+    UIAlertAction * action2 =[UIAlertAction actionWithTitle:@"是" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+        
+        MyPublicYuGaoModel * model =_dataArray[btn.tag];
+        [Engine myPublicDeleteTrailerID:model.messageID success:^(NSDictionary *dic) {
+            [LCProgressHUD showMessage:[dic objectForKey:@"msg"]];
+            NSString * code =[NSString stringWithFormat:@"%@",[dic objectForKey:@"code"]];
+            if ([code isEqualToString:@"1"]) {
+                [_dataArray removeObjectAtIndex:btn.tag];
+                
+            }
+            [_tableView reloadData];
+        } error:^(NSError *error) {
+            
+        }];
+    }];
+    [actionView addAction:action1];
+    [actionView addAction:action2];
+    [self presentViewController:actionView animated:YES completion:nil];
+    
+   
+    
+}
+#pragma mark --详情按钮
+-(void)xiangQingBtnn:(UIButton*)btn{
+    YuGaoXiangQingVC * vc =[YuGaoXiangQingVC new];
+    vc.model=_dataArray[btn.tag];
+    [self.navigationController pushViewController:vc animated:YES];
+}
+
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     YuGaoXiangQingVC * vc =[YuGaoXiangQingVC new];

@@ -11,4 +11,6 @@
 @interface MyPublicYuGaoCell : UITableViewCell
 +(instancetype)cellWithTableView:(UITableView*)tableView CellID:(NSString*)cellID;
 @property(nonatomic,strong)MyPublicYuGaoModel * model;
+@property(nonatomic,strong)UIButton * xiangQingBtn;//详情按钮
+@property(nonatomic,strong)UIButton * deleteBtn;//删除按钮
 @end

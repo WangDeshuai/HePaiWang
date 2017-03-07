@@ -204,11 +204,12 @@
     NSString * urlStr =[NSString stringWithFormat:@"%@entrust/app_publishTrailerInUc.action",SER_VICE];
     AFHTTPRequestOperationManager * manager =[AFHTTPRequestOperationManager manager];
     NSMutableDictionary * dic =[NSMutableDictionary new];
-    [dic setObject:str forKey:@"user_id"];
+     [dic setObject:@"ios" forKey:@"osType"];
+     [dic setObject:str forKey:@"user_id"];
      [dic setObject:title forKey:@"trailer_title"];
      [dic setObject:people forKey:@"asset_disposal_person"];
      [dic setObject:content forKey:@"trailer_content"];
-     [dic setObject:@"ios" forKey:@"osType"];
+    
     
     [manager  POST:urlStr parameters:dic constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {//
         NSString *imagetype=@"png";
@@ -462,5 +463,123 @@
         
     }];
 
+}
+#pragma mark --21我发布的预告删除
++(void)myPublicDeleteTrailerID:(NSString*)idd success:(SuccessBlock)aSuccess error:(ErrorBlock)aError{
+    NSString * urlStr =[NSString stringWithFormat:@"%@entrust/app_deleteMyTrailer.action",SER_VICE];
+    
+    AFHTTPRequestOperationManager * manager =[AFHTTPRequestOperationManager manager];
+    NSMutableDictionary * dic =[NSMutableDictionary new];
+    
+    NSString * str =[NSUSE_DEFO objectForKey:@"token"];
+    if (str==nil) {
+        [LCProgressHUD showMessage:@"21我发布的预告删除token"];
+        return;
+    }else{
+        [dic setObject:@"ios" forKey:@"osType"];
+        [dic setObject:str forKey:@"user_id"];
+        [dic setObject:idd forKey:@"trailer_id"];
+        
+    }
+    [manager POST:urlStr parameters:dic success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSData *data = [NSJSONSerialization dataWithJSONObject:responseObject options:NSJSONWritingPrettyPrinted error:nil];
+        NSString *str = [[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding];
+        NSLog(@"21我发布的预告删除%@",str);
+        
+        aSuccess(responseObject);
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"21我发布的预告删除%@",error);
+        [LCProgressHUD showMessage:@"21我发布的预告删除"];
+        aError(error);
+        
+    }];
+}
+#pragma mark --22个人中心账户消息列表
++(void)myCenterZhaoHuListViewStyle:(NSString*)style Page:(NSString*)page success:(SuccessBlock)aSuccess error:(ErrorBlock)aError
+{
+    NSString * urlStr =[NSString stringWithFormat:@"%@user/app_qryAccountMessageListInUC.action",SER_VICE];
+    
+    AFHTTPRequestOperationManager * manager =[AFHTTPRequestOperationManager manager];
+    NSMutableDictionary * dic =[NSMutableDictionary new];
+    NSString * str =[NSUSE_DEFO objectForKey:@"token"];
+    if (str==nil) {
+        [LCProgressHUD showMessage:@"22个人中心账户消息列表无token"];
+        return;
+    }else{
+        [dic setObject:str forKey:@"user_id"];
+        [dic setObject:style forKey:@"read_status"];
+        [dic setObject:page forKey:@"pageIndex"];
+        [dic setObject:@"10" forKey:@"pageSize"];
+        [dic setObject:@"ios" forKey:@"osType"];
+    }
+    
+    [manager POST:urlStr parameters:dic success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSData *data = [NSJSONSerialization dataWithJSONObject:responseObject options:NSJSONWritingPrettyPrinted error:nil];
+        NSString *str = [[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding];
+        NSLog(@"22个人中心账户消息列表%@",str);
+        
+        aSuccess(responseObject);
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"22个人中心账户消息列表%@",error);
+        aError(error);
+        
+    }];
+
+}
+#pragma mark --23消息列表详/账户列表情页
++(void)messageViewMessageID:(NSString*)messageID success:(SuccessBlock)aSuccess error:(ErrorBlock)aError{
+    NSString * urlStr =[NSString stringWithFormat:@"%@user/app_qryMessageDetail.action",SER_VICE];
+    
+    AFHTTPRequestOperationManager * manager =[AFHTTPRequestOperationManager manager];
+    NSMutableDictionary * dic =[NSMutableDictionary new];
+    NSString * str =[NSUSE_DEFO objectForKey:@"token"];
+    if (str==nil) {
+        [LCProgressHUD showMessage:@"23消息列表详/账户列表情页无token"];
+        return;
+    }else{
+        [dic setObject:str forKey:@"user_id"];
+        [dic setObject:messageID forKey:@"message_id"];
+        [dic setObject:@"ios" forKey:@"osType"];
+    }
+    [manager POST:urlStr parameters:dic success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSData *data = [NSJSONSerialization dataWithJSONObject:responseObject options:NSJSONWritingPrettyPrinted error:nil];
+        NSString *str = [[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding];
+        NSLog(@"23消息列表详/账户列表情页%@",str);
+        
+        aSuccess(responseObject);
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"23消息列表详/账户列表情页%@",error);
+        aError(error);
+        
+    }];
+}
+#pragma mark --24拍卖标的列表
++(void)firstPaiMaiBiaoDiViewSearchStr:(NSString*)searStr BiaoDiStyle:(NSString*)leiXing ProvCode:(NSString*)procode CityCode:(NSString*)citycode Staus:(NSString*)styleStr PageSize:(NSString*)pagesize PageIndex:(NSString*)pageindex success:(SuccessBlock)aSuccess error:(ErrorBlock)aError{
+    
+    NSString * urlStr =[NSString stringWithFormat:@"%@entrust/app_qryCompeteTargetList.action",SER_VICE];
+    
+    AFHTTPRequestOperationManager * manager =[AFHTTPRequestOperationManager manager];
+    NSMutableDictionary * dic =[NSMutableDictionary new];
+  
+        [dic setObject:@"ios" forKey:@"osType"];
+        [dic setObject:searStr forKey:@"search_content"];
+        [dic setObject:leiXing forKey:@"target_type"];
+        [dic setObject:procode forKey:@"prov_code"];
+        [dic setObject:citycode forKey:@"city_code"];
+        [dic setObject:styleStr forKey:@"status"];
+        [dic setObject:pageindex forKey:@"pageIndex"];
+        [dic setObject:pagesize forKey:@"pageSize"];
+        
+    [manager POST:urlStr parameters:dic success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSData *data = [NSJSONSerialization dataWithJSONObject:responseObject options:NSJSONWritingPrettyPrinted error:nil];
+        NSString *str = [[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding];
+        NSLog(@"24拍卖标的列表%@",str);
+        
+        aSuccess(responseObject);
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"24拍卖标的列表%@",error);
+        aError(error);
+        
+    }];
 }
 @end

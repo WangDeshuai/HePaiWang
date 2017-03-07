@@ -221,7 +221,7 @@
     UITableViewCell * cell2 =[_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:1]];
     UITextField * textfield2 =[cell2 viewWithTag:1];
     NSLog(@"3>>>%@",textfield2.text);
-    
+    [LCProgressHUD showMessage:@"正在发布..."];
     [Engine pubulicYuGaoTitle:[ToolClass isString:[NSString stringWithFormat:@"%@",textview.text]] People:[ToolClass isString:[NSString stringWithFormat:@"%@",textfield.text]] Content:[ToolClass isString:[NSString stringWithFormat:@"%@",textfield2.text]] Pic:_image1 success:^(NSDictionary *dic) {
         NSString * code =[NSString stringWithFormat:@"%@",[dic objectForKey:@"code"]];
         [LCProgressHUD showMessage:[dic objectForKey:@"msg"]];

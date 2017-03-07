@@ -56,5 +56,13 @@ typedef void (^ErrorBlock)(NSError*error);
 +(void)getShiMingMessagesuccess:(SuccessBlock)aSuccess error:(ErrorBlock)aError;
 #pragma mark --20修改实名认证 sy==1个人 2企业
 +(void)xiuGaiShiMingRenZhengMessageJsonStr:(NSString*)dicStr  success:(SuccessBlock)aSuccess error:(ErrorBlock)aError;
+#pragma mark --21我发布的预告删除
++(void)myPublicDeleteTrailerID:(NSString*)idd success:(SuccessBlock)aSuccess error:(ErrorBlock)aError;
+#pragma mark --22个人中心账户消息列表
++(void)myCenterZhaoHuListViewStyle:(NSString*)style Page:(NSString*)page success:(SuccessBlock)aSuccess error:(ErrorBlock)aError;
+#pragma mark --23消息列表详/账户列表情页
++(void)messageViewMessageID:(NSString*)messageID success:(SuccessBlock)aSuccess error:(ErrorBlock)aError;
+#pragma mark --24拍卖标的列表
++(void)firstPaiMaiBiaoDiViewSearchStr:(NSString*)searStr BiaoDiStyle:(NSString*)leiXing ProvCode:(NSString*)procode CityCode:(NSString*)citycode Staus:(NSString*)styleStr PageSize:(NSString*)pagesize PageIndex:(NSString*)pageindex success:(SuccessBlock)aSuccess error:(ErrorBlock)aError;
 
 @end

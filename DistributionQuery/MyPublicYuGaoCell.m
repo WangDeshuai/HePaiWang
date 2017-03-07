@@ -12,8 +12,7 @@
 @property(nonatomic,strong)UILabel * titleLabel;//标题
 @property(nonatomic,strong)UILabel * timeLabel;//发布时间
 @property(nonatomic,strong)UIView * lineView;//灰线
-@property(nonatomic,strong)UIButton * xiangQingBtn;//详情按钮
-@property(nonatomic,strong)UIButton * deleteBtn;//删除按钮
+
 
 @end
 @implementation MyPublicYuGaoCell

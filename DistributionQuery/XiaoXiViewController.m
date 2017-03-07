@@ -10,6 +10,8 @@
 #import "XiaoXiTableViewCell.h"
 #import "XiaoXiModel.h"
 #import "XiaoXiView.h"
+ #import <AdSupport/AdSupport.h>
+ #import <AdSupport/AdSupport.h>
 @interface XiaoXiViewController ()<UITableViewDelegate,UITableViewDataSource>
 @property(nonatomic,strong)UITableView * tableView;
 @property(nonatomic,strong)UIButton * lastBtn;
@@ -33,6 +35,7 @@
     [self CreatTableView];
    
 }
+#pragma mark --消息列表
 -(void)getData:(NSString*)index PageIndex:(NSString*)page{
     //index=0未读 1已读
     [Engine CenterMessageListViewStype:index Pageindex:page success:^(NSDictionary *dic) {
@@ -53,9 +56,6 @@
             [_tableView reloadData];
             [_myRefreshView  endRefreshing];
 
-            
-            
-            
         }else
         {
             [LCProgressHUD showMessage:[dic objectForKey:@"msg"]];
@@ -64,6 +64,40 @@
         
     }];
 }
+#pragma mark --账户信息
+-(void)zhaoHuIndex:(NSString*)index Page:(NSString*)page{
+    //index=0未读 1已读
+    [Engine myCenterZhaoHuListViewStyle:index Page:page success:^(NSDictionary *dic) {
+        NSString * code =[NSString stringWithFormat:@"%@",[dic objectForKey:@"code"]];
+        if ([code isEqualToString:@"1"]) {
+            NSMutableArray * array2 =[NSMutableArray new];
+            NSArray * contentArr =[dic objectForKey:@"content"];
+            for (NSDictionary * dicc in contentArr) {
+                XiaoXiModel * md =[[XiaoXiModel alloc]initWithXiaoXiMessageDic:dicc];
+                [array2 addObject:md];
+            }
+            if (self.myRefreshView ==_tableView.header) {
+                _dataArray=array2;
+                _tableView.footer.hidden=_dataArray.count==0?YES:NO;
+            }else if (self.myRefreshView == _tableView.footer){
+                [_dataArray addObjectsFromArray:array2];
+            }
+            [_tableView reloadData];
+            [_myRefreshView  endRefreshing];
+            
+        }else
+        {
+            [LCProgressHUD showMessage:[dic objectForKey:@"msg"]];
+        }
+
+    } error:^(NSError *error) {
+        
+    }];
+}
+
+
+
+
 #pragma mark --创建顶部按钮
 -(void)CreatTopBtn{
     NSArray * nameAr =@[@"未读",@"已读"];
@@ -113,15 +147,31 @@
     _tableView.header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
         weakSelf.myRefreshView = weakSelf.tableView.header;
         _AAA=1;
-        [self getData:[NSString stringWithFormat:@"%lu",_lastBtn.tag] PageIndex:[NSString stringWithFormat:@"%d",_AAA]];
-    }];
+        NSLog(@"tagg=%lu",_tagg);
+        if (_tagg==1) {
+            //消息列表
+            [self getData:[NSString stringWithFormat:@"%lu",_lastBtn.tag] PageIndex:[NSString stringWithFormat:@"%d",_AAA]];
+
+        }else{
+            //账户列表
+            [self zhaoHuIndex:[NSString stringWithFormat:@"%lu",_lastBtn.tag] Page:[NSString stringWithFormat:@"%d",_AAA]];
+        }
+        
+         }];
     
     [_tableView.header beginRefreshing];
     //..上拉刷新
     _tableView.footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
         weakSelf.myRefreshView = weakSelf.tableView.footer;
         _AAA=_AAA+1;
-        [self getData:[NSString stringWithFormat:@"%lu",_lastBtn.tag] PageIndex:[NSString stringWithFormat:@"%d",_AAA]];
+        if (_tagg==1) {
+            //消息列表
+             [self getData:[NSString stringWithFormat:@"%lu",_lastBtn.tag] PageIndex:[NSString stringWithFormat:@"%d",_AAA]];
+        }else{
+            //账户列表
+            [self zhaoHuIndex:[NSString stringWithFormat:@"%lu",_lastBtn.tag] Page:[NSString stringWithFormat:@"%d",_AAA]];
+        }
+       
     }];
     
     _tableView.footer.hidden = YES;
@@ -141,7 +191,11 @@
 }
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+//      NSString *adId = [[[ASIdentifierManager sharedManager] advertisingIdentifier] UUIDString];
+//    NSLog(@">>>%@",adId);
     XiaoXiView * xiangXi =[XiaoXiView new];
+    xiangXi.tagg=_tagg;
+    xiangXi.model=_dataArray[indexPath.row];
     [self.navigationController pushViewController:xiangXi animated:YES];
 }
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath

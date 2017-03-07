@@ -7,7 +7,12 @@
 //
 
 #import "BaseViewController.h"
-
+#import "XiaoXiModel.h"
 @interface XiaoXiView : BaseViewController
-
+/*
+ tagg==1 消息列表
+ tagg==2账户信息
+ */
+@property(nonatomic,assign)NSInteger tagg;
+@property(nonatomic,strong)XiaoXiModel * model;
 @end

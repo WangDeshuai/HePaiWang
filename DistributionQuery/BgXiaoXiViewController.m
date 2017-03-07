@@ -49,6 +49,7 @@
     [self.view addSubview:_mainScrollView];
     
     XiaoXiViewController *oneVC = [[XiaoXiViewController alloc] init];
+     oneVC.tagg=_tagg;
     [self.mainScrollView addSubview:oneVC.view];
     [self addChildViewController:oneVC];
     [self.view insertSubview:_mainScrollView belowSubview:_topTitleView];
@@ -68,8 +69,8 @@
     
     CGFloat offsetX = index * self.view.frame.size.width;
     
-    UIViewController *vc = self.childViewControllers[index];
-    
+    XiaoXiViewController *vc = self.childViewControllers[index];
+    vc.tagg=_tagg;
     // 判断控制器的view有没有加载过,如果已经加载过,就不需要加载
     if (vc.isViewLoaded) return;
     
@@ -81,10 +82,12 @@
 - (void)setupChildViewController {
     //
     XiaoXiViewController *oneVC = [[XiaoXiViewController alloc] init];
+    oneVC.tagg=_tagg;
     [self addChildViewController:oneVC];
     
     //
     XiaoXiViewController *twoVC = [[XiaoXiViewController alloc] init];
+    oneVC.tagg=_tagg;
     [self addChildViewController:twoVC];
     
 }

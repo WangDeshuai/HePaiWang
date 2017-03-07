@@ -16,6 +16,9 @@
 #import "MessageVC.h"//个人信息
 #import "PublicYuGaovc.h"//发布预告
 #import "ShiMingRenZhengVC.h"//实名认证
+#import "BaseTableBarVC.h"
+#import "BaseNavigationController.h"
+//#import "<#header#>"
 @interface MyVC ()<UITableViewDelegate,UITableViewDataSource>
 {
     UIImageView * bgImage;
@@ -127,6 +130,10 @@
     if (indexPath.section==0) {
         if (indexPath.row==0) {
             //发布新标的
+            BaseTableBarVC * vc =[BaseTableBarVC new];
+
+//             BaseNavigationController *nav = [[BaseNavigationController alloc] initWithRootViewController:vc];
+            WINDOW.rootViewController =vc;
         }else{
             //发布预告
             PublicYuGaovc * vc =[PublicYuGaovc new];

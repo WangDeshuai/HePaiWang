@@ -18,6 +18,10 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.title=@"详情页";
+    [self CreatTime];
+}
+-(void)getData{
+    ;
 }
 -(void)CreatTime{
     UILabel * timeLabel =[UILabel new];
@@ -29,6 +33,29 @@
     .heightIs(20)
     .topSpaceToView(self.view,15);
     [timeLabel setSingleLineAutoResizeWithMaxWidth:200];
+    
+    UILabel * contentLabel =[UILabel new];
+    contentLabel.backgroundColor=[UIColor whiteColor];
+    contentLabel.alpha=.7;
+    contentLabel.text=@"您已参加稍后拍卖会，保证金马上到账您已参加稍后拍卖会，保证金马上到账您已参加稍后拍卖会，保证金马上到账您已参加稍后拍卖会，保证金马上到账您已参加稍后拍卖会，保证金马上到账";
+    [self.view sd_addSubviews:@[contentLabel]];
+    contentLabel.sd_layout
+    .leftSpaceToView(self.view,10)
+    .rightSpaceToView(self.view,10)
+    .topSpaceToView(timeLabel,20)
+    .autoHeightRatio(0);
+    
+    [Engine messageViewMessageID:_model.messageID success:^(NSDictionary *dic) {
+        NSString * code =[NSString stringWithFormat:@"%@",[dic objectForKey:@"code"]];
+        if ([code isEqualToString:@"1"]) {
+            NSDictionary * dicc =[dic objectForKey:@"content"];
+            timeLabel.text=[dicc objectForKey:@"send_time"];
+            contentLabel.text=[dicc objectForKey:@"message_content"];
+        }
+    } error:^(NSError *error) {
+        
+    }];
+    
 }
 
 - (void)didReceiveMemoryWarning {

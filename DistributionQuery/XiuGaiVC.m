@@ -78,7 +78,7 @@
             [self.navigationController popViewControllerAnimated:YES];
         }
     } error:^(NSError *error) {
-        
+        [LCProgressHUD showMessage:@"20网络错误"];
     }];
     
 

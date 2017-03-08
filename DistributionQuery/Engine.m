@@ -618,4 +618,32 @@
     }];
     
 }
+#pragma mark --26公告详请页
++(void)PaiMaiPublicMessageID:(NSString*)messageID success:(SuccessBlock)aSuccess error:(ErrorBlock)aError{
+    
+    NSString * urlStr =[NSString stringWithFormat:@"%@auction/app_qryAuctionDetailInfo.action",SER_VICE];
+    
+    AFHTTPRequestOperationManager * manager =[AFHTTPRequestOperationManager manager];
+    NSMutableDictionary * dic =[NSMutableDictionary new];
+    NSString * uuid =[NSUSE_DEFO objectForKey:@"UUID"];
+    if (uuid==nil) {
+        [LCProgressHUD showMessage:@"无法获取当前设备UUID"];
+        return;
+    }
+    [dic setObject:@"ios" forKey:@"osType"];
+    [dic setObject:uuid forKey:@"unique_id"];
+    [dic setObject:messageID forKey:@"auction_id"];
+    
+    [manager POST:urlStr parameters:dic success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSData *data = [NSJSONSerialization dataWithJSONObject:responseObject options:NSJSONWritingPrettyPrinted error:nil];
+        NSString *str = [[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding];
+        NSLog(@"26公告详请页%@",str);
+        
+        aSuccess(responseObject);
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"26公告详请页%@",error);
+        aError(error);
+        
+    }];
+}
 @end

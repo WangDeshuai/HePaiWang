@@ -9,5 +9,5 @@
 #import "BaseViewController.h"
 
 @interface PaiMaiGongGaoXiangQingVC : BaseViewController
-
+@property(nonatomic,copy)NSString * messageID;//信息ID
 @end

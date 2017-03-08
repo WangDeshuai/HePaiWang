@@ -68,5 +68,6 @@ typedef void (^ErrorBlock)(NSError*error);
 #pragma mark --25查询拍卖公告列表
 +(void)upDataPaiMaiPublicViewSearchStr:(NSString*)searStr  BiaoDiLeiXing:(NSString*)baiDiStyle ProvCode:(NSString*)shengcode CityCode:(NSString*)citycode BeginTime:(NSString*)time Page:(NSString*)page PageSize:(NSString*)pagesize success:(SuccessBlock)aSuccess error:(ErrorBlock)aError;
 
-
+#pragma mark --26公告详请页
++(void)PaiMaiPublicMessageID:(NSString*)messageID success:(SuccessBlock)aSuccess error:(ErrorBlock)aError;
 @end

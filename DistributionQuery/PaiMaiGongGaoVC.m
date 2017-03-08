@@ -473,7 +473,9 @@
         
         [self dissmiss];
     }else{
+        PaiMaiGongGaoModel * md =_dataArray[indexPath.row];
         PaiMaiGongGaoXiangQingVC * vc =[PaiMaiGongGaoXiangQingVC new];
+        vc.messageID=md.messageID;
         [self.navigationController pushViewController:vc animated:YES];
         
     }

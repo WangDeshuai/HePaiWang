@@ -107,9 +107,7 @@
     
     return cell;
 }
--(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
-    return 0;
-}
+
 
 //-(UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
 //    UIView * bgView =[UIView new];
@@ -254,7 +252,7 @@
     .heightIs(20);
     [self.secondLabel setSingleLineAutoResizeWithMaxWidth:100];
     [self.secondLabel setupAutoWidthWithRightView:view22 rightMargin:20];
-    [self dataRiqi];
+    [self dataRiqiTime:@"2016-11-22 12:00:00"];
 
 //    UILabel * timeDaoLabel=[UILabel new];
 //    timeDaoLabel.text=@"3 天 20 时 23 分 50 秒";
@@ -278,34 +276,81 @@
     .topSpaceToView(strLabel,15)
     .heightIs(1);
 
-    //赋值
-     NSString * str1 =[NSString stringWithFormat:@"保证金     3万"];
-     NSString * str2 =[NSString stringWithFormat:@"保留价     3万"];
-     NSString * str3 =[NSString stringWithFormat:@"优先购买权   无"];
-     NSString * str4 =[NSString stringWithFormat:@"评估价     10万"];
-     NSString * str5 =[NSString stringWithFormat:@"报名截止   2016-11-30"];
-     NSString * str6 =[NSString stringWithFormat:@"拍卖类型   其它拍卖"];
-    NSArray * nameArr =@[str1,str2,str3,str4,str5,str6];
-    
-    //保证金6个label
-    int k=ScreenWidth/2-20;
-    int d =(ScreenWidth-k*2)/3;
-    for (int i=0; i<nameArr.count; i++) {
-        UILabel * nameLabel =[UILabel new];
-        nameLabel.alpha=.6;
-        nameLabel.font=[UIFont systemFontOfSize:13];
-        nameLabel.text=nameArr[i];
-        [view22 sd_addSubviews:@[nameLabel]];
-        nameLabel.sd_layout
-        .leftSpaceToView(view22,d+(k+d)*(i%2))
-        .topSpaceToView(lineView,15+(15+20)*(i/2))
-        .widthIs(k)
-        .heightIs(20);
-        [view22 setupAutoHeightWithBottomView:nameLabel bottomMargin:15];
-       
-    }
+//    //赋值
+//     NSString * str1 =[NSString stringWithFormat:@"保证金     3万"];
+//     NSString * str2 =[NSString stringWithFormat:@"保留价     3万"];
+//     NSString * str3 =[NSString stringWithFormat:@"优先购买权   无"];
+//     NSString * str4 =[NSString stringWithFormat:@"评估价     10万"];
+//     NSString * str5 =[NSString stringWithFormat:@"报名截止   2016-11-30"];
+//     NSString * str6 =[NSString stringWithFormat:@"拍卖类型   其它拍卖"];
+//    NSArray * nameArr =@[str1,str2,str3,str4,str5,str6];
+//    
+//    //保证金6个label
+//    int k=ScreenWidth/2-20;
+//    int d =(ScreenWidth-k*2)/3;
+//    for (int i=0; i<nameArr.count; i++) {
+//        UILabel * nameLabel =[UILabel new];
+//        nameLabel.alpha=.6;
+//        nameLabel.font=[UIFont systemFontOfSize:13];
+//        nameLabel.text=nameArr[i];
+//        [view22 sd_addSubviews:@[nameLabel]];
+//        nameLabel.sd_layout
+//        .leftSpaceToView(view22,d+(k+d)*(i%2))
+//        .topSpaceToView(lineView,15+(15+20)*(i/2))
+//        .widthIs(k)
+//        .heightIs(20);
+//        [view22 setupAutoHeightWithBottomView:nameLabel bottomMargin:15];
+//       
+//    }
    
        [self loginBefo:view22];
+    [Engine PaiMaiPublicMessageID:_messageID success:^(NSDictionary *dic) {
+        NSString * code =[NSString stringWithFormat:@"%@",[dic objectForKey:@"code"]];
+        if ([code isEqualToString:@"1"]) {
+            NSDictionary * contetDic =[dic objectForKey:@"content"];
+            NSDictionary *infoDic =[contetDic objectForKey:@"auctionInfo"];
+            //标题
+            titleLabel.text=[ToolClass isString:[NSString stringWithFormat:@"%@",[infoDic objectForKey:@"auction_name"]]];
+            //公告时间
+             timeLabel.text=[ToolClass isString:[NSString stringWithFormat:@"公告时间   %@",[infoDic objectForKey:@"auction_add_time"]]];
+            //开始日期
+             [self dataRiqiTime:[ToolClass isString:[NSString stringWithFormat:@"%@",[infoDic objectForKey:@"auction_begin_time"]]]];
+            //赋值
+            NSString * str1 =[NSString stringWithFormat:@"保证金     %@",[ToolClass isString:[NSString stringWithFormat:@"%@",[infoDic objectForKey:@"auction_deposit_value"]]]];
+            NSString * str2 =[NSString stringWithFormat:@"保留价     %@",[ToolClass isString:[NSString stringWithFormat:@"%@",[infoDic objectForKey:@"auction_use_reserve_price"]]]];
+            NSString * str3 =[NSString stringWithFormat:@"优先购买权   %@",[ToolClass isString:[NSString stringWithFormat:@"%@",[infoDic objectForKey:@"auction_use_preferential_buy"]]]];
+            NSString * str4 =[NSString stringWithFormat:@"预展地点     %@",[ToolClass isString:[NSString stringWithFormat:@"%@",[infoDic objectForKey:@"auction_preview_cityname"]]]];
+            NSString * str5 =[NSString stringWithFormat:@"报名截止   %@",[ToolClass isString:[NSString stringWithFormat:@"%@",[infoDic objectForKey:@"auction_preview_end_time"]]]];
+            NSString * str6 =[NSString stringWithFormat:@"预展时间   %@",[ToolClass isString:[NSString stringWithFormat:@"%@",[infoDic objectForKey:@"auction_preview_begin_time"]]]];
+            NSArray * nameArr =@[str1,str2,str3,str4,str5,str6];
+            //保证金6个label
+            int k=ScreenWidth/2-20;
+            int d =(ScreenWidth-k*2)/3;
+            for (int i=0; i<nameArr.count; i++) {
+                UILabel * nameLabel =[UILabel new];
+                nameLabel.alpha=.6;
+                nameLabel.font=[UIFont systemFontOfSize:13];
+                nameLabel.text=nameArr[i];
+                [view22 sd_addSubviews:@[nameLabel]];
+                nameLabel.sd_layout
+                .leftSpaceToView(view22,d+(k+d)*(i%2))
+                .topSpaceToView(lineView,15+(15+20)*(i/2))
+                .widthIs(k)
+                .heightIs(20);
+                [view22 setupAutoHeightWithBottomView:nameLabel bottomMargin:15];
+                
+            }
+
+        }else{
+            [LCProgressHUD showMessage:[dic objectForKey:@"msg"]];
+        }
+    } error:^(NSError *error) {
+        
+    }];
+    
+    
+    
+    
     return _view1;
 //    if ([ToolClass isLogin]) {
 //        
@@ -321,12 +366,12 @@
 //    }
 }
 
--(void)dataRiqi{
-    
+-(void)dataRiqiTime:(NSString*)timeStr{
+    NSLog(@"开始日期%@",timeStr);
     NSDateFormatter *dateFormatter=[[NSDateFormatter alloc] init];
     [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
     
-    NSDate *endDate = [dateFormatter dateFromString:@"2016-12-05 18:00:00"];
+    NSDate *endDate = [dateFormatter dateFromString:timeStr];
     //NSDate *endDate_tomorrow = [[NSDate alloc] initWithTimeIntervalSinceReferenceDate:([endDate timeIntervalSinceReferenceDate] + 24*3600)];
     NSDate *startDate = [NSDate date];
     NSTimeInterval timeInterval =[endDate timeIntervalSinceDate:startDate];

@@ -582,4 +582,40 @@
         
     }];
 }
+#pragma mark --25查询拍卖公告列表
++(void)upDataPaiMaiPublicViewSearchStr:(NSString*)searStr  BiaoDiLeiXing:(NSString*)baiDiStyle ProvCode:(NSString*)shengcode CityCode:(NSString*)citycode BeginTime:(NSString*)time Page:(NSString*)page PageSize:(NSString*)pagesize success:(SuccessBlock)aSuccess error:(ErrorBlock)aError{
+    
+    
+    NSString * urlStr =[NSString stringWithFormat:@"%@auction/app_qryAuctionList.action",SER_VICE];
+    
+    AFHTTPRequestOperationManager * manager =[AFHTTPRequestOperationManager manager];
+    NSMutableDictionary * dic =[NSMutableDictionary new];
+    NSString * uuid =[NSUSE_DEFO objectForKey:@"UUID"];
+    if (uuid==nil) {
+        [LCProgressHUD showMessage:@"无法获取当前设备UUID"];
+        return;
+    }
+    [dic setObject:@"ios" forKey:@"osType"];
+    [dic setObject:uuid forKey:@"unique_id"];
+    [dic setObject:searStr forKey:@"search_content"];
+    [dic setObject:baiDiStyle forKey:@"target_type"];
+    [dic setObject:shengcode forKey:@"prov_code"];
+    [dic setObject:citycode forKey:@"city_code"];
+    [dic setObject:time forKey:@"begin_time"];
+    [dic setObject:page forKey:@"pageIndex"];
+    [dic setObject:pagesize forKey:@"pageSize"];
+    
+    [manager POST:urlStr parameters:dic success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSData *data = [NSJSONSerialization dataWithJSONObject:responseObject options:NSJSONWritingPrettyPrinted error:nil];
+        NSString *str = [[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding];
+        NSLog(@"25查询拍卖公告列表%@",str);
+        
+        aSuccess(responseObject);
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"25查询拍卖公告列表%@",error);
+        aError(error);
+        
+    }];
+    
+}
 @end

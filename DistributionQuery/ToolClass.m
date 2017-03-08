@@ -403,4 +403,22 @@ BOOL DeleteSingleFile(NSString *filePath){
         }
     }
 }
+
+#pragma mark --获取UUID
++(NSString*)getUUIDStr{
+    
+    NSString * uuidStr =[NSUSE_DEFO objectForKey:@"UUID"];
+    if (uuidStr) {
+        return uuidStr;
+    }else{
+        CFUUIDRef puuid = CFUUIDCreate( nil );
+        CFStringRef uuidString = CFUUIDCreateString( nil, puuid );
+        NSString * result = (NSString *)CFBridgingRelease(CFStringCreateCopy( NULL, uuidString));
+        CFRelease(puuid);
+        CFRelease(uuidString);
+        [NSUSE_DEFO setObject:result forKey:@"UUID"];
+        [NSUSE_DEFO synchronize];
+        return result;
+    }
+}
 @end

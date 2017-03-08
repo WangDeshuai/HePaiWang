@@ -24,31 +24,36 @@
      self.backHomeBtn.hidden=YES;
     [self CreatTabelView];
   
-    [self CreatButton];
+   
 }
 #pragma mark --创建提交按钮
 -(void)CreatButton{
     UIButton * tijaoBtn =[UIButton new];
     tijaoBtn.backgroundColor=[UIColor redColor];
     [tijaoBtn setTitle:@"确认提交" forState:0];
+    tijaoBtn.frame=CGRectMake(30, ScreenHeight-64-49-45-10, ScreenWidth-60, 45);
     tijaoBtn.titleLabel.font=[UIFont systemFontOfSize:16];
-    [self.view sd_addSubviews:@[tijaoBtn]];
-    tijaoBtn.sd_layout
-    .leftSpaceToView(self.view,20)
-    .rightSpaceToView(self.view,20)
-    .bottomSpaceToView(self.view,100)
-    .heightIs(45);
+    [_tableView addSubview:tijaoBtn];
+//    [_tableView sd_addSubviews:@[tijaoBtn]];
+//   
+//    
+//    
+//    tijaoBtn.sd_layout
+//    .widthIs(200)
+//    .leftSpaceToView(_tableView,30)
+//    .topSpaceToView(_tableView,200)
+//    .heightIs(40);    18131120040
 }
 #pragma mark --数据源
 -(void)CreatDataArr{
     if ([ToolClass isLogin]) {
-        NSArray * arr1 =@[@"联系人",@"手机号"];
-        NSArray * arr2 =@[@"标的名称",@"标的描述",@"标的瑕癖",@"标的所在地"];
+        NSArray * arr1 =@[@"联   系   人",@"手   机   号"];
+        NSArray * arr2 =@[@"标 的 名 称",@"标 的 描 述",@"标 的 瑕 癖",@"标的所在地"];
         NSArray * arr3 =@[@"标的保留价",@"标的评估价"];
         _dataArray=[[NSMutableArray alloc]initWithObjects:arr1,arr2,arr3, nil];
     }else{
-        NSArray * arr1 =@[@"联系人",@"手机号",@"验证码"];
-        NSArray * arr2 =@[@"标的名称",@"标的描述",@"标的瑕癖",@"标的所在地"];
+        NSArray * arr1 =@[@"联   系   人",@"手   机   号",@"验   证   码"];
+        NSArray * arr2 =@[@"标 的 名 称",@"标 的 描 述",@"标 的 瑕 癖",@"标的所在地"];
         _dataArray=[[NSMutableArray alloc]initWithObjects:arr1,arr2, nil];
     }
     [_tableView reloadData];
@@ -58,20 +63,16 @@
     if (!_tableView) {
         _tableView=[[UITableView alloc]initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight-64) style:UITableViewStylePlain];
     }
-    _tableView.scrollEnabled=NO;
+//    _tableView.scrollEnabled=NO;
     _tableView.backgroundColor=BG_COLOR;
     _tableView.tableFooterView=[UIView new];
     _tableView.dataSource=self;
     _tableView.delegate=self;
+    _tableView.keyboardDismissMode=UIScrollViewKeyboardDismissModeOnDrag;
     [self.view addSubview:_tableView];
-    UITapGestureRecognizer * tap =[[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(tap:)];
-    [_tableView addGestureRecognizer:tap];
+     [self CreatButton];
 }
--(void)tap:(UITapGestureRecognizer*)tap{
-    NSLog(@"点击了");
-    [_tableView endEditing:YES];
-   
-}
+
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
     return _dataArray.count;
 }

@@ -67,4 +67,7 @@
 #pragma mark --删除plist文件
 +(void)deleagtePlistName:(NSString*)plistName;
 
+#pragma mark --获取UUID
++(NSString*)getUUIDStr;
+
 @end

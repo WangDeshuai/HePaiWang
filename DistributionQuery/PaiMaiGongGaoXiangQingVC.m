@@ -33,14 +33,14 @@
     self.title=@"拍卖公告";
    
     
-    if ([ToolClass isLogin]) {
-        [self CreatTableView];
-    }else{
-        [self.view addSubview:[self CreatView1]];
-        [self CreatView2];//拍卖地点
-        [self CreatView3];//上一篇下一篇
-    }
-    
+//    if ([ToolClass isLogin]) {
+//        [self CreatTableView];
+//    }else{
+//        [self.view addSubview:[self CreatView1]];
+//        [self CreatView2];//拍卖地点
+//        [self CreatView3];//上一篇下一篇
+//    }
+     [self CreatTableView];
      [self twoBtn];
     
     
@@ -52,7 +52,7 @@
 #pragma mark --创建表
 -(void)CreatTableView{
     if (!_tableView) {
-        _tableView=[[UITableView alloc]initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight-48) style:UITableViewStylePlain];
+        _tableView=[[UITableView alloc]initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight-48-76/2-20) style:UITableViewStylePlain];
     }
     _tableView.delegate=self;
     _tableView.dataSource=self;
@@ -64,36 +64,69 @@
 
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    return 10;
+    return 2;
 }
 -(UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     UITableViewCell * cell =[tableView dequeueReusableCellWithIdentifier:@"Cell"];
     if (!cell) {
         cell=[[UITableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"Cell"];
+        UILabel * namelabel =[UILabel new];
+        namelabel.tag=1;
+        UILabel * contentLabel=[UILabel new];
+        contentLabel.tag=2;
+        [cell sd_addSubviews:@[namelabel,contentLabel]];
     }
-    cell.textLabel.text=[NSString stringWithFormat:@"第%lu行",indexPath.row];
+    
+    UILabel * nameLabel =[cell viewWithTag:1];
+    UILabel * contentLabel=[cell viewWithTag:2];
+    nameLabel.textColor=[UIColor redColor];
+    nameLabel.alpha=.7;
+    nameLabel.sd_layout
+    .leftSpaceToView(cell,15)
+    .centerYEqualToView(cell)
+    .heightIs(20);
+    [nameLabel setSingleLineAutoResizeWithMaxWidth:120];
+    contentLabel.alpha=.7;
+    
+    contentLabel.sd_layout
+    .leftSpaceToView(nameLabel,15)
+    .rightSpaceToView(cell,15)
+    .centerYEqualToView(cell)
+    .heightIs(20);
+    
+    if (indexPath.row==0) {
+        nameLabel.text=@"上一篇";
+        contentLabel.text=@"帕萨特北京现代荣威雪佛兰别克";
+    }else{
+        nameLabel.text=@"下一篇";
+        contentLabel.text=@"吉利牌小轿车拍卖公告";
+    }
+    
+   // cell.textLabel.text=[NSString stringWithFormat:@"第%lu行",indexPath.row];
+    
+    
     return cell;
 }
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
-    return 44;
+    return 0;
 }
 
--(UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
-    UIView * bgView =[UIView new];
-    bgView.backgroundColor=[UIColor redColor];
-    UILabel * publicLabel =[UILabel new];
-    publicLabel.text=@"拍卖公告";
-    publicLabel.font=[UIFont systemFontOfSize:15];
-    publicLabel.alpha=.6;
-    [bgView sd_addSubviews:@[publicLabel]];
-    publicLabel.sd_layout
-    .leftSpaceToView(bgView,15)
-    .centerYEqualToView(bgView)
-    .heightIs(20);
-    [publicLabel setSingleLineAutoResizeWithMaxWidth:120];
-    return bgView;
-    
-}
+//-(UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
+//    UIView * bgView =[UIView new];
+//    bgView.backgroundColor=[UIColor redColor];
+//    UILabel * publicLabel =[UILabel new];
+//    publicLabel.text=@"拍卖公告";
+//    publicLabel.font=[UIFont systemFontOfSize:15];
+//    publicLabel.alpha=.6;
+//    [bgView sd_addSubviews:@[publicLabel]];
+//    publicLabel.sd_layout
+//    .leftSpaceToView(bgView,15)
+//    .centerYEqualToView(bgView)
+//    .heightIs(20);
+//    [publicLabel setSingleLineAutoResizeWithMaxWidth:120];
+//    return bgView;
+//    
+//}
 
 
 
@@ -115,14 +148,16 @@
     }
     
 }
+#pragma mark --区头
 -(UIView*)CreatView1{
     _view1=[UIView new];
     _view1.backgroundColor=BG_COLOR;
-    if ([ToolClass isLogin]) {
-        _view1.frame=CGRectMake(0, 0, ScreenWidth, 574);
-    }else{
-       _view1.frame=CGRectMake(0, 0, ScreenWidth, 259);
-    }
+    _view1.frame=CGRectMake(0, 0, ScreenWidth, 574);
+//    if ([ToolClass isLogin]) {
+//        _view1.frame=CGRectMake(0, 0, ScreenWidth, 574);
+//    }else{
+//       _view1.frame=CGRectMake(0, 0, ScreenWidth, 259);
+//    }
     
     UIView * view11 =[UIView new];
     view11.backgroundColor=[UIColor whiteColor];
@@ -270,20 +305,20 @@
        
     }
    
-       
-   
-    if ([ToolClass isLogin]) {
-        [self loginBefo:view22];
-        
-        return _view1;
-    }else{
-       
-//     [_view1 setupAutoHeightWithBottomView:view22 bottomMargin:5];
-//        _view1.didFinishAutoLayoutBlock=^(CGRect rect){
-//            NSLog(@">>>>%f",rect.origin.y+rect.size.height);
-//        };
-      return _view1;
-    }
+       [self loginBefo:view22];
+    return _view1;
+//    if ([ToolClass isLogin]) {
+//        
+//        
+//        return _view1;
+//    }else{
+//       
+////     [_view1 setupAutoHeightWithBottomView:view22 bottomMargin:5];
+////        _view1.didFinishAutoLayoutBlock=^(CGRect rect){
+////            NSLog(@">>>>%f",rect.origin.y+rect.size.height);
+////        };
+//      return _view1;
+//    }
 }
 
 -(void)dataRiqi{
@@ -364,7 +399,10 @@
 }
 
 
-
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return 50;
+}
 
 //登录之后
 -(void)loginBefo:(UIView*)view22{
@@ -389,23 +427,35 @@
     .rightSpaceToView(addressView,15)
     .heightIs(20);
     
-//    UIView * lineView =[UIView new];
-//    lineView.backgroundColor=BG_COLOR;
-//    [addressView sd_addSubviews:@[lineView]];
-//    lineView.sd_layout
-//    .leftSpaceToView(addressView,0)
-//    .rightSpaceToView(addressView,0)
-//    .topSpaceToView(paiMaiLabel,15)
-//    .heightIs(1);
-//公告详情
-    UIButton * gongGaoBtn =[UIButton buttonWithType:UIButtonTypeCustom];
-    [gongGaoBtn setImage:[UIImage imageNamed:@"bg11"] forState:0];
-    [addressView sd_addSubviews:@[gongGaoBtn]];
-    gongGaoBtn.sd_layout
+    UIView * lineView =[UIView new];
+    lineView.backgroundColor=BG_COLOR;
+    [addressView sd_addSubviews:@[lineView]];
+    lineView.sd_layout
     .leftSpaceToView(addressView,0)
     .rightSpaceToView(addressView,0)
-    .topSpaceToView(paiMaiLabel,30)
-    .heightIs(15);
+    .topSpaceToView(paiMaiLabel,15)
+    .heightIs(1);
+//公告详情
+//    UIButton * gongGaoBtn =[UIButton buttonWithType:UIButtonTypeCustom];
+//    [gongGaoBtn setImage:[UIImage imageNamed:@"bg11"] forState:0];
+//    [addressView sd_addSubviews:@[gongGaoBtn]];
+//    gongGaoBtn.sd_layout
+//    .leftSpaceToView(addressView,0)
+//    .rightSpaceToView(addressView,0)
+//    .topSpaceToView(paiMaiLabel,30)
+//    .heightIs(15);
+    UITextView * gongGaoXq =[UITextView new];
+    gongGaoXq.editable=NO;
+    gongGaoXq.text=@"公告详情:日产50吨烘干设备专线公司我难得看是发放啊啊大啊啊噶刚日产50吨烘干设备专线公司我难得看是发放啊啊大啊啊噶刚日产50吨烘干设备专线公司我难得看是发放啊啊大啊啊噶刚";
+    gongGaoXq.alpha=.6;
+    gongGaoXq.font=[UIFont systemFontOfSize:14];
+    [addressView sd_addSubviews:@[gongGaoXq]];
+    gongGaoXq.sd_layout
+    .leftSpaceToView(addressView,15)
+    .rightSpaceToView(addressView,15)
+    .topSpaceToView(lineView,5)
+    .heightIs(40);
+    
     
     //标的目标
     UIView * biaoView =[UIView new];
@@ -484,51 +534,51 @@
 
 #pragma mark --/**********************未登录状态加载*********************/
 
--(void)CreatView2{
-    _view2=[UIView new];
-    _view2.backgroundColor=[UIColor whiteColor];//BG_COLOR;
-    [self.view sd_addSubviews:@[_view2]];
-    _view2.sd_layout
-    .leftSpaceToView(self.view,0)
-    .rightSpaceToView(self.view,0)
-    .topSpaceToView(_view1,0)
-    .heightIs(60);
-
-    //拍卖地点
-    UILabel * strLabel=[UILabel new];
-    strLabel.text=@"拍卖地点        河北石家庄市长安区";
-    strLabel.font=[UIFont systemFontOfSize:16];
-    strLabel.alpha=.6;
-    [_view2 sd_addSubviews:@[strLabel]];
-    strLabel.sd_layout
-    .topSpaceToView(_view2,15)
-    .leftSpaceToView(_view2,15)
-    .autoHeightRatio(0);
-    [strLabel setSingleLineAutoResizeWithMaxWidth:ScreenWidth];
-    //线条
-    UIView * lineView =[UIView new];
-    lineView.backgroundColor=BG_COLOR;
-    [_view2 sd_addSubviews:@[lineView]];
-    lineView.sd_layout
-    .leftSpaceToView(_view2,0)
-    .rightSpaceToView(_view2,0)
-    .topSpaceToView(strLabel,15)
-    .heightIs(1);
-    //拍卖详情
-    UILabel * xiangQing =[UILabel new];
-    xiangQing.text=@"公告详情:日产50吨烘干设备专线，该公告被设定了权限，如果需要知道详情，请登录后点击查看";
-    xiangQing.font=[UIFont systemFontOfSize:14];
-    xiangQing.numberOfLines=0;
-    xiangQing.alpha=.6;
-    [_view2 sd_addSubviews:@[xiangQing]];
-    xiangQing.sd_layout
-    .topSpaceToView(lineView,15)
-    .leftSpaceToView(_view2,15)
-    .rightSpaceToView(_view2,15)
-    .autoHeightRatio(0);
-    [_view2 setupAutoHeightWithBottomView:xiangQing bottomMargin:10];
-    
-}
+//-(void)CreatView2{
+//    _view2=[UIView new];
+//    _view2.backgroundColor=[UIColor whiteColor];//BG_COLOR;
+//    [self.view sd_addSubviews:@[_view2]];
+//    _view2.sd_layout
+//    .leftSpaceToView(self.view,0)
+//    .rightSpaceToView(self.view,0)
+//    .topSpaceToView(_view1,0)
+//    .heightIs(60);
+//
+//    //拍卖地点
+//    UILabel * strLabel=[UILabel new];
+//    strLabel.text=@"拍卖地点        河北石家庄市长安区";
+//    strLabel.font=[UIFont systemFontOfSize:16];
+//    strLabel.alpha=.6;
+//    [_view2 sd_addSubviews:@[strLabel]];
+//    strLabel.sd_layout
+//    .topSpaceToView(_view2,15)
+//    .leftSpaceToView(_view2,15)
+//    .autoHeightRatio(0);
+//    [strLabel setSingleLineAutoResizeWithMaxWidth:ScreenWidth];
+//    //线条
+//    UIView * lineView =[UIView new];
+//    lineView.backgroundColor=BG_COLOR;
+//    [_view2 sd_addSubviews:@[lineView]];
+//    lineView.sd_layout
+//    .leftSpaceToView(_view2,0)
+//    .rightSpaceToView(_view2,0)
+//    .topSpaceToView(strLabel,15)
+//    .heightIs(1);
+//    //拍卖详情
+//    UILabel * xiangQing =[UILabel new];
+//    xiangQing.text=@"公告详情:日产50吨烘干设备专线，该公告被设定了权限，如果需要知道详情，请登录后点击查看";
+//    xiangQing.font=[UIFont systemFontOfSize:14];
+//    xiangQing.numberOfLines=0;
+//    xiangQing.alpha=.6;
+//    [_view2 sd_addSubviews:@[xiangQing]];
+//    xiangQing.sd_layout
+//    .topSpaceToView(lineView,15)
+//    .leftSpaceToView(_view2,15)
+//    .rightSpaceToView(_view2,15)
+//    .autoHeightRatio(0);
+//    [_view2 setupAutoHeightWithBottomView:xiangQing bottomMargin:10];
+//    
+//}
 -(void)CreatView3{
     UIButton * upBtn =[UIButton buttonWithType:UIButtonTypeCustom];
     [upBtn setBackgroundImage:[UIImage imageNamed:@"1"] forState:0];

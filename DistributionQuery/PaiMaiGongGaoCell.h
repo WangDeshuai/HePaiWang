@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "PaiMaiGongGaoModel.h"
 @interface PaiMaiGongGaoCell : UITableViewCell
 +(instancetype)cellWithTableView:(UITableView*)tableView CellID:(NSString*)cellID;
 @property(nonatomic,strong)UIButton * lijiBaoMiang;
+@property(nonatomic,strong)PaiMaiGongGaoModel * model;
 @end

@@ -101,8 +101,8 @@
     _baoMingLabel.sd_layout
     .leftSpaceToView(_baomingImage,10)
     .centerYEqualToView(_baomingImage)
+    .rightSpaceToView(self.contentView,10)
     .heightIs(20);
-    [_baoMingLabel setSingleLineAutoResizeWithMaxWidth:ScreenWidth-200];
     //截止图标
     _jiezhiImage.sd_layout
     .leftEqualToView(_baomingImage)
@@ -113,8 +113,9 @@
     _jieZhiLabel.sd_layout
     .leftEqualToView(_baoMingLabel)
     .centerYEqualToView(_jiezhiImage)
+    .rightSpaceToView(self.contentView,10)
     .heightIs(20);
-    [_jieZhiLabel setSingleLineAutoResizeWithMaxWidth:ScreenWidth-200];
+    //[_jieZhiLabel setSingleLineAutoResizeWithMaxWidth:ScreenWidth-200];
     //地区图标
     _dwImage.sd_layout
     .leftEqualToView(_baomingImage)
@@ -136,6 +137,26 @@
     .heightIs(48/2);
     
     
+}
+-(void)setModel:(PaiMaiGongGaoModel *)model
+{
+    _model=model;
+    /*
+     //赋值
+     _titleLabel.text=@"特钢公司800热轧带钢精整设备等物品拍卖公告";
+     _baoMingLabel.text=@"报名开始  2016/11/10";
+     _jieZhiLabel.text=@"报名截止  2016/11/20";
+     _cityLabel.text=@"所在地区  河北石家庄市";
+     _baomingImage.image=[UIImage imageNamed:@"gonggao_time"];//24  26
+     _jiezhiImage.image=[UIImage imageNamed:@"gonggao_stop"];//22 22
+     _dwImage.image=[UIImage imageNamed:@"gonggao_dingwei"];//22  26
+     [_lijiBaoMiang setBackgroundImage:[UIImage imageNamed:@"gonggao_bm"] forState:0];//130 48
+     */
+    
+    _titleLabel.text=model.titleName;
+    _baoMingLabel.text=[NSString stringWithFormat:@"报名开始    %@",model.strTime];
+    _jieZhiLabel.text=[NSString stringWithFormat:@"报名截止    %@",model.endTime];
+    _cityLabel.text=[NSString stringWithFormat:@"所在地区    %@",model.diqu];
 }
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];

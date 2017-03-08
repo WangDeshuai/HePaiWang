@@ -210,6 +210,18 @@
     
     
 }
+
+-(void)setTwoModel:(PaiMaiBiaoDiModel *)twoModel{
+    _twoModel=twoModel;
+    
+    [_leftImage setImageWithURL:[NSURL URLWithString:twoModel.leftImage] placeholderImage:[UIImage imageNamed:@"liebiao_pic1"]];
+    _titleLabel.text=twoModel.titleName;
+    _priceLabel.text=twoModel.price;
+    _cityLabel.text=twoModel.diqu;
+    _timeLabel.text=twoModel.time;
+    
+    
+}
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];
 

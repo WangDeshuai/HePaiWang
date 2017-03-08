@@ -11,9 +11,14 @@
 #import "PaiMaiGongGaoVC.h"
 #import "PaiMaiZiXunVC.h"
 #import "ChengJiaoAnLiVC.h"
+#import "PaiMaiBiaoDiModel.h"//拍卖标的model(横着的滚动图用)
+#import "PaiMaiGongGaoModel.h"//拍卖公告model(table用)
 @interface HomeVC ()<SDCycleScrollViewDelegate,UITableViewDelegate,UITableViewDataSource>
 @property(nonatomic,strong)UIView * headView;
 @property(nonatomic,strong)UITableView * tableView;
+@property(nonatomic,strong)NSMutableArray * dataArray;
+@property (nonatomic, strong) MJRefreshComponent *myRefreshView;
+@property(nonatomic,assign)int AAA;
 @end
 
 @implementation HomeVC
@@ -25,14 +30,10 @@
     [super viewDidLoad];
      self.backHomeBtn.hidden=YES;
     // Do any additional setup after loading the view.
-     //[self.navigationItem setTitle:@"配电查询"];
-    // [self CreatLunBoTu];
-   // [self CreatBtn];
-    //self.title=@"";
+    _dataArray=[NSMutableArray new];
     [self.navigationItem setTitle:@""];
     [self CreatNavBtn];
     [self CreatTableView];
-   // [self CreatView1];
 }
 
 #pragma mark --创建导航条按钮
@@ -58,6 +59,38 @@
     self.navigationItem.leftBarButtonItems=@[leftBtn,leftBtn2,leftBtn3];
     
 }
+
+#pragma mark --解析表格数据
+-(void)jieXiDataPage:(int)page{
+    [Engine upDataPaiMaiPublicViewSearchStr:@"" BiaoDiLeiXing:@"" ProvCode:@"" CityCode:@"" BeginTime:@"" Page:[NSString stringWithFormat:@"%d",page] PageSize:@"10" success:^(NSDictionary *dic) {
+        NSString * code =[NSString stringWithFormat:@"%@",[dic objectForKey:@"code"]];
+        if ([code isEqualToString:@"1"]) {
+            NSArray * contentArr =[dic objectForKey:@"content"];
+            NSMutableArray * array2 =[NSMutableArray new];
+            for (NSDictionary * dicc in contentArr) {
+                PaiMaiGongGaoModel * md =[[PaiMaiGongGaoModel alloc]initWithPaiMaiPublicDic:dicc];
+                [array2 addObject:md];
+            }
+            
+            if (self.myRefreshView ==_tableView.header) {
+                _dataArray=array2;
+                _tableView.footer.hidden=_dataArray.count==0?YES:NO;
+            }else if (self.myRefreshView == _tableView.footer){
+                [_dataArray addObjectsFromArray:array2];
+            }
+            [_tableView reloadData];
+            [_myRefreshView  endRefreshing];
+            
+            
+        }else{
+            [LCProgressHUD showMessage:[dic objectForKey:@"msg"]];
+
+        }
+    } error:^(NSError *error) {
+        
+    }];
+}
+
 #pragma mark --区头
 -(UIView*)CreatView1{
     _headView=[UIView new];
@@ -155,80 +188,94 @@
     .heightIs(160);
     [view2 setupAutoHeightWithBottomView:priceScrollview bottomMargin:10];
    
-    for (int i =0; i<5; i++) {
-        UIButton * bgView =[UIButton new];
-        bgView.tag=i;
-        bgView.layer.borderWidth=.5;
-        bgView.layer.borderColor=JXColor(205, 131, 137, 1).CGColor;
-        bgView.backgroundColor=JXColor(247, 247, 247, 1);
-        [bgView addTarget:self action:@selector(bgviewClick:) forControlEvents:UIControlEventTouchUpInside];
-        [priceScrollview sd_addSubviews:@[bgView]];
-        bgView.sd_layout
-        .leftSpaceToView(priceScrollview,15+(140+15)*i)
-        .topSpaceToView(priceScrollview,0)
-        .bottomSpaceToView(priceScrollview,0)
-        .widthIs(140);
-        //图片
-        UIImageView * imageview =[UIImageView new];
-        imageview.image=[UIImage imageNamed:@"banner"];
-        [bgView sd_addSubviews:@[imageview]];
-        imageview.sd_layout
-        .leftSpaceToView(bgView,0)
-        .rightSpaceToView(bgView,0)
-        .topSpaceToView(bgView,0)
-        .heightIs(80);
-        //标题
-        UILabel * titileLabel =[UILabel new];
-        titileLabel.numberOfLines=1;
-        titileLabel.font=[UIFont systemFontOfSize:15];
-        titileLabel.alpha=.8;
-        titileLabel.text=@"一大批闲置机械常淑萍沙发";
-        [bgView sd_addSubviews:@[titileLabel]];
-        titileLabel.sd_layout
-        .leftSpaceToView(bgView,0)
-        .topSpaceToView(imageview,10)
-        .heightIs(15);
-        [titileLabel setSingleLineAutoResizeWithMaxWidth:130];
-        //起拍价
-        UILabel * qiPaiLabel =[UILabel new];
-        qiPaiLabel.numberOfLines=1;
-        qiPaiLabel.font=[UIFont systemFontOfSize:16];
-        qiPaiLabel.alpha=.7;
-        qiPaiLabel.textColor=[UIColor redColor];
-        qiPaiLabel.text=@"起拍价:3.34万";
-        qiPaiLabel.attributedText=[ToolClass attrStrFrom:qiPaiLabel.text intFond:13 Color:[UIColor blackColor] numberStr:@"起拍价:"];
-        [bgView sd_addSubviews:@[qiPaiLabel]];
-        qiPaiLabel.sd_layout
-        .leftSpaceToView(bgView,5)
-        .topSpaceToView(titileLabel,10)
-        .widthIs(130)
-        .heightIs(15);
-       //时间
-        UILabel * timeLabel =[UILabel new];
-        timeLabel.text=@"11月04日 10:05 开始";
-        timeLabel.font=[UIFont systemFontOfSize:13];
-        timeLabel.textColor=[UIColor redColor];
-        timeLabel.alpha=.7;
-        timeLabel.attributedText=[ToolClass attrStrFrom:timeLabel.text intFond:13 Color:[UIColor blackColor] numberStr:@"开始"];
-        [bgView sd_addSubviews:@[timeLabel]];
-        timeLabel.sd_layout
-        .leftSpaceToView(bgView,5)
-        .topSpaceToView(qiPaiLabel,10)
-        .rightSpaceToView(bgView,5)
-        .heightIs(15);
-        
-        
-        
-    }
+    [Engine firstPaiMaiBiaoDiViewSearchStr:@"" BiaoDiStyle:@"" ProvCode:@"" CityCode:@"" Staus:@"" PageSize:@"5" PageIndex:@"1" success:^(NSDictionary *dic) {
+        NSString * code =[NSString stringWithFormat:@"%@",[dic objectForKey:@"code"]];
+        if ([code isEqualToString:@"1"]) {
+            NSArray * contentAr =[dic objectForKey:@"content"];
+            if (contentAr.count!=0) {
+                for (int i =0; i<contentAr.count; i++) {
+                    NSDictionary * dicc =contentAr[i];
+                    PaiMaiBiaoDiModel * model =[[PaiMaiBiaoDiModel alloc]initWithBiaoDiDic:dicc];
+                    UIButton * bgView =[UIButton new];
+                    bgView.tag=i;
+                    bgView.layer.borderWidth=.5;
+                    bgView.layer.borderColor=JXColor(205, 131, 137, 1).CGColor;
+                    bgView.backgroundColor=JXColor(247, 247, 247, 1);
+                    [bgView addTarget:self action:@selector(bgviewClick:) forControlEvents:UIControlEventTouchUpInside];
+                    [priceScrollview sd_addSubviews:@[bgView]];
+                    bgView.sd_layout
+                    .leftSpaceToView(priceScrollview,15+(140+15)*i)
+                    .topSpaceToView(priceScrollview,0)
+                    .bottomSpaceToView(priceScrollview,0)
+                    .widthIs(140);
+                    //图片
+                    UIImageView * imageview =[UIImageView new];
+                    [imageview setImageWithURL:[NSURL URLWithString:model.leftImage] placeholderImage:[UIImage imageNamed:@"banner"]];
+                    [bgView sd_addSubviews:@[imageview]];
+                    imageview.sd_layout
+                    .leftSpaceToView(bgView,0)
+                    .rightSpaceToView(bgView,0)
+                    .topSpaceToView(bgView,0)
+                    .heightIs(80);
+                    //标题
+                    UILabel * titileLabel =[UILabel new];
+                    titileLabel.numberOfLines=1;
+                    titileLabel.font=[UIFont systemFontOfSize:15];
+                    titileLabel.alpha=.8;
+                    titileLabel.text=model.titleName;//@"一大批闲置机械常淑萍沙发";
+                    [bgView sd_addSubviews:@[titileLabel]];
+                    titileLabel.sd_layout
+                    .leftSpaceToView(bgView,0)
+                    .topSpaceToView(imageview,10)
+                    .heightIs(15);
+                    [titileLabel setSingleLineAutoResizeWithMaxWidth:130];
+                    //起拍价
+                    UILabel * qiPaiLabel =[UILabel new];
+                    qiPaiLabel.numberOfLines=1;
+                    qiPaiLabel.font=[UIFont systemFontOfSize:16];
+                    qiPaiLabel.alpha=.7;
+                    qiPaiLabel.textColor=[UIColor redColor];
+                    qiPaiLabel.text=[NSString stringWithFormat:@"起拍价:%@",model.price];//@"起拍价:3.34万";
+                    qiPaiLabel.attributedText=[ToolClass attrStrFrom:qiPaiLabel.text intFond:13 Color:[UIColor blackColor] numberStr:@"起拍价:"];
+                    [bgView sd_addSubviews:@[qiPaiLabel]];
+                    qiPaiLabel.sd_layout
+                    .leftSpaceToView(bgView,5)
+                    .topSpaceToView(titileLabel,10)
+                    .widthIs(130)
+                    .heightIs(15);
+                    //时间
+                    UILabel * timeLabel =[UILabel new];
+                    timeLabel.text=[NSString stringWithFormat:@"%@开始",model.time];//@"11月04日 10:05 开始";
+                    timeLabel.font=[UIFont systemFontOfSize:13];
+                    timeLabel.textColor=[UIColor redColor];
+                    timeLabel.alpha=.7;
+                    timeLabel.attributedText=[ToolClass attrStrFrom:timeLabel.text intFond:13 Color:[UIColor blackColor] numberStr:@"开始"];
+                    [bgView sd_addSubviews:@[timeLabel]];
+                    timeLabel.sd_layout
+                    .leftSpaceToView(bgView,5)
+                    .topSpaceToView(qiPaiLabel,10)
+                    .rightSpaceToView(bgView,5)
+                    .heightIs(15);
+                    
+                    
+                    
+                }
+                //140 每一个的宽度，30两边的宽度，15*(contentAr.count-1)中间间隔的宽度
+                priceScrollview.contentSize=CGSizeMake(140*contentAr.count+30+15*(contentAr.count-1), 120);
+                
+
+            }
+            
+            
+        }else{
+            [LCProgressHUD showMessage:[dic objectForKey:@"msg"]];
+        }
+    } error:^(NSError *error) {
+        [LCProgressHUD hide];
+    }];
     
     
     
-    
-//    view2.didFinishAutoLayoutBlock=^(CGRect rect){
-//        int d =rect.origin.y+rect.size.height;
-//        NSLog(@"%d",d);
-//       _headView.sd_layout.heightIs(d+10);
-//    };
     _headView.sd_layout.heightIs(459+40);
    
     return _headView;
@@ -278,11 +325,28 @@
     _tableView.backgroundColor=BG_COLOR;
     [self.view addSubview:_tableView];
     
+    __weak typeof (self) weakSelf =self;
+    _tableView.header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
+        weakSelf.myRefreshView = weakSelf.tableView.header;
+        _AAA=1;
+        [self jieXiDataPage:_AAA];
+    }];
+    
+    [_tableView.header beginRefreshing];
+    //..上拉刷新
+    _tableView.footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
+        weakSelf.myRefreshView = weakSelf.tableView.footer;
+        _AAA=_AAA+1;
+        [self jieXiDataPage:_AAA];
+    }];
+    
+    _tableView.footer.hidden = YES;
+    
 }
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 10;
+    return _dataArray.count;
 }
 -(UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -290,7 +354,8 @@
     if (!cell) {
         cell=[[UITableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"Cell"];
     }
-    cell.textLabel.text=[NSString stringWithFormat:@"第%lu行",indexPath.row];
+    PaiMaiGongGaoModel * md =_dataArray[indexPath.row];
+    cell.textLabel.text=md.titleName;//[NSString stringWithFormat:@"第%lu行",indexPath.row];
     cell.textLabel.font=[UIFont systemFontOfSize:16];
     cell.textLabel.alpha=.7;
     cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;

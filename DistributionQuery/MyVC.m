@@ -72,7 +72,7 @@
     }
     _tableView.dataSource=self;
     _tableView.delegate=self;
-    _tableView.bounces=NO;
+//    _tableView.bounces=NO;
     _tableView.backgroundColor=BG_COLOR;
    // _tableView.tableHeaderView=[self tableViewHead];
     _tableView.tableFooterView=[UIView new];

@@ -13,6 +13,7 @@
 #import "ChengJiaoAnLiVC.h"
 #import "PaiMaiBiaoDiModel.h"//拍卖标的model(横着的滚动图用)
 #import "PaiMaiGongGaoModel.h"//拍卖公告model(table用)
+#import "PaiMaiGongGaoXiangQingVC.h"//拍卖公告详情
 @interface HomeVC ()<SDCycleScrollViewDelegate,UITableViewDelegate,UITableViewDataSource>
 @property(nonatomic,strong)UIView * headView;
 @property(nonatomic,strong)UITableView * tableView;
@@ -178,7 +179,7 @@
     UIScrollView * priceScrollview =[[UIScrollView alloc]init];
     priceScrollview.showsHorizontalScrollIndicator = NO;
     priceScrollview.userInteractionEnabled=YES;
-   // priceScrollview.backgroundColor=[UIColor yellowColor];
+  //  priceScrollview.backgroundColor=[UIColor yellowColor];
     priceScrollview.contentSize=CGSizeMake(ScreenWidth+200, 120);
     [view2 sd_addSubviews:@[priceScrollview]];
     priceScrollview.sd_layout
@@ -197,6 +198,7 @@
                     NSDictionary * dicc =contentAr[i];
                     PaiMaiBiaoDiModel * model =[[PaiMaiBiaoDiModel alloc]initWithBiaoDiDic:dicc];
                     UIButton * bgView =[UIButton new];
+//                    bgView.backgroundColor=[UIColor magentaColor];
                     bgView.tag=i;
                     bgView.layer.borderWidth=.5;
                     bgView.layer.borderColor=JXColor(205, 131, 137, 1).CGColor;
@@ -225,10 +227,11 @@
                     titileLabel.text=model.titleName;//@"一大批闲置机械常淑萍沙发";
                     [bgView sd_addSubviews:@[titileLabel]];
                     titileLabel.sd_layout
-                    .leftSpaceToView(bgView,0)
+                    .leftSpaceToView(bgView,5)
                     .topSpaceToView(imageview,10)
+                    .rightSpaceToView(bgView,5)
                     .heightIs(15);
-                    [titileLabel setSingleLineAutoResizeWithMaxWidth:130];
+                    //[titileLabel setSingleLineAutoResizeWithMaxWidth:130];
                     //起拍价
                     UILabel * qiPaiLabel =[UILabel new];
                     qiPaiLabel.numberOfLines=1;
@@ -275,8 +278,20 @@
     }];
     
     
-    
-    _headView.sd_layout.heightIs(459+40);
+    //459+40
+ //   _headView.backgroundColor=[UIColor greenColor];
+    NSLog(@">>>>scre=%f",ScreenWidth);
+    if (ScreenWidth==414) {
+        //6p
+         _headView.sd_layout.heightIs(459+40+20);
+    }else if (ScreenWidth==375){
+        //6
+         _headView.sd_layout.heightIs(459+40);
+    }else {
+        //6以下
+        _headView.sd_layout.heightIs(459+10);
+    }
+   
    
     return _headView;
 }
@@ -354,17 +369,25 @@
     if (!cell) {
         cell=[[UITableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"Cell"];
     }
+//    cell.backgroundColor=[UIColor magentaColor];
     PaiMaiGongGaoModel * md =_dataArray[indexPath.row];
     cell.textLabel.text=md.titleName;//[NSString stringWithFormat:@"第%lu行",indexPath.row];
     cell.textLabel.font=[UIFont systemFontOfSize:16];
     cell.textLabel.alpha=.7;
     cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
+    cell.selectionStyle=UITableViewCellSelectionStyleNone;
     return cell;
 }
-
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    PaiMaiGongGaoModel * md =_dataArray[indexPath.row];
+    PaiMaiGongGaoXiangQingVC * vc =[PaiMaiGongGaoXiangQingVC new];
+    vc.messageID=md.messageID;
+    [self.navigationController pushViewController:vc animated:YES];
+}
 -(UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
     UIView * bgview =[UIView new];
-    bgview.backgroundColor=BG_COLOR;
+   // view.backgroundColor=[UIColor blueColor];//BG_COLOR;
     
     
     UIView * view =[UIView new];

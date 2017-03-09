@@ -29,7 +29,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    self.title=@"拍卖标的";
+    self.title=@"拍卖标的详情";
     _dataArr=[[NSMutableArray alloc]initWithObjects:@"竞买须知",@"竞买公告",@"标的物介绍", nil];
     [self CreatTableView];
     [self CreatButton];
@@ -143,6 +143,7 @@
     }
     _tableView.dataSource=self;
     _tableView.delegate=self;
+    _tableView.tableFooterView=[UIView new];
     _tableView.tableHeaderView=[self CreatTableHeadView];
     [self.view addSubview:_tableView];
 }
@@ -170,12 +171,19 @@
 -(UIView*)CreatTableHeadView{
     UIView * headView =[UIView new];
     headView.backgroundColor=BG_COLOR;
-  
+  //438+10
     headView.sd_layout
     .leftSpaceToView(self.view,0)
     .rightSpaceToView(self.view,0)
-    .topSpaceToView(self.view,0)
-    .heightIs(438+10);
+    .topSpaceToView(self.view,0);
+//    .heightIs(468);
+    if (ScreenWidth==414) {
+        headView.sd_layout.heightIs(468);
+    }else if (ScreenWidth==375){
+        headView.sd_layout.heightIs(448);
+    }else{
+        headView.sd_layout.heightIs(418);
+    }
     _view1=[UIView new];
     _view1.backgroundColor=[UIColor whiteColor];
   

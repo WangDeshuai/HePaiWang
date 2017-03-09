@@ -585,7 +585,7 @@
 #pragma mark --25查询拍卖公告列表
 +(void)upDataPaiMaiPublicViewSearchStr:(NSString*)searStr  BiaoDiLeiXing:(NSString*)baiDiStyle ProvCode:(NSString*)shengcode CityCode:(NSString*)citycode BeginTime:(NSString*)time Page:(NSString*)page PageSize:(NSString*)pagesize success:(SuccessBlock)aSuccess error:(ErrorBlock)aError{
     
-    
+    [ToolClass getUUIDStr];
     NSString * urlStr =[NSString stringWithFormat:@"%@auction/app_qryAuctionList.action",SER_VICE];
     
     AFHTTPRequestOperationManager * manager =[AFHTTPRequestOperationManager manager];
@@ -625,6 +625,7 @@
     
     AFHTTPRequestOperationManager * manager =[AFHTTPRequestOperationManager manager];
     NSMutableDictionary * dic =[NSMutableDictionary new];
+    [ToolClass getUUIDStr];
     NSString * uuid =[NSUSE_DEFO objectForKey:@"UUID"];
     if (uuid==nil) {
         [LCProgressHUD showMessage:@"无法获取当前设备UUID"];
@@ -645,5 +646,63 @@
         aError(error);
         
     }];
+}
+#pragma mark --27已登录状态委托发布
++(void)loginIsYesPublicPeopleName:(NSString*)people PhoneNum:(NSString*)phone BiaoDiName:(NSString*)biaodiname MiaoShu:(NSString*)miaoshu XiaCi:(NSString*)xiaci ShengCode:(NSString*)scode CityCode:(NSString*)ccode XianCode:(NSString*)xcode BaoLiuPrice:(NSString*)blprice PingGuPrice:(NSString*)pgprice imageArr:(NSMutableArray*)imageArr success:(SuccessBlock)aSuccess error:(ErrorBlock)aError{
+    NSDictionary * dicInfo =[ToolClass duquPlistWenJianPlistName:@"baseInfo"];
+     NSString * token =[NSUSE_DEFO objectForKey:@"token"];
+    // NSString * peopleregi =[dicInfo objectForKey:@"liaisons_name"];
+     NSString * phoneregi =[dicInfo objectForKey:@"regist_tel"];
+    if (token==nil || dicInfo==nil) {
+        [LCProgressHUD showMessage:@"27未找到基本信息"];
+        return;
+    }
+    
+    AFHTTPRequestOperationManager * manager =[AFHTTPRequestOperationManager manager];
+    manager.responseSerializer = [AFHTTPResponseSerializer serializer];
+    NSString * urlstr =[NSString stringWithFormat:@"%@entrust/app_publishEntrustTargetInLogin.action",SER_VICE];
+    NSMutableDictionary * dicc =[NSMutableDictionary new];
+     [dicc setObject:token forKey:@"user_id"];
+     [dicc setObject:phoneregi forKey:@"regist_tel"];
+     [dicc setObject:people forKey:@"liaisons_name"];
+     [dicc setObject:biaodiname forKey:@"target_name"];//标的名称
+     [dicc setObject:miaoshu forKey:@"target_description"];//描述
+     [dicc setObject:xiaci forKey:@"target_defect_declaration"];//瑕疵
+     [dicc setObject:scode forKey:@"target_provcode"];//省code
+     [dicc setObject:ccode forKey:@"target_citycode"];//市code
+     [dicc setObject:xcode forKey:@"target_districtcode"];//县coed
+     [dicc setObject:blprice forKey:@"target_reserve_price"];//保留价
+     [dicc setObject:pgprice forKey:@"target_estimated_price"];//评估价
+    [manager POST:urlstr parameters:dicc constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
+        NSDateFormatter *formmettrt = [[NSDateFormatter alloc]init];
+        [formmettrt setDateFormat:@"yyyyMMddHHmmss"];
+        
+        if (imageArr.count==0) {
+            
+        }else{
+            for (int i = 0; i < imageArr.count; i++) {
+                UIImage * image= imageArr[i];
+                NSString *imagetype=@"jpg";
+                NSData *data = UIImageJPEGRepresentation(image, 0);
+                NSString *IMAGE=[NSString stringWithFormat:@"target_img%d",i];
+                [formData appendPartWithFileData:data name:IMAGE fileName:[NSString stringWithFormat:@"%@.%@", [formmettrt stringFromDate:[NSDate date]], imagetype] mimeType:[NSString stringWithFormat:@"image/%@", imagetype]];
+                
+            }
+            
+        }
+        
+    } success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        
+        
+        NSDictionary * diccc = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingMutableContainers error:nil];
+        NSLog(@"27已登录状态委托发布%@",diccc);
+         aSuccess(diccc);
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"27已登录状态委托发布%@",error);
+        aError(error);
+    }];
+
+    
+    
 }
 @end

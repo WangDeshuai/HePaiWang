@@ -41,7 +41,12 @@
         self.selectedBackgroundView=selectbg;
         
         _nameLabel=[UILabel new];
-        _nameLabel.font=[UIFont systemFontOfSize:15];
+        if (ScreenWidth==320) {
+            _nameLabel.font=[UIFont systemFontOfSize:13];
+        }else{
+            _nameLabel.font=[UIFont systemFontOfSize:15];
+        }
+        
         _nameLabel.textAlignment=1;
         [self.contentView sd_addSubviews:@[_nameLabel]];
         _nameLabel.sd_layout

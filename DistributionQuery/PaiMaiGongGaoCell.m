@@ -126,8 +126,9 @@
     _cityLabel.sd_layout
     .leftEqualToView(_baoMingLabel)
     .centerYEqualToView(_dwImage)
+    .rightSpaceToView(self.contentView,15)
     .heightIs(20);
-    [_cityLabel setSingleLineAutoResizeWithMaxWidth:ScreenWidth-200];
+    //[_cityLabel setSingleLineAutoResizeWithMaxWidth:ScreenWidth-200];
     
     //立即报名
     _lijiBaoMiang.sd_layout

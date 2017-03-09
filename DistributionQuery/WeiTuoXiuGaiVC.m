@@ -1,19 +1,18 @@
 //
-//  XiuGaiMessageVC.m
+//  WeiTuoXiuGaiVC.m
 //  DistributionQuery
 //
-//  Created by Macx on 17/3/2.
+//  Created by Macx on 17/3/9.
 //  Copyright © 2017年 Macx. All rights reserved.
 //
 
-#import "XiuGaiMessageVC.h"
+#import "WeiTuoXiuGaiVC.h"
 #import "LeftMyAdressCell.h"
 #import "RightMyAddressCell.h"
 #import "CenterableViewCell.h"
 #import "ShengCityModel.h"
-@interface XiuGaiMessageVC ()<UITableViewDelegate,UITableViewDataSource>
-@property(nonatomic,strong)UITextField * textfield;
-@property(nonatomic,strong)NSMutableArray * keyArray;
+@interface WeiTuoXiuGaiVC ()<UITableViewDelegate,UITableViewDataSource>
+@property(nonatomic,strong)UITextView * textview;
 @property(nonatomic,strong)UITableView * leftTableView;
 @property(nonatomic,strong)UITableView * centerTableView;
 @property(nonatomic,strong)UITableView * rightTableView;
@@ -22,44 +21,47 @@
 @property(nonatomic,strong)NSMutableArray * rightArr;
 @property(nonatomic,copy)NSString * shengText;
 @property(nonatomic,copy)NSString * cityText;
-
 @end
 
-@implementation XiuGaiMessageVC
+@implementation WeiTuoXiuGaiVC
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    self.title=@"修改个人信息";
-    //用户名、联系电话、邮箱、右边、详细地址
-    _keyArray=[[NSMutableArray alloc]initWithObjects:@"user_name",@"connect_tel",@"mailbox",@"postcode",@"detailed_addr", nil];
-     _leftArr=[NSMutableArray new];
+    _leftArr=[NSMutableArray new];
     _centerArr=[NSMutableArray new];
     _rightArr=[NSMutableArray new];
-   
-    if (_indexrow==5) {
+    if (_indexrow==0) {
+        self.title=@"标的描述";
+        [self CreatRigthBtn];
+        [self CreatTextField];
+    }else if (_indexrow==1){
+        self.title=@"标的瑕疵";
+        [self CreatRigthBtn];
+        [self CreatTextField];
+    }else{
+        self.title=@"标的所在地";
         [self huoQuAllSheng];
         [self CreatLeftTableView];
-    }else{
-         [self CreatRigthBtn];
-       [self CreatTextField];
     }
-   
     
 }
+
+
+
 #pragma mark --创建textField
 -(void)CreatTextField{
-    _textfield=[[UITextField alloc]init];
-    _textfield.placeholder=@"未填写";
-    _textfield.backgroundColor=[UIColor whiteColor];
-    _textfield.sd_cornerRadius=@(5);
-    _textfield.font=[UIFont systemFontOfSize:15];
-    [self.view sd_addSubviews:@[_textfield]];
-    _textfield.sd_layout
+    _textview=[[UITextView alloc]init];
+    _textview.backgroundColor=[UIColor whiteColor];
+    _textview.sd_cornerRadius=@(5);
+    _textview.text=_contentText;
+    _textview.font=[UIFont systemFontOfSize:15];
+    [self.view sd_addSubviews:@[_textview]];
+    _textview.sd_layout
     .leftSpaceToView(self.view,5)
     .rightSpaceToView(self.view,5)
     .topSpaceToView(self.view,20)
-    .heightIs(35);
+    .heightIs(135);
 }
 #pragma mark --创建右按钮
 -(void)CreatRigthBtn{
@@ -73,27 +75,75 @@
     self.navigationItem.rightBarButtonItem=rightBtn;
 }
 -(void)save{
-    NSMutableArray * arr =[NSMutableArray new];
-    NSMutableDictionary * dicc =[NSMutableDictionary new];
-    [dicc setObject:_textfield.text forKey:@"fieldValue"];
-    [dicc setObject:_keyArray[_indexrow] forKey:@"fieldName"];
-    [arr addObject:dicc];
-    NSLog(@"输出%@",[ToolClass getJsonStringFromObject:arr]);
-    [Engine modificationMyMessageKeyDicStr:[ToolClass getJsonStringFromObject:arr] success:^(NSDictionary *dic) {
-        [LCProgressHUD showMessage:[dic objectForKey:@"msg"]];
+    self.nameBlock(_textview.text,@"",@"",@"");
+    [self.navigationController popViewControllerAnimated:YES];
+}
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+#pragma mark --获取全国省份
+-(void)huoQuAllSheng{
+    [_leftArr removeAllObjects];
+    [Engine huoQuAllShengFensuccess:^(NSDictionary *dic) {
+        NSString * item1 =[NSString stringWithFormat:@"%@",[dic objectForKey:@"code"]];
+        if ([item1 isEqualToString:@"1"]) {
+            NSArray * arr =[dic objectForKey:@"content"];
+            for (NSDictionary * dicc in arr)
+            {
+                ShengCityModel * model =[[ShengCityModel alloc]initWithShengDic:dicc];
+                [_leftArr addObject:model];
+            }
+            
+            [_leftTableView reloadData];
+        }else{
+            [LCProgressHUD showMessage:[dic objectForKey:@"msg"]];
+        }
+        
+    } error:^(NSError *error) {
+        
+    }];
+}
+#pragma mark --根据省获取城市
+-(void)getCityWithShengCode:(ShengCityModel*)mdd{
+    [_centerArr removeAllObjects];
+    [Engine huoQuWithShengGetCityShengCode:mdd.shengCode success:^(NSDictionary *dic) {
         NSString * code =[NSString stringWithFormat:@"%@",[dic objectForKey:@"code"]];
         if ([code isEqualToString:@"1"]) {
-            NSDictionary * dicc =[dic objectForKey:@"content"];
-            NSMutableDictionary * dicAr = [ToolClass isDictionary:dicc];
-            [ToolClass savePlist:dicAr name:@"baseInfo"];
-            self.nameBlock(_textfield.text);
-            [self.navigationController popViewControllerAnimated:YES];
+            NSArray * contentArr =[dic objectForKey:@"content"];
+            for (NSDictionary * dicc in contentArr) {
+                ShengCityModel * md =[[ShengCityModel alloc]initWithCityDic:dicc];
+                [_centerArr addObject:md];
+            }
+            [_centerTableView reloadData];
+        }else{
+            [LCProgressHUD showMessage:[dic objectForKey:@"msg"]];
         }
     } error:^(NSError *error) {
         
     }];
 }
 
+#pragma mark --根据市获取县
+-(void)getXianWithCityCode:(ShengCityModel*)mdd{
+    [_rightArr removeAllObjects];
+    [Engine huoQuXianWithCityCode:mdd.cityCode success:^(NSDictionary *dic) {
+        NSString * code =[NSString stringWithFormat:@"%@",[dic objectForKey:@"code"]];
+        if ([code isEqualToString:@"1"]) {
+            NSArray * contentArr =[dic objectForKey:@"content"];
+            for (NSDictionary * dicc in contentArr) {
+                ShengCityModel * md =[[ShengCityModel alloc]initWithXianDic:dicc];
+                [_rightArr addObject:md];
+            }
+            [_rightTableView reloadData];
+        }else{
+            [LCProgressHUD showMessage:[dic objectForKey:@"msg"]];
+        }
+        
+    } error:^(NSError *error) {
+        
+    }];
+}
 #pragma mark --左边创建表
 -(void)CreatLeftTableView{
     
@@ -113,7 +163,7 @@
     _centerTableView.delegate=self;
     _centerTableView.tableFooterView=[UIView new];
     _centerTableView.backgroundColor=BG_COLOR;
-
+    
     [self.view addSubview:_centerTableView];
     
 }
@@ -168,7 +218,7 @@
 {
     if (tableView==_leftTableView) {
         [_rightTableView removeFromSuperview];
-         ShengCityModel * md =_leftArr[indexPath.row];
+        ShengCityModel * md =_leftArr[indexPath.row];
         _shengText=md.shengName;
         [self getCityWithShengCode:md];//调取数据
         [self CreatCenterTableView];
@@ -194,87 +244,12 @@
         [arr addObject:dic3];
         NSLog(@"输出%@",[ToolClass getJsonStringFromObject:arr]);
         NSString * str =[NSString stringWithFormat:@"%@-%@-%@",_shengText,_cityText,md.xianName];
-        [Engine modificationMyMessageKeyDicStr:[ToolClass getJsonStringFromObject:arr] success:^(NSDictionary *dic) {
-            [LCProgressHUD showMessage:[dic objectForKey:@"msg"]];
-            NSString * code =[NSString stringWithFormat:@"%@",[dic objectForKey:@"code"]];
-            if ([code isEqualToString:@"1"]) {
-                NSDictionary * dicc =[dic objectForKey:@"content"];
-                NSMutableDictionary * dicAr = [ToolClass isDictionary:dicc];
-                [ToolClass savePlist:dicAr name:@"baseInfo"];
-                self.nameBlock(str);
-                [self.navigationController popViewControllerAnimated:YES];
-            }
-        } error:^(NSError *error) {
-            
-        }];
+        self.nameBlock(str,md.xianShengCode,md.xianCityCode,md.xianCode);
+        [self.navigationController popViewControllerAnimated:YES];
     }
 }
-#pragma mark --获取全国省份
--(void)huoQuAllSheng{
-    [_leftArr removeAllObjects];
-    [Engine huoQuAllShengFensuccess:^(NSDictionary *dic) {
-        NSString * item1 =[NSString stringWithFormat:@"%@",[dic objectForKey:@"code"]];
-        if ([item1 isEqualToString:@"1"]) {
-            NSArray * arr =[dic objectForKey:@"content"];
-            for (NSDictionary * dicc in arr)
-            {
-                ShengCityModel * model =[[ShengCityModel alloc]initWithShengDic:dicc];
-                [_leftArr addObject:model];
-            }
-            
-            [_leftTableView reloadData];
-        }else{
-            [LCProgressHUD showMessage:[dic objectForKey:@"msg"]];
-        }
 
-    } error:^(NSError *error) {
-        
-    }];
-}
-#pragma mark --根据省获取城市
--(void)getCityWithShengCode:(ShengCityModel*)mdd{
-    [_centerArr removeAllObjects];
-    [Engine huoQuWithShengGetCityShengCode:mdd.shengCode success:^(NSDictionary *dic) {
-        NSString * code =[NSString stringWithFormat:@"%@",[dic objectForKey:@"code"]];
-        if ([code isEqualToString:@"1"]) {
-            NSArray * contentArr =[dic objectForKey:@"content"];
-            for (NSDictionary * dicc in contentArr) {
-                ShengCityModel * md =[[ShengCityModel alloc]initWithCityDic:dicc];
-                [_centerArr addObject:md];
-            }
-            [_centerTableView reloadData];
-        }else{
-            [LCProgressHUD showMessage:[dic objectForKey:@"msg"]];
-        }
-    } error:^(NSError *error) {
-        
-    }];
-}
-
-#pragma mark --根据市获取县
--(void)getXianWithCityCode:(ShengCityModel*)mdd{
-    [_rightArr removeAllObjects];
-    [Engine huoQuXianWithCityCode:mdd.cityCode success:^(NSDictionary *dic) {
-        NSString * code =[NSString stringWithFormat:@"%@",[dic objectForKey:@"code"]];
-        if ([code isEqualToString:@"1"]) {
-            NSArray * contentArr =[dic objectForKey:@"content"];
-            for (NSDictionary * dicc in contentArr) {
-                ShengCityModel * md =[[ShengCityModel alloc]initWithXianDic:dicc];
-                [_rightArr addObject:md];
-            }
-            [_rightTableView reloadData];
-        }else{
-            [LCProgressHUD showMessage:[dic objectForKey:@"msg"]];
-        }
-
-    } error:^(NSError *error) {
-        
-    }];
-}
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
+/*
 #pragma mark - Navigation
 
 // In a storyboard-based application, you will often want to do a little preparation before navigation
@@ -282,7 +257,7 @@
     // Get the new view controller using [segue destinationViewController].
     // Pass the selected object to the new view controller.
 }
-
+*/
 -(void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
 {
     [self.view endEditing:YES];

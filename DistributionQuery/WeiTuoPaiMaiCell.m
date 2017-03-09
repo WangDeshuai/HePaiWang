@@ -38,11 +38,19 @@
     _nameLabel=[UILabel new];
     _codeBtn=[UIButton new];
     _textfield=[UITextField new];
-    [self.contentView sd_addSubviews:@[_nameLabel,_codeBtn,_textfield]];
+    _bgScrollview=[UIScrollView new];
+    [self.contentView sd_addSubviews:@[_nameLabel,_codeBtn,_textfield,_bgScrollview]];
    //属性
-    _nameLabel.font=[UIFont systemFontOfSize:16];
+    
     _nameLabel.alpha=.8;
-    _textfield.font=[UIFont systemFontOfSize:16];
+    if (ScreenWidth==320) {
+         _textfield.font=[UIFont systemFontOfSize:14];
+        _nameLabel.font=[UIFont systemFontOfSize:14];
+    }else{
+         _textfield.font=[UIFont systemFontOfSize:16];
+        _nameLabel.font=[UIFont systemFontOfSize:16];
+    }
+   
     _textfield.alpha=.8;
     _codeBtn.hidden=YES;
     _codeBtn.titleLabel.font=[UIFont systemFontOfSize:15];
@@ -50,20 +58,18 @@
     //赋值
    _codeBtn.backgroundColor=[UIColor colorWithRed:242/255.0 green:142/255.0 blue:146/255.0 alpha:1];
     [_codeBtn setTitle:@"获取验证码" forState:0];
-//    _nameLabel.backgroundColor=[UIColor redColor];
-   // _textfield.backgroundColor=[UIColor yellowColor];
     //坐标
     //nameLabel
     _nameLabel.sd_layout
     .leftSpaceToView(self.contentView,15)
-    .centerYEqualToView(self.contentView)
+    .topSpaceToView(self.contentView,15)
     .widthIs(90)
     .heightIs(20);
     //textField
     _textfield.sd_layout
     .leftSpaceToView(_nameLabel,0)
-    .rightSpaceToView(self.contentView,15)
-    .centerYEqualToView(_nameLabel)
+    .rightSpaceToView(self.contentView,5)
+    .topSpaceToView(self.contentView,15)
     .heightIs(20);
     //按钮
     _codeBtn.sd_layout
@@ -71,10 +77,20 @@
     .centerYEqualToView(_nameLabel)
     .widthIs(90)
     .heightIs(30);
-    
+    //滚动试图
+    _bgScrollview.hidden=YES;
+//    _bgScrollview.backgroundColor=[UIColor yellowColor];
+   // _bgScrollview.frame=CGRectMake(15, 15, ScreenWidth-30, 61);
+    //_bgScrollview.contentSize=CGSizeMake(1000, 0);
+    _bgScrollview.sd_layout
+    .leftSpaceToView(self.contentView,15)
+    .topSpaceToView(_nameLabel,15)
+    .bottomSpaceToView(self.contentView,15)
+    .rightSpaceToView(self.contentView,15);
     
     
 }
+
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];
 

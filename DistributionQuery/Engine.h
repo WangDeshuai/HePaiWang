@@ -70,4 +70,7 @@ typedef void (^ErrorBlock)(NSError*error);
 
 #pragma mark --26公告详请页
 +(void)PaiMaiPublicMessageID:(NSString*)messageID success:(SuccessBlock)aSuccess error:(ErrorBlock)aError;
+
+#pragma mark --27已登录状态委托发布
++(void)loginIsYesPublicPeopleName:(NSString*)people PhoneNum:(NSString*)phone BiaoDiName:(NSString*)biaodiname MiaoShu:(NSString*)miaoshu XiaCi:(NSString*)xiaci ShengCode:(NSString*)scode CityCode:(NSString*)ccode XianCode:(NSString*)xcode BaoLiuPrice:(NSString*)blprice PingGuPrice:(NSString*)pgprice imageArr:(NSMutableArray*)imageArr success:(SuccessBlock)aSuccess error:(ErrorBlock)aError;
 @end

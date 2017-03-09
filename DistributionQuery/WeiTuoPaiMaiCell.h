@@ -13,4 +13,5 @@
 @property(nonatomic,strong)UIButton * codeBtn;
 @property(nonatomic,strong)UITextField * textfield;
 @property(nonatomic,strong)UILabel * nameLabel;
+@property(nonatomic,strong)UIScrollView * bgScrollview;
 @end

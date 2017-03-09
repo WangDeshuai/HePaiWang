@@ -409,6 +409,7 @@ BOOL DeleteSingleFile(NSString *filePath){
     
     NSString * uuidStr =[NSUSE_DEFO objectForKey:@"UUID"];
     if (uuidStr) {
+        NSLog(@"输出uuid%@",uuidStr);
         return uuidStr;
     }else{
         CFUUIDRef puuid = CFUUIDCreate( nil );
@@ -418,7 +419,15 @@ BOOL DeleteSingleFile(NSString *filePath){
         CFRelease(uuidString);
         [NSUSE_DEFO setObject:result forKey:@"UUID"];
         [NSUSE_DEFO synchronize];
+        NSLog(@"输出uuid%@",result);
         return result;
     }
+}
++(void)exitApplication {
+    WINDOW.alpha = 0;
+    WINDOW.frame = CGRectMake(0, WINDOW.bounds.size.width, 0, 0);
+}
++(void)exitApplication2{
+    exit(0);
 }
 @end

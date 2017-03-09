@@ -50,7 +50,7 @@
 -(UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     
-    NSString * cellID =[NSString stringWithFormat:@"%lu%lu",indexPath.section,indexPath.row];
+    NSString * cellID =[NSString stringWithFormat:@"%lu%lu",(long)indexPath.section,(long)indexPath.row];
     
     UITableViewCell * cell =[tableView dequeueReusableCellWithIdentifier:cellID];
     if (!cell) {
@@ -103,8 +103,15 @@
     headView.sd_layout
     .leftSpaceToView(self.view,0)
     .rightSpaceToView(self.view,0)
-    .topSpaceToView(self.view,0)
-    .heightIs(438+10);
+    .topSpaceToView(self.view,0);
+   
+    if (ScreenWidth==414) {
+        headView.sd_layout.heightIs(468);
+    }else if (ScreenWidth==375){
+        headView.sd_layout.heightIs(448);
+    }else{
+        headView.sd_layout.heightIs(418);
+    }
     _view1=[UIView new];
     _view1.backgroundColor=[UIColor whiteColor];
     

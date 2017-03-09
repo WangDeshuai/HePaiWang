@@ -69,5 +69,6 @@
 
 #pragma mark --获取UUID
 +(NSString*)getUUIDStr;
-
++(void)exitApplication;
++(void)exitApplication2;
 @end

@@ -75,6 +75,16 @@
             NSDictionary * dicc =[dic objectForKey:@"content"];
             NSMutableDictionary * dicAr = [ToolClass isDictionary:dicc];
             [ToolClass savePlist:dicAr name:@"shiMingInfo"];
+            NSString * type =[NSString stringWithFormat:@"%@",[dicAr objectForKey:@"authentication_type"]];
+            if ([type isEqualToString:@"1"]) {
+                //个人
+                //把真实姓名和 账户类型添加进去
+                [self saveMyMessageZhenName:[dicAr objectForKey:@"personal_name"] ZhangHuStyle:type];
+            }else{
+                //企业
+                [self saveMyMessageZhenName:[dicAr objectForKey:@"enterprise_name"] ZhangHuStyle:type];
+            }
+
             [self.navigationController popViewControllerAnimated:YES];
         }
     } error:^(NSError *error) {
@@ -82,6 +92,14 @@
     }];
     
 
+}
+#pragma mark --存进个人信息中
+-(void)saveMyMessageZhenName:(NSString*)name ZhangHuStyle:(NSString*)style{
+    NSMutableDictionary * dic =[ToolClass duquPlistWenJianPlistName:@"baseInfo"];
+    [dic setObject:name forKey:@"real_name"];
+    [dic setObject:style forKey:@"authentication_type"];
+    
+    [ToolClass savePlist:dic name:@"baseInfo"];
 }
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

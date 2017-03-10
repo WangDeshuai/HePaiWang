@@ -8,6 +8,7 @@
 
 #import "PaiMaiGongGaoXiangQingVC.h"
 #import "PaiMaiBiaoDiModel.h"
+#import "XYAlertView.h"
 @interface PaiMaiGongGaoXiangQingVC ()<UITableViewDelegate,UITableViewDataSource>
 {
     dispatch_source_t _timer;
@@ -54,7 +55,7 @@
 #pragma mark --创建表
 -(void)CreatTableView{
     if (!_tableView) {
-        _tableView=[[UITableView alloc]initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight-48-76/2-20) style:UITableViewStylePlain];
+        _tableView=[[UITableView alloc]initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight-64-35) style:UITableViewStylePlain];
     }
     _tableView.delegate=self;
     _tableView.dataSource=self;
@@ -132,20 +133,25 @@
 
 
 
-
+#pragma mark --创建最底下2个按钮
 -(void)twoBtn{
-    int d =(ScreenWidth-ScreenWidth)/3;
-    NSArray * arr =@[@"ggxq_bt1",@"ggxq_bt2"];
+    int k =140;
+    int j= (ScreenWidth-k*2)/3;
+//    NSArray * arr =@[@"ggxq_bt1",@"ggxq_bt2"];
+    NSArray * arr =@[@"立即报名",@"查看联系方式"];
     for (int i =0; i<2; i++) {
         UIButton * btn =[UIButton buttonWithType:UIButtonTypeCustom];
-        btn.backgroundColor=[UIColor whiteColor];
-        [btn setImage:[UIImage imageNamed:arr[i]] forState:0];
+        btn.backgroundColor=[UIColor redColor];
+        [btn setTitle:arr[i] forState:0];
+        btn.titleLabel.font=[UIFont systemFontOfSize:14];
+        btn.sd_cornerRadius=@(3);
+       // [btn setImage:[UIImage imageNamed:arr[i]] forState:0];
         [self.view sd_addSubviews:@[btn]];
         btn.sd_layout
-        .leftSpaceToView(self.view,d+(d+ScreenWidth/2)*i)
+        .leftSpaceToView(self.view,j+(j+k)*i)
         .bottomSpaceToView(self.view,0)
-        .widthIs(ScreenWidth/2)
-        .heightIs(76/2+10);
+        .widthIs(k)
+        .heightIs(35);
     }
     
 }
@@ -281,8 +287,9 @@
 
 
    
-    
+    [LCProgressHUD showMessage:@"正在加载..."];
     [Engine PaiMaiPublicMessageID:messageID success:^(NSDictionary *dic) {
+        [LCProgressHUD showMessage:[dic objectForKey:@"msg"]];
         NSString * code =[NSString stringWithFormat:@"%@",[dic objectForKey:@"code"]];
         if ([code isEqualToString:@"1"]) {
             
@@ -361,7 +368,7 @@
             [LCProgressHUD showMessage:[dic objectForKey:@"msg"]];
         }
     } error:^(NSError *error) {
-        
+        [LCProgressHUD showMessage:@"网络错误"];
     }];
     
     

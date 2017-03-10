@@ -49,27 +49,28 @@
 
 #pragma mark --获取个人信息
 -(void)huoQuMessageData{
-    [Engine myMessagesuccess:^(NSDictionary *dic) {
-        NSString * code =[NSString stringWithFormat:@"%@",[dic objectForKey:@"code"]];
-        if ([code isEqualToString:@"1"]) {
-            NSString * code =[NSString stringWithFormat:@"%@",[dic objectForKey:@"code"]];
-            if ([code isEqualToString:@"1"]) {
-                NSDictionary * dicc=[dic objectForKey:@"content"];
-                NSMutableDictionary * dicDic=[ToolClass isDictionary:dicc];
-                [ToolClass savePlist:dicDic name:@"baseInfo"];
-                NSDictionary * messageDic= [ToolClass duquPlistWenJianPlistName:@"baseInfo"];
-                 _messageDic=messageDic;
-            }
-            [_tableView reloadData];
-        }else
-        {
-            [LCProgressHUD showMessage:[dic objectForKey:@"msg"]];
-        }
-    } error:^(NSError *error) {
-        
-    }];
+//    [Engine myMessagesuccess:^(NSDictionary *dic) {
+//        NSString * code =[NSString stringWithFormat:@"%@",[dic objectForKey:@"code"]];
+//        if ([code isEqualToString:@"1"]) {
+//            NSString * code =[NSString stringWithFormat:@"%@",[dic objectForKey:@"code"]];
+//            if ([code isEqualToString:@"1"]) {
+//                NSDictionary * dicc=[dic objectForKey:@"content"];
+//                NSMutableDictionary * dicDic=[ToolClass isDictionary:dicc];
+//                [ToolClass savePlist:dicDic name:@"baseInfo"];
+//                NSDictionary * messageDic= [ToolClass duquPlistWenJianPlistName:@"baseInfo"];
+//                 _messageDic=messageDic;
+//            }
+//            [_tableView reloadData];
+//        }else
+//        {
+//            [LCProgressHUD showMessage:[dic objectForKey:@"msg"]];
+//        }
+//    } error:^(NSError *error) {
+//        
+//    }];
    //
-   
+    NSDictionary * messageDic= [ToolClass duquPlistWenJianPlistName:@"baseInfo"];
+    _messageDic=messageDic;
 }
 
 

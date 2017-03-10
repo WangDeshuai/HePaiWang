@@ -25,6 +25,9 @@
 @property(nonatomic,copy)NSString * xmName;
 @property(nonatomic,copy)NSString *phoneName;
 @property(nonatomic,copy)NSString *biaoDiName;
+//未登录状态下的验证码
+@property(nonatomic,copy)NSString * yanZhengCode;
+@property(nonatomic,strong)NSMutableArray * imageArray;//存放照片的数组
 
 @end
 
@@ -38,7 +41,9 @@
     // Do any additional setup after loading the view.
      self.backHomeBtn.hidden=YES;
     _photoArray=[NSMutableArray new];
+    _imageArray=[NSMutableArray new];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardUpOrDown:) name:UIKeyboardWillChangeFrameNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(lianjieClink:) name:@"qingkong" object:nil];
     [self CreatTabelView];
   
    
@@ -54,6 +59,7 @@
     [UIView setAnimationDuration:0.25];
   //表的坐标
     _tableView.frame = CGRectMake(0, 0, ScreenWidth, rect.origin.y);
+//      [_tableView setContentInset:UIEdgeInsetsMake(0, 0, 70+30, 0)];
     [UIView commitAnimations];
 
 }
@@ -115,14 +121,87 @@
      NSLog(@"省code=%@citycode=%@ixancode=%@",_shengCodeText,_cityCodeText,_xianCodeText);
     NSLog(@"保留价%@",cell3.textfield.text);
     NSLog(@"评估价%@",cell4.textfield.text);
-    [LCProgressHUD showMessage:@"发布中..."];
-    [Engine loginIsYesPublicPeopleName:[ToolClass isString:[NSString stringWithFormat:@"%@",_xmName]] PhoneNum:[ToolClass isString:[NSString stringWithFormat:@"%@",_phoneName]] BiaoDiName:[ToolClass isString:[NSString stringWithFormat:@"%@",_biaoDiName]] MiaoShu:[ToolClass isString:[NSString stringWithFormat:@"%@",_miaoShuText]] XiaCi:[ToolClass isString:[NSString stringWithFormat:@"%@",_xiaCiText]] ShengCode:[ToolClass isString:[NSString stringWithFormat:@"%@",_shengCodeText]] CityCode:[ToolClass isString:[NSString stringWithFormat:@"%@",_cityCodeText]] XianCode:[ToolClass isString:[NSString stringWithFormat:@"%@",_xianCodeText]] BaoLiuPrice:[ToolClass isString:[NSString stringWithFormat:@"%@",cell3.textfield.text]] PingGuPrice:[ToolClass isString:[NSString stringWithFormat:@"%@",cell4.textfield.text]] imageArr:_photoArray success:^(NSDictionary *dic) {
-          [LCProgressHUD showMessage:[dic objectForKey:@"msg"]];
-    } error:^(NSError *error) {
+    
+    NSLog(@"验证码%@",_yanZhengCode);
+    
+    
+    
+    if ([ToolClass isLogin]==NO) {
+        //未登录
+         [LCProgressHUD showMessage:@"发布中..."];
         
-    }];
+        [Engine loginIsNoPublicPeople:[ToolClass isString:[NSString stringWithFormat:@"%@",_xmName]] Phone:[ToolClass isString:[NSString stringWithFormat:@"%@",_phoneName]] PhoneCode:[ToolClass isString:[NSString stringWithFormat:@"%@",_yanZhengCode]] BiaoDiName:[ToolClass isString:[NSString stringWithFormat:@"%@",_biaoDiName]] BiaoDiMiaoShu:[ToolClass isString:[NSString stringWithFormat:@"%@",_miaoShuText]] XiaCiName:[ToolClass isString:[NSString stringWithFormat:@"%@",_xiaCiText]] ShengCode:[ToolClass isString:[NSString stringWithFormat:@"%@",_shengCodeText]] CityCode:[ToolClass isString:[NSString stringWithFormat:@"%@",_cityCodeText]] XianCode:[ToolClass isString:[NSString stringWithFormat:@"%@",_xianCodeText]] ImageArray:_photoArray success:^(NSDictionary *dic) {
+            [LCProgressHUD showMessage:[dic objectForKey:@"msg"]];
+            NSString * code =[NSString stringWithFormat:@"%@",[dic objectForKey:@"code"]];
+            if ([code isEqualToString:@"1"]) {
+                
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"qingkong" object:nil userInfo:dic];
+                
+            }
+        } error:^(NSError *error) {
+            [LCProgressHUD showMessage:@"网络错误"];
+        }];
+        
+        
+        
+        
+    }else{
+        [LCProgressHUD showMessage:@"发布中..."];
+        [Engine loginIsYesPublicPeopleName:[ToolClass isString:[NSString stringWithFormat:@"%@",_xmName]] PhoneNum:[ToolClass isString:[NSString stringWithFormat:@"%@",_phoneName]] BiaoDiName:[ToolClass isString:[NSString stringWithFormat:@"%@",_biaoDiName]] MiaoShu:[ToolClass isString:[NSString stringWithFormat:@"%@",_miaoShuText]] XiaCi:[ToolClass isString:[NSString stringWithFormat:@"%@",_xiaCiText]] ShengCode:[ToolClass isString:[NSString stringWithFormat:@"%@",_shengCodeText]] CityCode:[ToolClass isString:[NSString stringWithFormat:@"%@",_cityCodeText]] XianCode:[ToolClass isString:[NSString stringWithFormat:@"%@",_xianCodeText]] BaoLiuPrice:[ToolClass isString:[NSString stringWithFormat:@"%@",cell3.textfield.text]] PingGuPrice:[ToolClass isString:[NSString stringWithFormat:@"%@",cell4.textfield.text]] imageArr:_photoArray success:^(NSDictionary *dic) {
+            [LCProgressHUD showMessage:[dic objectForKey:@"msg"]];
+            NSString * code =[NSString stringWithFormat:@"%@",[dic objectForKey:@"code"]];
+            if ([code isEqualToString:@"1"]) {
+                
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"qingkong" object:nil userInfo:dic];
+                
+            }
+        } error:^(NSError *error) {
+             [LCProgressHUD showMessage:@"网络错误"];
+        }];
+        
+
+    }
     
     
+    
+    
+    
+}
+#pragma mark --接收的通知1清空数据
+-(void)lianjieClink:(NSNotification*)notification{
+    NSLog(@"数据要清空");
+    //联系人清空
+    WeiTuoPaiMaiCell * cell =[_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+    //手机号
+    WeiTuoPaiMaiCell * cell1 =[_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0]];
+    //验证码
+    WeiTuoPaiMaiCell * cell5 =[_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:0]];
+    //    //标的名称
+    WeiTuoPaiMaiCell * cell2 =[_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:1]];
+    //标的保留价
+    WeiTuoPaiMaiCell * cell3 =[_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:2]];
+    
+    //标的评估价
+    WeiTuoPaiMaiCell * cell4 =[_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:2]];
+
+    _xmName=nil;//联系人清空
+    _phoneName=nil;//手机号清空
+    _biaoDiName=nil;//标的名称清空
+    _yanZhengCode=nil;//验证码清空
+     cell.textfield.text=nil;//
+     cell1.textfield.text=nil;
+     cell2.textfield.text=nil;
+     cell5.textfield.text=nil;
+    _miaoShuText=@"";//描述清空
+    _xiaCiText=@"";//瑕疵清空
+    _diQuText=@"";//地区清空
+    _shengCodeText=nil;//省市县code清空
+    _cityCodeText=nil;
+    _xianCodeText=nil;
+    cell3.textfield.text=nil;
+    cell4.textfield.text=nil;
+    [_photoArray removeAllObjects];
+    [_tableView reloadData];
 }
 - (void)textFieldDidEndEditing:(UITextField *)textField{
     
@@ -136,6 +215,9 @@
         }else if (textField.tag==12){
             //标的名称
             _biaoDiName=textField.text;;
+        }else if (textField.tag==13){
+            //验证码
+            _yanZhengCode=textField.text;
         }
     
     
@@ -211,6 +293,7 @@
         }else if (indexPath.row==1){
             cell.textfield.placeholder=@"请您填写准确的手机号码";
             cell.textfield.tag=11;
+            cell.textfield.keyboardType=UIKeyboardTypeNumberPad;
         }
     }else if (indexPath.section==1){
         //第1区
@@ -220,15 +303,30 @@
         }else if (indexPath.row==1){
             cell.textfield.enabled=NO;
             cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
-            cell.textfield.text=_miaoShuText;
+            if (_miaoShuText==nil) {
+                cell.textfield.placeholder=@"请填写您的描述";
+            }else{
+                cell.textfield.text=_miaoShuText;
+            }
+            
         }else if (indexPath.row==2){
             cell.textfield.enabled=NO;
             cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
-            cell.textfield.text=_xiaCiText;
+            if (_xiaCiText==nil) {
+                 cell.textfield.placeholder=@"请填写您的瑕疵";
+            }else{
+                 cell.textfield.text=_xiaCiText;
+            }
+           
         }else{
             cell.textfield.enabled=NO;
             cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
-            cell.textfield.text=_diQuText;
+            if (_diQuText==nil) {
+                cell.textfield.placeholder=@"请选择您具体的地区";
+            }else{
+                 cell.textfield.text=_diQuText;
+            }
+           
         }
     }else if (indexPath.section==2){
         //保留价格
@@ -236,11 +334,10 @@
         if (indexPath.row==0) {
             cell.textfield.hidden=NO;
             cell.textfield.placeholder=@"请输入保留价";
-            cell.textfield.tag=13;
         }else{
             cell.textfield.placeholder=@"请输入评估价";
-            cell.textfield.tag=14;
         }
+         cell.textfield.keyboardType=UIKeyboardTypeNumberPad;
     }else{
         //标的图片
          cell.bgScrollview.hidden=NO;
@@ -259,13 +356,17 @@
             cell.textfield.tag=10;
         }else if (indexPath.row==1){
             cell.textfield.placeholder=@"请您填写准确的手机号码";
+            cell.textfield.keyboardType=UIKeyboardTypeNumberPad;
             cell.textfield.tag=11;
         }else if (indexPath.row==2){
             cell.textfield.placeholder=@"请填写验证码";
             cell.codeBtn.hidden=NO;
+            cell.textfield.keyboardType=UIKeyboardTypeNumberPad;
+            cell.textfield.tag=13;
+            [cell.codeBtn addTarget:self action:@selector(buttonCode:) forControlEvents:UIControlEventTouchUpInside];
 //            [cell sd_addSubviews:@[cell.textfield]];
 //            cell.textfield.sd_layout
-//            .rightSpaceToView(cell,110);
+//            .widthIs(120);
             
         }
     }else if (indexPath.section==1){
@@ -294,12 +395,60 @@
         // [self CreatButton];
     }
 }
+-(void)buttonCode:(UIButton*)sender{
+    NSLog(@"加载了button");
+    //标的评估价
+    WeiTuoPaiMaiCell * cell4 =[_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0]];
+    [Engine getMessageCodePhone:[self stringHouMianText:cell4.textfield.text InternetText:_phoneName] success:^(NSDictionary *dic) {
+        [LCProgressHUD showMessage:[dic objectForKey:@"msg"]];
+        NSString * code =[NSString stringWithFormat:@"%@",[dic objectForKey:@"code"]];
+        if ([code isEqualToString:@"1"]) {
+            __block int timeout=60; //倒计时时间
+            dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+            dispatch_source_t _timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0,queue);
+            dispatch_source_set_timer(_timer,dispatch_walltime(NULL, 0),1.0*NSEC_PER_SEC, 0); //每秒执行
+            dispatch_source_set_event_handler(_timer, ^{
+                if(timeout<=0){ //倒计时结束，关闭
+                    dispatch_source_cancel(_timer);
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        //设置界面的按钮显示 根据自己需求设置
+                        [sender setTitle:@"发送验证码" forState:UIControlStateNormal];
+                        sender.userInteractionEnabled = YES;
+                    });
+                }
+                else{
+                    int seconds = timeout % 60;
+                    NSString *strTime = [NSString stringWithFormat:@"%.2d", seconds];
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        //设置界面的按钮显示 根据自己需求设置
+                        //NSLog(@"____%@",strTime);
+                        [UIView beginAnimations:nil context:nil];
+                        [UIView setAnimationDuration:1];
+                        [sender setTitle:[NSString stringWithFormat:@"%@秒后重新发送",strTime] forState:UIControlStateNormal];
+                        [UIView commitAnimations];
+                        sender.userInteractionEnabled = NO;
+                    });
+                    timeout--;
+                }
+            });
+            dispatch_resume(_timer);
+        }
+        
+    } error:^(NSError *error) {
+        
+    }];
+}
 
+-(void)qingKongImageView{
+    for (UIButton * image in _imageArray) {
+        [image removeFromSuperview];
+    }
+}
 #pragma mark --创建相机按钮
 -(void)CreatPhotoBtn:(WeiTuoPaiMaiCell*)cell{
+    [self qingKongImageView];
     if (_photoArray.count==0) {
         UIButton * btn =[UIButton buttonWithType:UIButtonTypeCustom];
-        //btn.backgroundColor=[UIColor redColor];
         [btn setBackgroundImage:[UIImage imageNamed:@"rz_pic"] forState:0];
         [btn addTarget:self action:@selector(btnClinkPhoto) forControlEvents:UIControlEventTouchUpInside];
         [cell.bgScrollview sd_addSubviews:@[btn]];
@@ -308,17 +457,18 @@
         .topSpaceToView(cell.bgScrollview,0)
         .widthIs(162/2)
         .heightIs(61);
-    }else if (_photoArray.count<4){
+    }else if (_photoArray.count<6){
         for (int i=0; i<_photoArray.count; i++) {
-            UIImageView * imageBtn =[UIImageView new];
-            //[imageBtn setBackgroundImage:_photoArray[i] forState:0];
-            imageBtn.image=_photoArray[i];
+            UIButton * imageBtn =[UIButton new];
+            [imageBtn setBackgroundImage:_photoArray[i] forState:0];
+            //imageBtn.image=_photoArray[i];
             [cell.bgScrollview sd_addSubviews:@[imageBtn]];
             imageBtn.sd_layout
             .leftSpaceToView(cell.bgScrollview,(10+81)*i)
             .topSpaceToView(cell.bgScrollview,0)
             .heightIs(61)
             .widthIs(81);
+            [_imageArray addObject:imageBtn];
             if (i==_photoArray.count-1) {
                 UIButton * seletBtn =[UIButton buttonWithType:UIButtonTypeCustom];
                // seletBtn.backgroundColor=[UIColor redColor];
@@ -330,19 +480,22 @@
                 .topSpaceToView(cell.bgScrollview,0)
                 .widthIs(162/2)
                 .heightIs(61);
+                 [_imageArray addObject:seletBtn];
             }//
             cell.bgScrollview.contentSize=CGSizeMake((_photoArray.count+1)*81+_photoArray.count*10, 0);
         }
-    }else if (_photoArray.count==4){
+    }else if (_photoArray.count==6){
         for (int i=0; i<_photoArray.count; i++) {
-            UIButton * imageBtn =[UIButton buttonWithType:UIButtonTypeCustom];
+            UIButton * imageBtn =[UIButton new];
             [imageBtn setBackgroundImage:_photoArray[i] forState:0];
+            //imageBtn.image=_photoArray[i];
             [cell.bgScrollview sd_addSubviews:@[imageBtn]];
             imageBtn.sd_layout
             .leftSpaceToView(cell.bgScrollview,0+(10+81)*i)
             .topSpaceToView(cell.bgScrollview,0)
             .heightIs(61)
             .widthIs(81);
+              [_imageArray addObject:imageBtn];
         }
         cell.bgScrollview.contentSize=CGSizeMake(_photoArray.count*81+(_photoArray.count-1)*10, 0);
     }
@@ -353,7 +506,7 @@
 }
 -(void)btnClinkPhoto{
     SGImagePickerController *picker = [[SGImagePickerController alloc] init];
-    picker.maxCount = 4-_photoArray.count;
+    picker.maxCount = 6-_photoArray.count;
     [picker setDidFinishSelectThumbnails:^(NSArray * imageArr) {
         for (UIImage * image in imageArr) {
             [_photoArray addObject:image];
@@ -416,7 +569,18 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
-
+//text1是从后面界面传过来的，text2是从上个界面过来的_model
+-(NSString *)stringHouMianText:(NSString*)text1 InternetText:(NSString*)text2{
+    
+    NSString * str;
+    if (text1) {
+        str=text1;
+    }else{
+        str=text2;
+    }
+    
+    return str;
+}
 /*
 #pragma mark - Navigation
 

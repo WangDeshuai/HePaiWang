@@ -14,12 +14,14 @@
 #import "PaiMaiBiaoDiModel.h"//拍卖标的model(横着的滚动图用)
 #import "PaiMaiGongGaoModel.h"//拍卖公告model(table用)
 #import "PaiMaiGongGaoXiangQingVC.h"//拍卖公告详情
+#import "PaiMaiBiaoDiXiangQingVC.h"//拍卖标的详情
 @interface HomeVC ()<SDCycleScrollViewDelegate,UITableViewDelegate,UITableViewDataSource>
 @property(nonatomic,strong)UIView * headView;
 @property(nonatomic,strong)UITableView * tableView;
 @property(nonatomic,strong)NSMutableArray * dataArray;
 @property (nonatomic, strong) MJRefreshComponent *myRefreshView;
 @property(nonatomic,assign)int AAA;
+@property(nonatomic,strong)NSMutableArray * paiMaiBiaoDiArr;//存放拍卖标的的model
 @end
 
 @implementation HomeVC
@@ -32,6 +34,7 @@
      self.backHomeBtn.hidden=YES;
     // Do any additional setup after loading the view.
     _dataArray=[NSMutableArray new];
+    _paiMaiBiaoDiArr=[NSMutableArray new];
     [self.navigationItem setTitle:@""];
     [self CreatNavBtn];
     [self CreatTableView];
@@ -157,6 +160,7 @@
     .heightIs(29/2);
     //更多
     UIButton * moreBtn =[UIButton buttonWithType:UIButtonTypeCustom];
+    [moreBtn addTarget:self action:@selector(paiMaiMore) forControlEvents:UIControlEventTouchUpInside];
     [moreBtn setImage:[UIImage imageNamed:@"home_fanhui"] forState:0];
     [view2 sd_addSubviews:@[moreBtn]];
     moreBtn.sd_layout
@@ -197,8 +201,8 @@
                 for (int i =0; i<contentAr.count; i++) {
                     NSDictionary * dicc =contentAr[i];
                     PaiMaiBiaoDiModel * model =[[PaiMaiBiaoDiModel alloc]initWithBiaoDiDic:dicc];
+                    [_paiMaiBiaoDiArr addObject:model];
                     UIButton * bgView =[UIButton new];
-//                    bgView.backgroundColor=[UIColor magentaColor];
                     bgView.tag=i;
                     bgView.layer.borderWidth=.5;
                     bgView.layer.borderColor=JXColor(205, 131, 137, 1).CGColor;
@@ -296,11 +300,20 @@
     return _headView;
 }
 
-#pragma mark --滚动视图的button
+#pragma mark --滚动视图的button的点击事件
 -(void)bgviewClick:(UIButton*)btn{
     NSLog(@"btnTage=%lu",btn.tag);
+    PaiMaiBiaoDiModel * md=_paiMaiBiaoDiArr[btn.tag];
+    PaiMaiBiaoDiXiangQingVC* vc =[PaiMaiBiaoDiXiangQingVC new];
+    vc.messageID=md.messageID;
+    [self.navigationController pushViewController:vc animated:YES];
 }
-
+#pragma mark --拍卖标的更多
+-(void)paiMaiMore{
+    PaiMaiBiaoDiVC * vc =[PaiMaiBiaoDiVC new];
+      vc.hidesBottomBarWhenPushed=YES;
+    [self.navigationController pushViewController:vc animated:YES];
+}
 
 
 #pragma mark --4个按钮点击状态
@@ -348,14 +361,6 @@
     }];
     
     [_tableView.header beginRefreshing];
-    //..上拉刷新
-    _tableView.footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
-        weakSelf.myRefreshView = weakSelf.tableView.footer;
-        _AAA=_AAA+1;
-        [self jieXiDataPage:_AAA];
-    }];
-    
-    _tableView.footer.hidden = YES;
     
 }
 
@@ -382,6 +387,7 @@
 {
     PaiMaiGongGaoModel * md =_dataArray[indexPath.row];
     PaiMaiGongGaoXiangQingVC * vc =[PaiMaiGongGaoXiangQingVC new];
+      vc.hidesBottomBarWhenPushed=YES;
     vc.messageID=md.messageID;
     [self.navigationController pushViewController:vc animated:YES];
 }
@@ -412,6 +418,7 @@
     //更多
     UIButton * moreBtn =[UIButton buttonWithType:UIButtonTypeCustom];
     [moreBtn setImage:[UIImage imageNamed:@"home_fanhui"] forState:0];
+    [moreBtn addTarget:self action:@selector(publicBtn) forControlEvents:UIControlEventTouchUpInside];
     [view sd_addSubviews:@[moreBtn]];
     moreBtn.sd_layout
     .rightSpaceToView(view,15)
@@ -437,8 +444,12 @@
 {
     return 54;
 }
-
-
+#pragma mark --区头点击更多
+-(void)publicBtn{
+    PaiMaiGongGaoVC * vc =[PaiMaiGongGaoVC new];
+    vc.hidesBottomBarWhenPushed=YES;
+    [self.navigationController pushViewController:vc animated:YES];
+}
 
 
 

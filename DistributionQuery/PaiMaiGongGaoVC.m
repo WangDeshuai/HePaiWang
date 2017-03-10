@@ -42,9 +42,10 @@
     // Do any additional setup after loading the view.
     
     _dataArray=[NSMutableArray new];
+     [self CreatTopButton];
     [self CreatTabelView];
     if (_tagg==2) {
-        //个人中心今日
+        //个人中心我参加的拍卖会
         self.title=@"我参加的拍卖会";
     }else{
         //首页进入
@@ -62,7 +63,7 @@
         searchBtn.titleLabel.font=[UIFont systemFontOfSize:13];
         UIBarButtonItem *leftBtn3 =[[UIBarButtonItem alloc]initWithCustomView:searchBtn];
         self.navigationItem.rightBarButtonItems=@[leftBtn2,leftBtn3];
-        [self CreatTopButton];
+       
         [self CreatButton];
     }
 }
@@ -210,10 +211,52 @@
     
 }
 
-#pragma mark --获取主表内容
+#pragma mark --1获取主表内容从首页进入
 -(void)getMainTableViewDataPage:(int)page LeiXing:(NSString*)lx proCode:(NSString*)shengCode CityCode:(NSString*)code TimeStr:(NSString*)timeStr{
     [LCProgressHUD showLoading:@"请稍后..."];
     [Engine upDataPaiMaiPublicViewSearchStr:@"" BiaoDiLeiXing:lx ProvCode:shengCode CityCode:code BeginTime:timeStr Page:[NSString stringWithFormat:@"%d",page] PageSize:@"10" success:^(NSDictionary *dic) {
+        [LCProgressHUD showMessage:[dic objectForKey:@"msg"]];
+        NSString * code =[NSString stringWithFormat:@"%@",[dic objectForKey:@"code"]];
+        if ([code isEqualToString:@"1"]) {
+            NSArray * contentArr =[dic objectForKey:@"content"];
+            NSMutableArray * array2 =[NSMutableArray new];
+            for (NSDictionary * dicc in contentArr) {
+                PaiMaiGongGaoModel * md =[[PaiMaiGongGaoModel alloc]initWithPaiMaiPublicDic:dicc];
+                [array2 addObject:md];
+            }
+            
+            if (self.myRefreshView ==_tableView.header) {
+                _dataArray=array2;
+                _tableView.footer.hidden=_dataArray.count==0?YES:NO;
+            }else if (self.myRefreshView == _tableView.footer){
+                [_dataArray addObjectsFromArray:array2];
+            }
+            [_tableView reloadData];
+            [_myRefreshView  endRefreshing];
+            
+            
+        }
+    } error:^(NSError *error) {
+        
+    }];
+}
+#pragma mark --获取主表内容 从个人中心进入的
+-(void)myCenterComeInDataPage:(int)page LeiXing:(NSString*)lex ShengCode:(NSString*)scode CityCode:(NSString*)ccode TimeStr:(NSString*)timestr{
+   
+    /*
+     
+     "user_id":22,				//用户id
+     "auction_id":12,				//参加的拍卖会id
+     "auction_name":"拍卖会1",			//拍卖会名称
+     "auction_add_time":"2017-02-22 19:26:10",		//拍卖会添加时间(报名开始时间)
+     "auction_begin_time":"2017-03-23 19:24:00",           //拍卖会开始时间(报名截止时间)
+     "provname":"浙江省",				//所在省份名称
+     "cityname":"温州市"
+
+     */
+    
+    
+    [Engine myCenterMyCanJiaPaiMaiHuiBiaoDiType:lex Page:[NSString stringWithFormat:@"%d",page] ShengCode:scode CityCode:ccode BeginTime:timestr  success:^(NSDictionary *dic) {
         [LCProgressHUD showMessage:[dic objectForKey:@"msg"]];
         NSString * code =[NSString stringWithFormat:@"%@",[dic objectForKey:@"code"]];
         if ([code isEqualToString:@"1"]) {
@@ -278,15 +321,20 @@
 }
 
 
-#pragma mark --创建主表
+#pragma mark --调用数据
+-(void)dataInterStr{
+    if (_tagg==2) {
+        //从个人中心进入
+        [self myCenterComeInDataPage:_AAA LeiXing:[ToolClass isString:_biaoDiFenLeiText] ShengCode:[ToolClass isString:_shengcode] CityCode:[ToolClass isString:_citycode] TimeStr:[ToolClass isString:_paiMaiStyleText]];
+    }else{
+        [self getMainTableViewDataPage:_AAA LeiXing:[ToolClass isString:_biaoDiFenLeiText] proCode:[ToolClass isString:_shengcode] CityCode:[ToolClass isString:_citycode] TimeStr:[ToolClass isString:_paiMaiStyleText]];
+    }
 
+}
+
+#pragma mark --创建主表
 -(void)CreatTabelView{
-//    int d ;
-//    if (_tagg==2) {
-//        d=ScreenHeight-64;
-//    }else{
-//        d=ScreenHeight-64-50;
-//    }
+
     if (!_tableView) {
         _tableView=[[UITableView alloc]initWithFrame:CGRectMake(0,55, ScreenWidth, ScreenHeight-64-55) style:UITableViewStylePlain];
     }
@@ -301,7 +349,7 @@
     _tableView.header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
         weakSelf.myRefreshView = weakSelf.tableView.header;
         _AAA=1;
-        [self getMainTableViewDataPage:_AAA LeiXing:[ToolClass isString:_biaoDiFenLeiText] proCode:[ToolClass isString:_shengcode] CityCode:[ToolClass isString:_citycode] TimeStr:[ToolClass isString:_paiMaiStyleText]];
+        [self dataInterStr];
     }];
     
     [_tableView.header beginRefreshing];
@@ -309,7 +357,8 @@
     _tableView.footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
         weakSelf.myRefreshView = weakSelf.tableView.footer;
         _AAA=_AAA+1;
-         [self getMainTableViewDataPage:_AAA LeiXing:[ToolClass isString:_biaoDiFenLeiText] proCode:[ToolClass isString:_shengcode] CityCode:[ToolClass isString:_citycode] TimeStr:[ToolClass isString:_paiMaiStyleText]];
+        [self dataInterStr];
+        
     }];
     
     _tableView.footer.hidden = YES;
@@ -380,6 +429,10 @@
         return cell2;
     }else{
         PaiMaiGongGaoCell * cell =[PaiMaiGongGaoCell cellWithTableView:tableView CellID:cellID];
+        if (_tagg==2) {
+            //从个人中心进入
+            [cell.lijiBaoMiang setBackgroundImage:[UIImage imageNamed:@"cj_bm"] forState:0];
+        }
         cell.model=_dataArray[indexPath.row];
         return cell;
  
@@ -429,7 +482,8 @@
             }
             [_dataArray removeAllObjects];
             [_tableView reloadData];
-             [self getMainTableViewDataPage:_AAA LeiXing:[ToolClass isString:_biaoDiFenLeiText] proCode:[ToolClass isString:_shengcode] CityCode:[ToolClass isString:_citycode] TimeStr:[ToolClass isString:_paiMaiStyleText]];
+             [self dataInterStr];
+//             [self getMainTableViewDataPage:_AAA LeiXing:[ToolClass isString:_biaoDiFenLeiText] proCode:[ToolClass isString:_shengcode] CityCode:[ToolClass isString:_citycode] TimeStr:[ToolClass isString:_paiMaiStyleText]];
             [self shuChu];
         }else if (_btntag==1){
             //地区
@@ -448,7 +502,8 @@
             }
             [_dataArray removeAllObjects];
             [_tableView reloadData];
-             [self getMainTableViewDataPage:_AAA LeiXing:[ToolClass isString:_biaoDiFenLeiText] proCode:[ToolClass isString:_shengcode] CityCode:[ToolClass isString:_citycode] TimeStr:[ToolClass isString:_paiMaiStyleText]];;
+             [self dataInterStr];
+//             [self getMainTableViewDataPage:_AAA LeiXing:[ToolClass isString:_biaoDiFenLeiText] proCode:[ToolClass isString:_shengcode] CityCode:[ToolClass isString:_citycode] TimeStr:[ToolClass isString:_paiMaiStyleText]];;
             [self shuChu];
         }else{
             //拍卖状态
@@ -467,7 +522,8 @@
             }
             [_dataArray removeAllObjects];
             [_tableView reloadData];
-             [self getMainTableViewDataPage:_AAA LeiXing:[ToolClass isString:_biaoDiFenLeiText] proCode:[ToolClass isString:_shengcode] CityCode:[ToolClass isString:_citycode] TimeStr:[ToolClass isString:_paiMaiStyleText]];
+             [self dataInterStr];
+//             [self getMainTableViewDataPage:_AAA LeiXing:[ToolClass isString:_biaoDiFenLeiText] proCode:[ToolClass isString:_shengcode] CityCode:[ToolClass isString:_citycode] TimeStr:[ToolClass isString:_paiMaiStyleText]];
             [self shuChu];
         }
         

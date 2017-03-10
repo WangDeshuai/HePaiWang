@@ -14,9 +14,10 @@
 #import "PaiMaiGongGaoVC.h"//参加的拍卖会
 #import "BgXiaoXiViewController.h"//消息列表
 #import "MessageVC.h"//个人信息
-#import "PublicYuGaovc.h"//发布预告
+#import "PublicYuGaoBVC.h"//发布预告
 #import "ShiMingRenZhengVC.h"//实名认证
 #import "BaseTableBarVC.h"
+ #import "PublicXInBiaoDiVC.h"//发布新标的
 #import "BaseNavigationController.h"
 //#import "<#header#>"
 @interface MyVC ()<UITableViewDelegate,UITableViewDataSource>
@@ -127,16 +128,23 @@
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    if ([ToolClass isLogin]==NO) {
+        LoginViewController * vc =[LoginViewController new];
+        vc.hidesBottomBarWhenPushed=YES;
+        [self.navigationController pushViewController:vc animated:YES];
+        return;
+    }
+    
+    
     if (indexPath.section==0) {
         if (indexPath.row==0) {
             //发布新标的
-            BaseTableBarVC * vc =[BaseTableBarVC new];
-
-//             BaseNavigationController *nav = [[BaseNavigationController alloc] initWithRootViewController:vc];
-            WINDOW.rootViewController =vc;
+            PublicXInBiaoDiVC * vc =[PublicXInBiaoDiVC new];
+            vc.hidesBottomBarWhenPushed=YES;
+            [self.navigationController pushViewController:vc animated:YES];
         }else{
             //发布预告
-            PublicYuGaovc * vc =[PublicYuGaovc new];
+            PublicYuGaoBVC * vc =[PublicYuGaoBVC new];
             vc.hidesBottomBarWhenPushed=YES;
             [self.navigationController pushViewController:vc animated:YES];
         }
@@ -193,9 +201,10 @@
     .topSpaceToView(headView,0)
     .heightIs(332/2);
     //头像
-    UIImageView * headImage =[[UIImageView alloc]init];
-    [headImage setImageWithURL:[NSURL URLWithString:@""] placeholderImage:[UIImage imageNamed:@"headImage"]];
+    UIButton * headImage =[[UIButton alloc]init];
+    [headImage setImageForState:0 withURL:[NSURL URLWithString:@""] placeholderImage:[UIImage imageNamed:@"headImage"]];
     headImage.sd_cornerRadius=@(130/4);
+    [headImage addTarget:self action:@selector(headBtnClink) forControlEvents:UIControlEventTouchUpInside];
     [bgImage sd_addSubviews:@[headImage]];
     headImage.sd_layout
     .widthIs(130/2)
@@ -231,7 +240,8 @@
         [nameLabel setSingleLineAutoResizeWithMaxWidth:120];
         
         
-        [headImage setImageWithURL:[NSURL URLWithString:[baseInfoDic objectForKey:@"head_img"]] placeholderImage:[UIImage imageNamed:@"headImage"]];
+       // [headImage setImageWithURL:[NSURL URLWithString:[baseInfoDic objectForKey:@"head_img"]] placeholderImage:[UIImage imageNamed:@"headImage"]];
+        [headImage setImageForState:0 withURL:[NSURL URLWithString:[baseInfoDic objectForKey:@"head_img"]] placeholderImage:[UIImage imageNamed:@"headImage"]];
     }else{
         //未登录
         //立即登录
@@ -270,7 +280,14 @@
     
     return headView;
 }
+#pragma mark --创建的4个按钮点击事件
 -(void)forBtnClick:(UIButton*)btn{
+    if ([ToolClass isLogin]==NO) {
+        LoginViewController * vc =[LoginViewController new];
+          vc.hidesBottomBarWhenPushed=YES;
+        [self.navigationController pushViewController:vc animated:YES];
+        return;
+    }
     if (btn.tag==0) {
         //我委托的标的
         MyWeiTuoViewController * vc =[MyWeiTuoViewController new];
@@ -299,24 +316,18 @@
     
     
 }
-//-(void)scrollViewDidScroll:(UIScrollView *)scrollView{
-//     int contentOffsety = scrollView.contentOffset.y;
-//    if (contentOffsety<0) {
-//         CGRect rect = bgImage.frame;
-//        rect.size.height=_backImgHeight-contentOffsety;
-//        rect.size.width = _backImgWidth* (_backImgHeight-contentOffsety)/_backImgHeight;
-//        rect.origin.x =  -(rect.size.width-_backImgWidth)/2;
-//        rect.origin.y = 0;
-//        bgImage.frame = rect;
-//    }else{
-//        CGRect rect = bgImage.frame;
-//        rect.size.height = _backImgHeight;
-//        rect.size.width = _backImgWidth;
-//        rect.origin.x = 0;
-//        rect.origin.y = -contentOffsety;
-//        bgImage.frame = rect;
-//    }
-//}
+#pragma mark --点击头像
+-(void)headBtnClink{
+    if ([ToolClass isLogin]==NO) {
+        LoginViewController * vc =[LoginViewController new];
+          vc.hidesBottomBarWhenPushed=YES;
+        [self.navigationController pushViewController:vc animated:YES];
+        return;
+    }
+    MessageVC * vc =[MessageVC new];
+    [self.navigationController pushViewController:vc animated:YES];
+}
+
 
 -(void)btnn:(UIButton*)btn{
     LoginViewController * vc =[LoginViewController new];

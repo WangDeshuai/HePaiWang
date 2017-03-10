@@ -24,7 +24,6 @@
     // Do any additional setup after loading the view.
     self.title=@"实名认证";
 //    self.automaticallyAdjustsScrollViewInsets=NO;
-    [self huoQuData];
     [self setupChildViewController];
     self.titles = @[@"个人",@"企业"];
     self.topTitleView = [SGTopTitleView topTitleViewWithFrame:CGRectMake(0, 0,ScreenWidth, 44)];
@@ -58,19 +57,7 @@
 
 }
 
--(void)huoQuData{
-    [Engine getShiMingMessagesuccess:^(NSDictionary *dic) {
-        NSString * code =[NSString stringWithFormat:@"%@",[dic objectForKey:@"code"]];
-        if ([code isEqualToString:@"1"]) {
-            NSDictionary * dicc =[dic objectForKey:@"content"];
-            _index=[NSString stringWithFormat:@"%@",[dicc objectForKey:@"authentication_type"]];
-            NSMutableDictionary * dicAr = [ToolClass isDictionary:dicc];
-            [ToolClass savePlist:dicAr name:@"shiMingInfo"];
-        }
-    } error:^(NSError *error) {
-        
-    }];
-}
+
 #pragma mark - - - SGTopScrollMenu代理方法
 - (void)SGTopTitleView:(SGTopTitleView *)topTitleView didSelectTitleAtIndex:(NSInteger)index{
     

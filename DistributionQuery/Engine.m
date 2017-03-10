@@ -41,7 +41,7 @@
     NSString * urlStr =[NSString stringWithFormat:@"%@sms/pushVerificationCode.action",SER_VICE];
     AFHTTPRequestOperationManager * manager =[AFHTTPRequestOperationManager manager];
     NSMutableDictionary * dic =[NSMutableDictionary new];
-    [dic setObject:phone forKey:@"telNum"];
+    [dic setObject:[ToolClass isString:[NSString stringWithFormat:@"%@",phone]] forKey:@"telNum"];
     [dic setObject:@"ios" forKey:@"osType"];
     [manager POST:urlStr parameters:dic success:^(AFHTTPRequestOperation *operation, id responseObject) {
         NSData *data = [NSJSONSerialization dataWithJSONObject:responseObject options:NSJSONWritingPrettyPrinted error:nil];
@@ -647,21 +647,66 @@
         
     }];
 }
-#pragma mark --27已登录状态委托发布
+
+
+#pragma mark --27未登录状态下委托发布
++(void)loginIsNoPublicPeople:(NSString*)people Phone:(NSString*)phone PhoneCode:(NSString*)yanZhengMa BiaoDiName:(NSString*)bdname BiaoDiMiaoShu:(NSString*)biaodims XiaCiName:(NSString*)xcname ShengCode:(NSString*)shengcode CityCode:(NSString*)citycode XianCode:(NSString*)xiancode ImageArray:(NSMutableArray*)imageArr success:(SuccessBlock)aSuccess error:(ErrorBlock)aError{
+    
+    AFHTTPRequestOperationManager * manager =[AFHTTPRequestOperationManager manager];
+    manager.responseSerializer = [AFHTTPResponseSerializer serializer];
+    NSString * urlstr =[NSString stringWithFormat:@"%@entrust/app_publishEntrustTargetNotLogin.action",SER_VICE];
+    NSMutableDictionary * dicc =[NSMutableDictionary new];
+      [dicc setObject:@"ios" forKey:@"osType"];
+    [dicc setObject:people forKey:@"liaisons_name"];
+    [dicc setObject:phone forKey:@"regist_tel"];
+    [dicc setObject:yanZhengMa forKey:@"randomStr"];
+    [dicc setObject:bdname forKey:@"target_name"];//标的名称
+    [dicc setObject:biaodims forKey:@"target_description"];//描述
+    [dicc setObject:xcname forKey:@"target_defect_declaration"];//瑕疵
+    [dicc setObject:shengcode forKey:@"target_provcode"];//省code
+    [dicc setObject:citycode forKey:@"target_citycode"];//市code
+    [dicc setObject:xiancode forKey:@"target_districtcode"];//县coed
+    [manager POST:urlstr parameters:dicc constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
+        NSDateFormatter *formmettrt = [[NSDateFormatter alloc]init];
+        [formmettrt setDateFormat:@"yyyyMMddHHmmss"];
+        if (imageArr.count==0) {
+        }else{
+            for (int i = 0; i < imageArr.count; i++) {
+                UIImage * image= imageArr[i];
+                NSString *imagetype=@"jpg";
+                NSData *data = UIImageJPEGRepresentation(image, 0);
+                NSString *IMAGE=[NSString stringWithFormat:@"target_img%d",i];
+                [formData appendPartWithFileData:data name:IMAGE fileName:[NSString stringWithFormat:@"%@.%@", [formmettrt stringFromDate:[NSDate date]], imagetype] mimeType:[NSString stringWithFormat:@"image/%@", imagetype]];
+            }
+        }
+    } success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSDictionary * diccc = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingMutableContainers error:nil];
+        NSLog(@"27未登录状态下委托发布%@",diccc);
+        aSuccess(diccc);
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"27未登录状态下委托发布%@",error);
+        aError(error);
+    }];
+}
+
+
+
+
+
+#pragma mark --28已登录状态委托发布(文件形式上传图片)
 +(void)loginIsYesPublicPeopleName:(NSString*)people PhoneNum:(NSString*)phone BiaoDiName:(NSString*)biaodiname MiaoShu:(NSString*)miaoshu XiaCi:(NSString*)xiaci ShengCode:(NSString*)scode CityCode:(NSString*)ccode XianCode:(NSString*)xcode BaoLiuPrice:(NSString*)blprice PingGuPrice:(NSString*)pgprice imageArr:(NSMutableArray*)imageArr success:(SuccessBlock)aSuccess error:(ErrorBlock)aError{
     NSDictionary * dicInfo =[ToolClass duquPlistWenJianPlistName:@"baseInfo"];
      NSString * token =[NSUSE_DEFO objectForKey:@"token"];
-    // NSString * peopleregi =[dicInfo objectForKey:@"liaisons_name"];
      NSString * phoneregi =[dicInfo objectForKey:@"regist_tel"];
     if (token==nil || dicInfo==nil) {
-        [LCProgressHUD showMessage:@"27未找到基本信息"];
+        [LCProgressHUD showMessage:@"28未找到基本信息"];
         return;
     }
-    
     AFHTTPRequestOperationManager * manager =[AFHTTPRequestOperationManager manager];
     manager.responseSerializer = [AFHTTPResponseSerializer serializer];
     NSString * urlstr =[NSString stringWithFormat:@"%@entrust/app_publishEntrustTargetInLogin.action",SER_VICE];
     NSMutableDictionary * dicc =[NSMutableDictionary new];
+    [dicc setObject:@"ios" forKey:@"osType"];
      [dicc setObject:token forKey:@"user_id"];
      [dicc setObject:phoneregi forKey:@"regist_tel"];
      [dicc setObject:people forKey:@"liaisons_name"];
@@ -676,9 +721,7 @@
     [manager POST:urlstr parameters:dicc constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
         NSDateFormatter *formmettrt = [[NSDateFormatter alloc]init];
         [formmettrt setDateFormat:@"yyyyMMddHHmmss"];
-        
         if (imageArr.count==0) {
-            
         }else{
             for (int i = 0; i < imageArr.count; i++) {
                 UIImage * image= imageArr[i];
@@ -686,23 +729,54 @@
                 NSData *data = UIImageJPEGRepresentation(image, 0);
                 NSString *IMAGE=[NSString stringWithFormat:@"target_img%d",i];
                 [formData appendPartWithFileData:data name:IMAGE fileName:[NSString stringWithFormat:@"%@.%@", [formmettrt stringFromDate:[NSDate date]], imagetype] mimeType:[NSString stringWithFormat:@"image/%@", imagetype]];
-                
             }
-            
         }
-        
     } success:^(AFHTTPRequestOperation *operation, id responseObject) {
         
-        
         NSDictionary * diccc = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingMutableContainers error:nil];
-        NSLog(@"27已登录状态委托发布%@",diccc);
+        NSLog(@"28已登录状态委托发布%@",diccc);
          aSuccess(diccc);
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        NSLog(@"27已登录状态委托发布%@",error);
+        NSLog(@"28已登录状态委托发布%@",error);
         aError(error);
     }];
-
-    
-    
 }
+
+#pragma mark --29个人中心_我参加的拍卖会
++(void)myCenterMyCanJiaPaiMaiHuiBiaoDiType:(NSString*)leiXing Page:(NSString*)page ShengCode:(NSString*)scode CityCode:(NSString*)ccode BeginTime:(NSString*)timeStr success:(SuccessBlock)aSuccess error:(ErrorBlock)aError{
+    
+    NSString * urlStr =[NSString stringWithFormat:@"%@user/app_qryMyJoinedAuctionInUC.action",SER_VICE];
+    
+    AFHTTPRequestOperationManager * manager =[AFHTTPRequestOperationManager manager];
+    NSMutableDictionary * dic =[NSMutableDictionary new];
+    [ToolClass getUUIDStr];
+    NSString * uuid =[NSUSE_DEFO objectForKey:@"UUID"];
+    NSString * token =[NSUSE_DEFO objectForKey:@"token"];
+    if (uuid==nil || token==nil) {
+        [LCProgressHUD showMessage:@"29个人中心_我参加的拍卖会无token"];
+        return;
+    }
+    [dic setObject:@"ios" forKey:@"osType"];
+    [dic setObject:uuid forKey:@"unique_id"];
+    [dic setObject:token forKey:@"user_id"];
+    [dic setObject:leiXing forKey:@"target_type"];
+    [dic setObject:scode forKey:@"prov_code"];
+    [dic setObject:ccode forKey:@"city_code"];
+    [dic setObject:timeStr forKey:@"begin_time"];
+    [dic setObject:page forKey:@"pageIndex"];
+    [dic setObject:@"10" forKey:@"pageSize"];
+    
+    [manager POST:urlStr parameters:dic success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSData *data = [NSJSONSerialization dataWithJSONObject:responseObject options:NSJSONWritingPrettyPrinted error:nil];
+        NSString *str = [[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding];
+        NSLog(@"29个人中心_我参加的拍卖会%@",str);
+        
+        aSuccess(responseObject);
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"29个人中心_我参加的拍卖会%@",error);
+        aError(error);
+        
+    }];
+}
+
 @end

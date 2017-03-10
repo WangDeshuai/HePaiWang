@@ -22,8 +22,53 @@
 
 -(void)viewWillAppear:(BOOL)animated{
     NSMutableDictionary * messageDic =[ToolClass duquPlistWenJianPlistName:@"shiMingInfo"];
-    _messageDic=messageDic;
+    
+    if (messageDic==nil) {
+        [self huoQuData];
+    }else{
+          _messageDic=messageDic;
+    }
+  
 }
+-(void)huoQuData{
+    NSLog(@"获取了实名认证的信息了");
+    [Engine getShiMingMessagesuccess:^(NSDictionary *dic) {
+        NSString * code =[NSString stringWithFormat:@"%@",[dic objectForKey:@"code"]];
+        if ([code isEqualToString:@"1"]) {
+            if ([dic objectForKey:@"content"]==[NSNull null]) {
+                [LCProgressHUD showMessage:@"首次请您认证填写"];
+            }else{
+                NSDictionary * dicc =[dic objectForKey:@"content"];
+                NSMutableDictionary * dicAr = [ToolClass isDictionary:dicc];
+                _messageDic=dicAr;
+                [ToolClass savePlist:dicAr name:@"shiMingInfo"];
+                NSString * type =[NSString stringWithFormat:@"%@",[dicAr objectForKey:@"authentication_type"]];
+                if ([type isEqualToString:@"1"]) {
+                    //个人
+                    //把真实姓名和 账户类型添加进去
+                    [self saveMyMessageZhenName:[dicAr objectForKey:@"personal_name"] ZhangHuStyle:type];
+                }else{
+                    //企业
+                    [self saveMyMessageZhenName:[dicAr objectForKey:@"enterprise_name"] ZhangHuStyle:type];
+                }
+  
+            }
+            
+            
+        }
+    } error:^(NSError *error) {
+        
+    }];
+}
+#pragma mark --存进个人信息中
+-(void)saveMyMessageZhenName:(NSString*)name ZhangHuStyle:(NSString*)style{
+    NSMutableDictionary * dic =[ToolClass duquPlistWenJianPlistName:@"baseInfo"];
+    [dic setObject:name forKey:@"real_name"];
+    [dic setObject:style forKey:@"authentication_type"];
+    
+    [ToolClass savePlist:dic name:@"baseInfo"];
+}
+
 
 - (void)viewDidLoad {
     [super viewDidLoad];

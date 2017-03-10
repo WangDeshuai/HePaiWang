@@ -36,10 +36,10 @@
 }
 -(void)CreatStar{
     _nameLabel=[UILabel new];
-    _codeBtn=[UIButton new];
     _textfield=[UITextField new];
     _bgScrollview=[UIScrollView new];
-    [self.contentView sd_addSubviews:@[_nameLabel,_codeBtn,_textfield,_bgScrollview]];
+     _codeBtn=[UIButton new];
+    [self.contentView sd_addSubviews:@[_nameLabel,_textfield,_codeBtn,_bgScrollview]];
    //属性
     
     _nameLabel.alpha=.8;
@@ -79,9 +79,6 @@
     .heightIs(30);
     //滚动试图
     _bgScrollview.hidden=YES;
-//    _bgScrollview.backgroundColor=[UIColor yellowColor];
-   // _bgScrollview.frame=CGRectMake(15, 15, ScreenWidth-30, 61);
-    //_bgScrollview.contentSize=CGSizeMake(1000, 0);
     _bgScrollview.sd_layout
     .leftSpaceToView(self.contentView,15)
     .topSpaceToView(_nameLabel,15)

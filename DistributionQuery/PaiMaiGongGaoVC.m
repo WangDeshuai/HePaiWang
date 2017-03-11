@@ -13,7 +13,7 @@
 #import "RightMyAddressCell.h"
 #import "ShengCityModel.h"
 #import "PaiMaiGongGaoModel.h"
-@interface PaiMaiGongGaoVC ()<UITableViewDelegate,UITableViewDataSource>
+@interface PaiMaiGongGaoVC ()<UITableViewDelegate,UITableViewDataSource,UITextFieldDelegate>
 @property(nonatomic,strong)UITableView *tableView;
 @property(nonatomic,strong)UIButton * lastBtn;
 @property(nonatomic,strong)UIButton * bgview;
@@ -50,20 +50,12 @@
     }else{
         //首页进入
         UIButton * logoBtn2 =[UIButton buttonWithType:UIButtonTypeCustom];
-        logoBtn2.frame=CGRectMake(0, 0, 76/2, 44/2);
+        logoBtn2.frame=CGRectMake(0, 0, 76/2, 50);
         [logoBtn2 setImage:[UIImage imageNamed:@"liebiao_phone"] forState:0];
         UIBarButtonItem *leftBtn2 =[[UIBarButtonItem alloc]initWithCustomView:logoBtn2];
-        UIButton * searchBtn =[UIButton buttonWithType:UIButtonTypeCustom];
-        searchBtn.frame=CGRectMake(0, -10, 489/2, 65/2);
-        [searchBtn setBackgroundImage:[UIImage imageNamed:@"search-1"] forState:0];//489   65
-        [searchBtn setTitle:@"搜索标的物" forState:0];
-        [searchBtn setTitleColor:[UIColor lightGrayColor] forState:0];
-        searchBtn.contentHorizontalAlignment=UIControlContentHorizontalAlignmentLeft;
-        searchBtn.titleEdgeInsets=UIEdgeInsetsMake(0, 30, 0, 0);
-        searchBtn.titleLabel.font=[UIFont systemFontOfSize:13];
-        UIBarButtonItem *leftBtn3 =[[UIBarButtonItem alloc]initWithCustomView:searchBtn];
-        self.navigationItem.rightBarButtonItems=@[leftBtn2,leftBtn3];
-       
+         self.navigationItem.rightBarButtonItems=@[leftBtn2];
+        self.textHomeField.hidden=NO;
+        self.textHomeField.delegate=self;
         [self CreatButton];
     }
 }
@@ -212,14 +204,15 @@
 }
 
 #pragma mark --1获取主表内容从首页进入
--(void)getMainTableViewDataPage:(int)page LeiXing:(NSString*)lx proCode:(NSString*)shengCode CityCode:(NSString*)code TimeStr:(NSString*)timeStr{
+-(void)getMainTableViewDataPage:(int)page Search:(NSString*)sear LeiXing:(NSString*)lx proCode:(NSString*)shengCode CityCode:(NSString*)code TimeStr:(NSString*)timeStr{
     [LCProgressHUD showLoading:@"请稍后..."];
-    [Engine upDataPaiMaiPublicViewSearchStr:@"" BiaoDiLeiXing:lx ProvCode:shengCode CityCode:code BeginTime:timeStr Page:[NSString stringWithFormat:@"%d",page] PageSize:@"10" success:^(NSDictionary *dic) {
-        [LCProgressHUD showMessage:[dic objectForKey:@"msg"]];
+    [Engine upDataPaiMaiPublicViewSearchStr:sear BiaoDiLeiXing:lx ProvCode:shengCode CityCode:code BeginTime:timeStr Page:[NSString stringWithFormat:@"%d",page] PageSize:@"10" success:^(NSDictionary *dic) {
+        //
         NSString * code =[NSString stringWithFormat:@"%@",[dic objectForKey:@"code"]];
         if ([code isEqualToString:@"1"]) {
             NSArray * contentArr =[dic objectForKey:@"content"];
             NSMutableArray * array2 =[NSMutableArray new];
+            [LCProgressHUD hide];
             for (NSDictionary * dicc in contentArr) {
                 PaiMaiGongGaoModel * md =[[PaiMaiGongGaoModel alloc]initWithPaiMaiPublicDic:dicc];
                 [array2 addObject:md];
@@ -235,6 +228,8 @@
             [_myRefreshView  endRefreshing];
             
             
+        }else{
+            [LCProgressHUD showMessage:[dic objectForKey:@"msg"]];
         }
     } error:^(NSError *error) {
         
@@ -257,9 +252,10 @@
     
     
     [Engine myCenterMyCanJiaPaiMaiHuiBiaoDiType:lex Page:[NSString stringWithFormat:@"%d",page] ShengCode:scode CityCode:ccode BeginTime:timestr  success:^(NSDictionary *dic) {
-        [LCProgressHUD showMessage:[dic objectForKey:@"msg"]];
+        //
         NSString * code =[NSString stringWithFormat:@"%@",[dic objectForKey:@"code"]];
         if ([code isEqualToString:@"1"]) {
+            [LCProgressHUD hide];
             NSArray * contentArr =[dic objectForKey:@"content"];
             NSMutableArray * array2 =[NSMutableArray new];
             for (NSDictionary * dicc in contentArr) {
@@ -277,6 +273,8 @@
             [_myRefreshView  endRefreshing];
             
             
+        }else{
+            [LCProgressHUD showMessage:[dic objectForKey:@"msg"]];
         }
     } error:^(NSError *error) {
         
@@ -327,7 +325,7 @@
         //从个人中心进入
         [self myCenterComeInDataPage:_AAA LeiXing:[ToolClass isString:_biaoDiFenLeiText] ShengCode:[ToolClass isString:_shengcode] CityCode:[ToolClass isString:_citycode] TimeStr:[ToolClass isString:_paiMaiStyleText]];
     }else{
-        [self getMainTableViewDataPage:_AAA LeiXing:[ToolClass isString:_biaoDiFenLeiText] proCode:[ToolClass isString:_shengcode] CityCode:[ToolClass isString:_citycode] TimeStr:[ToolClass isString:_paiMaiStyleText]];
+        [self getMainTableViewDataPage:_AAA Search:@"" LeiXing:[ToolClass isString:_biaoDiFenLeiText] proCode:[ToolClass isString:_shengcode] CityCode:[ToolClass isString:_citycode] TimeStr:[ToolClass isString:_paiMaiStyleText]];
     }
 
 }
@@ -624,5 +622,18 @@
     
     NSString * strID =[dicc objectForKey:str];
     return strID;
+}
+-(void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
+{
+    [self.navigationController.view endEditing:YES];
+}
+#pragma mark --点击了搜索事件
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    [textField resignFirstResponder];//关闭键盘
+    NSLog(@"点击了搜索十几号");
+    
+    [self getMainTableViewDataPage:_AAA Search:textField.text LeiXing:@"" proCode:@"" CityCode:@"" TimeStr:@""];
+    
+    return YES;
 }
 @end

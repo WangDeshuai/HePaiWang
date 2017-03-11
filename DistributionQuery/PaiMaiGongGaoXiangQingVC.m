@@ -36,18 +36,13 @@
    
     _dataArr=[NSMutableArray new];
     _dataArrID=[NSMutableArray new];
-//    if ([ToolClass isLogin]) {
-//        [self CreatTableView];
-//    }else{
-//        [self.view addSubview:[self CreatView1]];
-//        [self CreatView2];//拍卖地点
-//        [self CreatView3];//上一篇下一篇
-//    }
+    
      [self CreatTableView];
      [self twoBtn];
     
     
 }
+
 -(void)CreatNameArray{
     _nameArray=[NSMutableArray new];
 
@@ -55,7 +50,7 @@
 #pragma mark --创建表
 -(void)CreatTableView{
     if (!_tableView) {
-        _tableView=[[UITableView alloc]initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight-64-35) style:UITableViewStylePlain];
+        _tableView=[[UITableView alloc]initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight-64-55) style:UITableViewStylePlain];
     }
     _tableView.delegate=self;
     _tableView.dataSource=self;
@@ -135,9 +130,14 @@
 
 #pragma mark --创建最底下2个按钮
 -(void)twoBtn{
-    int k =140;
+    
+    int k =0;
+    if (ScreenWidth==320) {
+        k=140;
+    }else{
+        k=160;
+    }
     int j= (ScreenWidth-k*2)/3;
-//    NSArray * arr =@[@"ggxq_bt1",@"ggxq_bt2"];
     NSArray * arr =@[@"立即报名",@"查看联系方式"];
     for (int i =0; i<2; i++) {
         UIButton * btn =[UIButton buttonWithType:UIButtonTypeCustom];
@@ -145,15 +145,42 @@
         [btn setTitle:arr[i] forState:0];
         btn.titleLabel.font=[UIFont systemFontOfSize:14];
         btn.sd_cornerRadius=@(3);
+        btn.tag=i;
+        [btn addTarget:self action:@selector(btnClinkwo:) forControlEvents:UIControlEventTouchUpInside];
        // [btn setImage:[UIImage imageNamed:arr[i]] forState:0];
         [self.view sd_addSubviews:@[btn]];
         btn.sd_layout
         .leftSpaceToView(self.view,j+(j+k)*i)
-        .bottomSpaceToView(self.view,0)
+        .bottomSpaceToView(self.view,10)
         .widthIs(k)
         .heightIs(35);
     }
     
+}
+#pragma mark --2个按钮点击状态
+-(void)btnClinkwo:(UIButton*)btn{
+    if (btn.tag==0) {
+        //立即报名
+        XYAlertView * xv =[[XYAlertView alloc]initWithTitle:@"我要报名" alerMessage:@"提交信息" canCleBtn:@"提交信息" otheBtn:@""];
+         __weak __typeof(xv)weakSelf = xv;
+        xv.NameBlock=^(NSString*people,NSString*phone,NSString*other){
+         // 调用接口
+            [LCProgressHUD showMessage:@"正在发布..."];
+            [Engine BaoMingCanJianPaiMaiID:_messageID BiaoDiID:@"" Phone:phone PeopleName:people MessageName:other success:^(NSDictionary *dic) {
+                [LCProgressHUD showMessage:[dic objectForKey:@"msg"]];
+                NSString * code =[NSString stringWithFormat:@"%@",[dic objectForKey:@"code"]];
+                if ([code isEqualToString:@"1"]) {
+                    [weakSelf dissmiss];
+                }
+            } error:^(NSError *error) {
+                
+            }];
+        };
+        
+        [xv show];
+    }else{
+        //查看联系方式
+    }
 }
 #pragma mark --区头
 -(UIView*)CreatView1:(NSString*)messageID{
@@ -289,7 +316,7 @@
    
     [LCProgressHUD showMessage:@"正在加载..."];
     [Engine PaiMaiPublicMessageID:messageID success:^(NSDictionary *dic) {
-        [LCProgressHUD showMessage:[dic objectForKey:@"msg"]];
+       
         NSString * code =[NSString stringWithFormat:@"%@",[dic objectForKey:@"code"]];
         if ([code isEqualToString:@"1"]) {
             
@@ -298,7 +325,7 @@
                 [LCProgressHUD showMessage:@"暂无数据"];
                 return ;
             }
-            
+             [LCProgressHUD hide];
             NSDictionary * contetDic =[dic objectForKey:@"content"];
             [_dataArr removeAllObjects];
             [_dataArrID removeAllObjects];

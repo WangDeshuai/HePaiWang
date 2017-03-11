@@ -15,7 +15,7 @@
 #import "PaiMaiGongGaoModel.h"//拍卖公告model(table用)
 #import "PaiMaiGongGaoXiangQingVC.h"//拍卖公告详情
 #import "PaiMaiBiaoDiXiangQingVC.h"//拍卖标的详情
-@interface HomeVC ()<SDCycleScrollViewDelegate,UITableViewDelegate,UITableViewDataSource>
+@interface HomeVC ()<SDCycleScrollViewDelegate,UITableViewDelegate,UITableViewDataSource,UITextFieldDelegate>
 @property(nonatomic,strong)UIView * headView;
 @property(nonatomic,strong)UITableView * tableView;
 @property(nonatomic,strong)NSMutableArray * dataArray;
@@ -27,7 +27,7 @@
 @implementation HomeVC
 -(void)viewWillAppear:(BOOL)animated
 {
-    
+    self.textHomeField.text=nil;
 }
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -43,24 +43,19 @@
 #pragma mark --创建导航条按钮
 -(void)CreatNavBtn{
     UIButton * logoBtn =[UIButton buttonWithType:UIButtonTypeCustom];
-    logoBtn.frame=CGRectMake(0, 0, 146/2, 47/2);
+    logoBtn.frame=CGRectMake(0, 0, 146/2, 50);
+    logoBtn.showsTouchWhenHighlighted=NO;
     [logoBtn setImage:[UIImage imageNamed:@"logo"] forState:0];
     UIBarButtonItem *leftBtn =[[UIBarButtonItem alloc]initWithCustomView:logoBtn];
     UIButton * logoBtn2 =[UIButton buttonWithType:UIButtonTypeCustom];
     logoBtn2.frame=CGRectMake(0, 0, 5, 47/2);
-    UIBarButtonItem *leftBtn2 =[[UIBarButtonItem alloc]initWithCustomView:logoBtn2];
     
-    UIButton * searchBtn =[UIButton buttonWithType:UIButtonTypeCustom];
-    searchBtn.frame=CGRectMake(0, -10, 489/2, 65/2);
-    [searchBtn setBackgroundImage:[UIImage imageNamed:@"search-1"] forState:0];//489   65
-    [searchBtn setTitle:@"搜索标的物" forState:0];
-    [searchBtn setTitleColor:[UIColor lightGrayColor] forState:0];
-    searchBtn.contentHorizontalAlignment=UIControlContentHorizontalAlignmentLeft;
-    searchBtn.titleEdgeInsets=UIEdgeInsetsMake(0, 30, 0, 0);
-    searchBtn.titleLabel.font=[UIFont systemFontOfSize:13];
-    UIBarButtonItem *leftBtn3 =[[UIBarButtonItem alloc]initWithCustomView:searchBtn];
-   // [self.navigationItem setTitleView:searchBtn];
-    self.navigationItem.leftBarButtonItems=@[leftBtn,leftBtn2,leftBtn3];
+    UIBarButtonItem *leftBtn2 =[[UIBarButtonItem alloc]initWithCustomView:logoBtn2];
+
+    self.navigationItem.leftBarButtonItems=@[leftBtn,leftBtn2];
+    self.textHomeField.hidden=NO;
+    self.textHomeField.delegate=self;
+//    self.textHomeField.frame=CGRectMake(0, 0, ScreenWidth-150, 30);
     
 }
 
@@ -117,6 +112,23 @@
         // NSLog(@">>>>>  %ld", (long)index);
         
     };
+    [Engine huoQuFirstLunBoImageArrsuccess:^(NSDictionary *dic) {
+        NSString * code =[NSString stringWithFormat:@"%@",[dic objectForKey:@"code"]];
+        if ([code isEqualToString:@"1"]) {
+            NSArray * contentArr =[dic objectForKey:@"content"];
+            NSMutableArray * array2 =[NSMutableArray new];
+            for (NSDictionary * dicc in contentArr) {
+                [array2 addObject:[dicc objectForKey:@"imgUrl"]];
+            }
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                cycleScrollView.imageURLStringsGroup = array2;
+            });
+            
+        }
+    } error:^(NSError *error) {
+        
+    }];
+    
     //4个btn
     UIView * view1 =[UIView new];
     view1.backgroundColor=[UIColor whiteColor];
@@ -450,12 +462,25 @@
     vc.hidesBottomBarWhenPushed=YES;
     [self.navigationController pushViewController:vc animated:YES];
 }
+#pragma mark --点击了搜索事件
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+     [textField resignFirstResponder];//关闭键盘
+    PaiMaiBiaoDiVC * vc =[PaiMaiBiaoDiVC new];
+    vc.searStr=textField.text;
+    vc.hidesBottomBarWhenPushed=YES;
+    [self.navigationController pushViewController:vc animated:YES];
+    NSLog(@"点击了搜索十几号");
+    return YES;
+}
 
+-(void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
+{
+   [self.navigationController.view endEditing:YES];
+}
 
-
-
-
-
+//-(void)viewWillAppear:(BOOL)animated{
+//    
+//}
 
 
 

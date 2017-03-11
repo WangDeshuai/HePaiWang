@@ -13,7 +13,7 @@
 #import "RightMyAddressCell.h"
 #import "ShengCityModel.h"
 #import "PaiMaiBiaoDiModel.h"
-@interface PaiMaiBiaoDiVC ()<UITableViewDelegate,UITableViewDataSource>
+@interface PaiMaiBiaoDiVC ()<UITableViewDelegate,UITableViewDataSource,UITextFieldDelegate>
 @property(nonatomic,strong)UITableView * tableView;
 @property(nonatomic,strong)UIButton * lastBtn;
 @property(nonatomic,strong)UIButton * bgview;
@@ -39,6 +39,18 @@
 
 @implementation PaiMaiBiaoDiVC
 
+
+-(void)viewWillAppear:(BOOL)animated{
+    if (_searStr==nil || [_searStr isEqualToString:@""]) {
+        
+    }else{
+       // [self getInterDataPage:1 Search:_searStr BiaoDiFenLeiStyle:@"" shengCode:@"" CityCode:@"" PaiMaiStyle:@""];
+        self.textHomeField.text=_searStr;
+    }
+}
+
+
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
@@ -47,16 +59,20 @@
     logoBtn2.frame=CGRectMake(0, 0, 76/2, 44/2);
     [logoBtn2 setImage:[UIImage imageNamed:@"liebiao_phone"] forState:0];
     UIBarButtonItem *leftBtn2 =[[UIBarButtonItem alloc]initWithCustomView:logoBtn2];
-    UIButton * searchBtn =[UIButton buttonWithType:UIButtonTypeCustom];
-    searchBtn.frame=CGRectMake(0, -10, 489/2, 65/2);
-    [searchBtn setBackgroundImage:[UIImage imageNamed:@"search-1"] forState:0];//489   65
-    [searchBtn setTitle:@"搜索标的物" forState:0];
-    [searchBtn setTitleColor:[UIColor lightGrayColor] forState:0];
-    searchBtn.contentHorizontalAlignment=UIControlContentHorizontalAlignmentLeft;
-    searchBtn.titleEdgeInsets=UIEdgeInsetsMake(0, 30, 0, 0);
-    searchBtn.titleLabel.font=[UIFont systemFontOfSize:13];
-    UIBarButtonItem *leftBtn3 =[[UIBarButtonItem alloc]initWithCustomView:searchBtn];
-   self.navigationItem.rightBarButtonItems=@[leftBtn2,leftBtn3];
+     self.navigationItem.rightBarButtonItems=@[leftBtn2];
+    
+    self.textHomeField.hidden=NO;
+    self.textHomeField.delegate=self;
+//    UIButton * searchBtn =[UIButton buttonWithType:UIButtonTypeCustom];
+//    searchBtn.frame=CGRectMake(0, -10, 489/2, 65/2);
+//    [searchBtn setBackgroundImage:[UIImage imageNamed:@"search-1"] forState:0];//489   65
+//    [searchBtn setTitle:@"搜索标的物" forState:0];
+//    [searchBtn setTitleColor:[UIColor lightGrayColor] forState:0];
+//    searchBtn.contentHorizontalAlignment=UIControlContentHorizontalAlignmentLeft;
+//    searchBtn.titleEdgeInsets=UIEdgeInsetsMake(0, 30, 0, 0);
+//    searchBtn.titleLabel.font=[UIFont systemFontOfSize:13];
+//    UIBarButtonItem *leftBtn3 =[[UIBarButtonItem alloc]initWithCustomView:searchBtn];
+  
     [self CreatTableView];
     [self CreatButton];//发布信息
     NSMutableArray* titleArr =[[NSMutableArray alloc]initWithObjects:@"标的分类",@"所在地区",@"拍卖状态", nil];
@@ -212,10 +228,10 @@
 }
 
 #pragma mark --获取网络数据
--(void)getInterDataPage:(int)page BiaoDiFenLeiStyle:(NSString*)fenlei shengCode:(NSString*)shengcode CityCode:(NSString*)citycode PaiMaiStyle:(NSString*)style{
+-(void)getInterDataPage:(int)page Search:(NSString*)sear BiaoDiFenLeiStyle:(NSString*)fenlei shengCode:(NSString*)shengcode CityCode:(NSString*)citycode PaiMaiStyle:(NSString*)style{
 //  BiaoDiStyle 标的的分类 Staus拍卖状态
     [LCProgressHUD showMessage:@"请稍后..."];
-    [Engine firstPaiMaiBiaoDiViewSearchStr:@"" BiaoDiStyle:fenlei ProvCode:shengcode CityCode:citycode Staus:style PageSize:@"10" PageIndex:[NSString stringWithFormat:@"%d",page] success:^(NSDictionary *dic) {
+    [Engine firstPaiMaiBiaoDiViewSearchStr:sear BiaoDiStyle:fenlei ProvCode:shengcode CityCode:citycode Staus:style PageSize:@"10" PageIndex:[NSString stringWithFormat:@"%d",page] success:^(NSDictionary *dic) {
         NSString * code =[NSString stringWithFormat:@"%@",[dic objectForKey:@"code"]];
         if ([code isEqualToString:@"1"]) {
             [LCProgressHUD hide];
@@ -301,7 +317,7 @@
          NSLog(@"市%@",[ToolClass isString:_citycode]);
          NSLog(@"状态%@",[ToolClass isString:_paiMaiStyleText]);
          */
-         [self getInterDataPage:_AAA BiaoDiFenLeiStyle:[ToolClass isString:_biaoDiFenLeiText] shengCode:[ToolClass isString:_shengcode] CityCode:[ToolClass isString:_citycode] PaiMaiStyle:[ToolClass isString:_paiMaiStyleText]];
+         [self getInterDataPage:_AAA Search:[ToolClass isString:_searStr] BiaoDiFenLeiStyle:[ToolClass isString:_biaoDiFenLeiText] shengCode:[ToolClass isString:_shengcode] CityCode:[ToolClass isString:_citycode] PaiMaiStyle:[ToolClass isString:_paiMaiStyleText]];
     }];
     
     [_tableView.header beginRefreshing];
@@ -309,7 +325,7 @@
     _tableView.footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
         weakSelf.myRefreshView = weakSelf.tableView.footer;
         _AAA=_AAA+1;
-        [self getInterDataPage:_AAA BiaoDiFenLeiStyle:[ToolClass isString:_biaoDiFenLeiText] shengCode:[ToolClass isString:_shengcode] CityCode:[ToolClass isString:_citycode] PaiMaiStyle:[ToolClass isString:_paiMaiStyleText]];
+        [self getInterDataPage:_AAA Search:@"" BiaoDiFenLeiStyle:[ToolClass isString:_biaoDiFenLeiText] shengCode:[ToolClass isString:_shengcode] CityCode:[ToolClass isString:_citycode] PaiMaiStyle:[ToolClass isString:_paiMaiStyleText]];
     }];
     
     _tableView.footer.hidden = YES;
@@ -434,7 +450,7 @@
             }
             [_dataArray removeAllObjects];
             [_tableView reloadData];
-            [self getInterDataPage:_AAA BiaoDiFenLeiStyle:[ToolClass isString:_biaoDiFenLeiText] shengCode:[ToolClass isString:_shengcode] CityCode:[ToolClass isString:_citycode] PaiMaiStyle:[ToolClass isString:_paiMaiStyleText]];
+            [self getInterDataPage:_AAA Search:@"" BiaoDiFenLeiStyle:[ToolClass isString:_biaoDiFenLeiText] shengCode:[ToolClass isString:_shengcode] CityCode:[ToolClass isString:_citycode] PaiMaiStyle:[ToolClass isString:_paiMaiStyleText]];
             [self shuChu];
         }else if (_btntag==1){
             //地区
@@ -453,7 +469,7 @@
             }
             [_dataArray removeAllObjects];
             [_tableView reloadData];
-            [self getInterDataPage:_AAA BiaoDiFenLeiStyle:[ToolClass isString:_biaoDiFenLeiText] shengCode:[ToolClass isString:_shengcode] CityCode:[ToolClass isString:_citycode] PaiMaiStyle:[ToolClass isString:_paiMaiStyleText]];
+            [self getInterDataPage:_AAA Search:@"" BiaoDiFenLeiStyle:[ToolClass isString:_biaoDiFenLeiText] shengCode:[ToolClass isString:_shengcode] CityCode:[ToolClass isString:_citycode] PaiMaiStyle:[ToolClass isString:_paiMaiStyleText]];
            [self shuChu];
         }else{
             //拍卖状态
@@ -472,7 +488,7 @@
             }
             [_dataArray removeAllObjects];
             [_tableView reloadData];
-            [self getInterDataPage:_AAA BiaoDiFenLeiStyle:[ToolClass isString:_biaoDiFenLeiText] shengCode:[ToolClass isString:_shengcode] CityCode:[ToolClass isString:_citycode] PaiMaiStyle:[ToolClass isString:_paiMaiStyleText]];
+            [self getInterDataPage:_AAA Search:@"" BiaoDiFenLeiStyle:[ToolClass isString:_biaoDiFenLeiText] shengCode:[ToolClass isString:_shengcode] CityCode:[ToolClass isString:_citycode] PaiMaiStyle:[ToolClass isString:_paiMaiStyleText]];
            [self shuChu];
         }
         
@@ -565,5 +581,14 @@
     
     NSString * strID =[dicc objectForKey:str];
     return strID;
+}
+#pragma mark --点击了搜索事件
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    [textField resignFirstResponder];//关闭键盘
+    NSLog(@"点击了搜索十几号");
+     [self getInterDataPage:_AAA Search:textField.text BiaoDiFenLeiStyle:@"" shengCode:@"" CityCode:@"" PaiMaiStyle:@""];
+    //[self getMainTableViewDataPage:_AAA Search:textField.text LeiXing:@"" proCode:@"" CityCode:@"" TimeStr:@""];
+    
+    return YES;
 }
 @end

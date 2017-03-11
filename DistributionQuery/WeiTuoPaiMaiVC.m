@@ -39,6 +39,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    self.title=@"委托拍卖";
      self.backHomeBtn.hidden=YES;
     _photoArray=[NSMutableArray new];
     _imageArray=[NSMutableArray new];

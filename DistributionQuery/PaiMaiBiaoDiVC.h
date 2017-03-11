@@ -9,5 +9,5 @@
 #import "BaseViewController.h"
 
 @interface PaiMaiBiaoDiVC : BaseViewController
-
+@property(nonatomic,copy)NSString * searStr;//首页输入的搜索带字传给拍卖标的
 @end

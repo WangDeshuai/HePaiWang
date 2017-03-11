@@ -778,5 +778,57 @@
         
     }];
 }
-
+#pragma mark --30报名参加拍卖会
++(void)BaoMingCanJianPaiMaiID:(NSString*)paiMaiID BiaoDiID:(NSString*)biaoid Phone:(NSString*)phone PeopleName:(NSString*)people MessageName:(NSString*)message success:(SuccessBlock)aSuccess error:(ErrorBlock)aError{
+    
+    NSString * urlStr =[NSString stringWithFormat:@"%@auction/app_signUpForAuction.action",SER_VICE];
+    
+    AFHTTPRequestOperationManager * manager =[AFHTTPRequestOperationManager manager];
+    NSMutableDictionary * dic =[NSMutableDictionary new];
+    NSString * token =[NSUSE_DEFO objectForKey:@"token"];
+    [dic setObject:@"ios" forKey:@"osType"];
+   
+    [dic setObject:[ToolClass isString:[NSString stringWithFormat:@"%@",paiMaiID]] forKey:@"auction_id"];
+    [dic setObject:[ToolClass isString:[NSString stringWithFormat:@"%@",biaoid]] forKey:@"target_id"];
+    [dic setObject:[ToolClass isString:[NSString stringWithFormat:@"%@",phone]] forKey:@"regist_tel"];
+    [dic setObject:[ToolClass isString:[NSString stringWithFormat:@"%@",people]] forKey:@"liaisons_name"];
+    [dic setObject:[ToolClass isString:[NSString stringWithFormat:@"%@",message]] forKey:@"message"];
+    if (token) {
+    [dic setObject:token forKey:@"user_id"];
+    }
+    
+    
+    [manager POST:urlStr parameters:dic success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSData *data = [NSJSONSerialization dataWithJSONObject:responseObject options:NSJSONWritingPrettyPrinted error:nil];
+        NSString *str = [[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding];
+        NSLog(@"30报名参加拍卖会%@",str);
+        
+        aSuccess(responseObject);
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"30报名参加拍卖会%@",error);
+        aError(error);
+        
+    }];
+    
+}
+#pragma mark --31首页轮播图
++(void)huoQuFirstLunBoImageArrsuccess:(SuccessBlock)aSuccess error:(ErrorBlock)aError{
+    NSString * urlStr =[NSString stringWithFormat:@"%@banner/app_getBanners.action",SER_VICE];
+    
+    AFHTTPRequestOperationManager * manager =[AFHTTPRequestOperationManager manager];
+    NSMutableDictionary * dic =[NSMutableDictionary new];
+    [dic setObject:@"ios" forKey:@"osType"];
+    [manager POST:urlStr parameters:dic success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSData *data = [NSJSONSerialization dataWithJSONObject:responseObject options:NSJSONWritingPrettyPrinted error:nil];
+        NSString *str = [[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding];
+        NSLog(@"31首页轮播图%@",str);
+        
+        aSuccess(responseObject);
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"31首页轮播图%@",error);
+        aError(error);
+        
+    }];
+    
+}
 @end

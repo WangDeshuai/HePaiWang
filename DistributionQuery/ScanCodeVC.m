@@ -23,6 +23,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    self.title=@"发布预告";
      self.backHomeBtn.hidden=YES;
      [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(lianjieClink:) name:@"nil" object:nil];
     [self dataArr];

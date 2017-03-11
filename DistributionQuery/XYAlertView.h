@@ -14,4 +14,6 @@
 
 -(void)show;
 -(void)dissmiss;
+
+@property(nonatomic,copy)void(^NameBlock)(NSString*peopleText,NSString*phoneText,NSString*otherText);
 @end

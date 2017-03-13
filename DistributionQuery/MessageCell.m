@@ -46,8 +46,9 @@
     _nameLabel.sd_layout
     .leftSpaceToView(self.contentView,15)
     .centerYEqualToView(self.contentView)
+    .widthIs(80)
     .heightIs(20);
-    [_nameLabel setSingleLineAutoResizeWithMaxWidth:120];
+    //[_nameLabel setSingleLineAutoResizeWithMaxWidth:120];
     
     _textfield.sd_layout
     .rightSpaceToView(self.contentView,0)

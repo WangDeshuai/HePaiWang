@@ -7,6 +7,8 @@
 //
 
 #import "Engine.h"
+//#import "AFNetworking.h"
+//#define SER_VICE @"http://119.29.83.154:8080/HePai/"
 @implementation Engine
 
 #pragma mark --0上传单张图片获取base64编码
@@ -162,6 +164,33 @@
         
     }];
 
+}
+#pragma mark --6忘记密码
++(void)forgetPassWordPhone:(NSString*)phone Code:(NSString*)code NewPsw:(NSString*)newpsw AgeinPsw:(NSString*)ageinpsw success:(SuccessBlock)aSuccess error:(ErrorBlock)aError{
+    
+    NSString * urlStr =[NSString stringWithFormat:@"%@user/app_qrySystemMessageListInUC.action",SER_VICE];
+    
+    AFHTTPRequestOperationManager * manager =[AFHTTPRequestOperationManager manager];
+    NSMutableDictionary * dic =[NSMutableDictionary new];
+    
+        [dic setObject:[ToolClass isString:[NSString stringWithFormat:@"%@",phone]] forKey:@"regist_tel"];
+        [dic setObject:[ToolClass isString:[NSString stringWithFormat:@"%@",code]] forKey:@"randomStr"];
+        [dic setObject:[ToolClass isString:[NSString stringWithFormat:@"%@",newpsw]] forKey:@"password"];
+        [dic setObject:[ToolClass isString:[NSString stringWithFormat:@"%@",ageinpsw]] forKey:@"password2"];
+    
+    [manager POST:urlStr parameters:dic success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSData *data = [NSJSONSerialization dataWithJSONObject:responseObject options:NSJSONWritingPrettyPrinted error:nil];
+        NSString *str = [[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding];
+        NSLog(@"6忘记密码%@",str);
+        
+        aSuccess(responseObject);
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"6忘记密码%@",error);
+        aError(error);
+        
+    }];
+
+    
 }
 #pragma mark--7个人中心消息列表
 +(void)CenterMessageListViewStype:(NSString*)stype Pageindex:(NSString*)page success:(SuccessBlock)aSuccess error:(ErrorBlock)aError{
@@ -830,5 +859,35 @@
         
     }];
     
+}
+#pragma mark --32个人中心_我委托的标的列表
++(void)myCenterWeiTuoPage:(NSString*)page Status:(NSString*)style success:(SuccessBlock)aSuccess error:(ErrorBlock)aError{
+    
+    NSString * urlStr =[NSString stringWithFormat:@"%@entrust/app_qryMyEntrustTargetListInUC.action",SER_VICE];
+    
+    AFHTTPRequestOperationManager * manager =[AFHTTPRequestOperationManager manager];
+    NSMutableDictionary * dic =[NSMutableDictionary new];
+    NSString * token =[NSUSE_DEFO objectForKey:@"token"];
+    if (token==nil) {
+        [LCProgressHUD showMessage:@"32个人中心_我委托的标的列表无token"];
+        return;
+    }
+    [dic setObject:@"ios" forKey:@"osType"];
+    [dic setObject:token forKey:@"user_id"];
+    [dic setObject:style forKey:@"status"];
+    [dic setObject:page forKey:@"pageIndex"];
+    [dic setObject:@"10" forKey:@"pageSize"];
+    
+    [manager POST:urlStr parameters:dic success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSData *data = [NSJSONSerialization dataWithJSONObject:responseObject options:NSJSONWritingPrettyPrinted error:nil];
+        NSString *str = [[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding];
+        NSLog(@"32个人中心_我委托的标的列表%@",str);
+        
+        aSuccess(responseObject);
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"32个人中心_我委托的标的列表%@",error);
+        aError(error);
+        
+    }];
 }
 @end

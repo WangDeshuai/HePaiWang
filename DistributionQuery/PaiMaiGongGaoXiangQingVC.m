@@ -237,7 +237,7 @@
     .heightIs(80);
     //局开拍
     UILabel * strLabel=[UILabel new];
-    strLabel.text=@"距下班";
+    strLabel.text=@"距开拍";
     strLabel.font=[UIFont systemFontOfSize:20 weight:17];
     strLabel.alpha=.9;
     strLabel.textColor=[UIColor grayColor];

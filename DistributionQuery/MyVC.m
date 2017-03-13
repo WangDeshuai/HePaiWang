@@ -17,8 +17,10 @@
 #import "PublicYuGaoBVC.h"//发布预告
 #import "ShiMingRenZhengVC.h"//实名认证
 #import "BaseTableBarVC.h"
- #import "PublicXInBiaoDiVC.h"//发布新标的
+#import "PublicXInBiaoDiVC.h"//发布新标的
 #import "BaseNavigationController.h"
+#import "ChangeThePasswordVC.h"//修改密码
+#import "SignTextViewController.h"//签名
 //#import "<#header#>"
 @interface MyVC ()<UITableViewDelegate,UITableViewDataSource>
 {
@@ -173,7 +175,11 @@
         
     }else{
         if (indexPath.row==0) {
-            //修改密码
+            //修改密码ChangeThePasswordVC
+            ChangeThePasswordVC * vc =[ChangeThePasswordVC new];
+            vc.tagg=0;
+            vc.hidesBottomBarWhenPushed=YES;
+            [self.navigationController pushViewController:vc animated:YES];
         }
     }
 }
@@ -325,6 +331,7 @@
         return;
     }
     MessageVC * vc =[MessageVC new];
+    vc.hidesBottomBarWhenPushed=YES;
     [self.navigationController pushViewController:vc animated:YES];
 }
 

@@ -10,6 +10,7 @@
 #import "SGTopTitleView.h"
 #import "MyBiaoDiWeiTuoViC.h"
 #import "MyWeiTuoTableViewCell.h"
+
 @interface MyWeiTuoViewController ()<UIScrollViewDelegate,SGTopTitleViewDelegate>
 
 @property (nonatomic, strong) SGTopTitleView *topTitleView;

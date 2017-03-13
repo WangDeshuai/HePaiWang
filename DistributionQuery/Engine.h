@@ -30,6 +30,10 @@ typedef void (^ErrorBlock)(NSError*error);
 #pragma mark --5首页成交案例
 +(void)firstChengJiaoAnLiPageindex:(NSString*)page success:(SuccessBlock)aSuccess error:(ErrorBlock)aError;
 
+#pragma mark --6忘记密码
++(void)forgetPassWordPhone:(NSString*)phone Code:(NSString*)code NewPsw:(NSString*)newpsw AgeinPsw:(NSString*)ageinpsw success:(SuccessBlock)aSuccess error:(ErrorBlock)aError;
+
+
 #pragma mark--7个人中心消息列表//stype阅读状态 1.已读 0.未读
 +(void)CenterMessageListViewStype:(NSString*)stype Pageindex:(NSString*)page success:(SuccessBlock)aSuccess error:(ErrorBlock)aError;
 #pragma mark --8个人中心发布预告
@@ -83,4 +87,7 @@ typedef void (^ErrorBlock)(NSError*error);
 +(void)BaoMingCanJianPaiMaiID:(NSString*)paiMaiID BiaoDiID:(NSString*)biaoid Phone:(NSString*)phone PeopleName:(NSString*)people MessageName:(NSString*)message success:(SuccessBlock)aSuccess error:(ErrorBlock)aError;
 #pragma mark --31首页轮播图
 +(void)huoQuFirstLunBoImageArrsuccess:(SuccessBlock)aSuccess error:(ErrorBlock)aError;
+
+#pragma mark --32个人中心_我委托的标的列表
++(void)myCenterWeiTuoPage:(NSString*)page Status:(NSString*)style success:(SuccessBlock)aSuccess error:(ErrorBlock)aError;
 @end

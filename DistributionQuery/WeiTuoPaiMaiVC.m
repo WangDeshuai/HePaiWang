@@ -79,7 +79,10 @@
     if ([ToolClass isLogin]) {
         if (ScreenWidth==320) {
             tijaoBtn.frame=CGRectMake(30, ScreenHeight, ScreenWidth-60, 35);
-        }else{
+        }else if (ScreenWidth==375){
+            tijaoBtn.frame=CGRectMake(30, ScreenHeight-64-35, ScreenWidth-60, 45);
+        }
+        else{
             tijaoBtn.frame=CGRectMake(30, ScreenHeight-64-49-45-10, ScreenWidth-60, 45);
         }
     }else{

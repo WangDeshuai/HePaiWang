@@ -219,13 +219,11 @@
     }else{
         //退出
          cell.textfield.hidden=YES;
-        [cell sd_addSubviews:@[cell.nameLabel]];
         cell.nameLabel.textAlignment=1;
         cell.nameLabel.alpha=.8;
         cell.nameLabel.font=[UIFont systemFontOfSize:17 weight:1];
         cell.nameLabel.textColor=[UIColor redColor];
-        cell.nameLabel.sd_layout.rightSpaceToView(cell,30)
-        .widthIs(ScreenWidth-60).heightIs(40);
+        cell.nameLabel.sd_layout.widthIs(ScreenWidth-30);
     }
     
     

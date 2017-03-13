@@ -8,6 +8,7 @@
 
 #import "LoginViewController.h"
 #import "RegisteViewController.h"
+#import "ChangeThePasswordVC.h"
 @interface LoginViewController ()
 @property(nonatomic,strong)UITextField * phoneText;
 @property(nonatomic,strong)UITextField *pwdText;
@@ -88,6 +89,7 @@
     [wangji setTitle:@"忘记密码" forState:0];
     [wangji setTitleColor:[UIColor redColor] forState:0];
     wangji.titleLabel.font=[UIFont systemFontOfSize:14];
+    [wangji addTarget:self action:@selector(forget) forControlEvents:UIControlEventTouchUpInside];
     wangji.alpha=.6;
     wangji.contentHorizontalAlignment=UIControlContentHorizontalAlignmentLeft;
     [wangji addTarget:self action:@selector(wangji) forControlEvents:UIControlEventTouchUpInside];
@@ -113,6 +115,14 @@
     .heightIs(20);
     
     
+    
+}
+#pragma mark --忘记密码
+-(void)forget{
+    
+    ChangeThePasswordVC * vc =[ChangeThePasswordVC new];
+    vc.tagg=1;
+    [self.navigationController pushViewController:vc animated:YES];
     
 }
 -(void)viewWillAppear:(BOOL)animated

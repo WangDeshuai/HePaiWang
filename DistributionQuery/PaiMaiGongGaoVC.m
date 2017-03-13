@@ -205,7 +205,7 @@
 
 #pragma mark --1获取主表内容从首页进入
 -(void)getMainTableViewDataPage:(int)page Search:(NSString*)sear LeiXing:(NSString*)lx proCode:(NSString*)shengCode CityCode:(NSString*)code TimeStr:(NSString*)timeStr{
-    [LCProgressHUD showLoading:@"请稍后..."];
+   // [LCProgressHUD showLoading:@"请稍后..."];
     [Engine upDataPaiMaiPublicViewSearchStr:sear BiaoDiLeiXing:lx ProvCode:shengCode CityCode:code BeginTime:timeStr Page:[NSString stringWithFormat:@"%d",page] PageSize:@"10" success:^(NSDictionary *dic) {
         //
         NSString * code =[NSString stringWithFormat:@"%@",[dic objectForKey:@"code"]];

@@ -21,6 +21,10 @@
 		8F02FE601DA88CD00051EDFC /* BaseTableBarVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F02FE5F1DA88CD00051EDFC /* BaseTableBarVC.m */; };
 		8F02FE6C1DA89B850051EDFC /* Engine.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F02FE6B1DA89B850051EDFC /* Engine.m */; };
 		8F07E6241DDD86DB0045EA74 /* WeiTuoPaiMaiVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F07E6231DDD86DB0045EA74 /* WeiTuoPaiMaiVC.m */; };
+		8F214D1C1E7636B0002E265B /* ChangeThePasswordVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F214D1B1E7636B0002E265B /* ChangeThePasswordVC.m */; };
+		8F214D201E76497E002E265B /* SignViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F214D1F1E76497E002E265B /* SignViewController.m */; };
+		8F214D231E7649D2002E265B /* SignTextViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F214D221E7649D2002E265B /* SignTextViewController.m */; };
+		8F214D261E7650C5002E265B /* ChangeThePassCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F214D251E7650C5002E265B /* ChangeThePassCell.m */; };
 		8F2344DE1E73AB7A0057B016 /* Engine.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F02FE6B1DA89B850051EDFC /* Engine.m */; };
 		8F308E9D1DF10E9B00D57714 /* ChengJiaoAnLiVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F308E9C1DF10E9B00D57714 /* ChengJiaoAnLiVC.m */; };
 		8F308EA11DF1101000D57714 /* PaiMaiZiXunXiangQingVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F308EA01DF1101000D57714 /* PaiMaiZiXunXiangQingVC.m */; };
@@ -36,6 +40,7 @@
 		8F676CC21DDE9CEB007A0477 /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F676CC11DDE9CEB007A0477 /* LoginViewController.m */; };
 		8F676CC51DDE9D2D007A0477 /* RegisteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F676CC41DDE9D2D007A0477 /* RegisteViewController.m */; };
 		8F6A38C81DE2F87300688C83 /* PaiMaiBiaoDiVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F6A38C71DE2F87300688C83 /* PaiMaiBiaoDiVC.m */; };
+		8FB119F91E756CA800827926 /* MyWeiTuoBiaoDiModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 8FB119F81E756CA800827926 /* MyWeiTuoBiaoDiModel.m */; };
 		8FCD4F111DA8A13100CB113C /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 8FCD4F101DA8A13100CB113C /* libsqlite3.tbd */; };
 		8FCD4F131DA8A13A00CB113C /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 8FCD4F121DA8A13A00CB113C /* libz.tbd */; };
 		8FCD4F151DA8A14800CB113C /* libstdc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 8FCD4F141DA8A14800CB113C /* libstdc++.tbd */; };
@@ -210,6 +215,14 @@
 		8F02FE6B1DA89B850051EDFC /* Engine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Engine.m; sourceTree = "<group>"; };
 		8F07E6221DDD86DB0045EA74 /* WeiTuoPaiMaiVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WeiTuoPaiMaiVC.h; sourceTree = "<group>"; };
 		8F07E6231DDD86DB0045EA74 /* WeiTuoPaiMaiVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WeiTuoPaiMaiVC.m; sourceTree = "<group>"; };
+		8F214D1A1E7636B0002E265B /* ChangeThePasswordVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChangeThePasswordVC.h; sourceTree = "<group>"; };
+		8F214D1B1E7636B0002E265B /* ChangeThePasswordVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChangeThePasswordVC.m; sourceTree = "<group>"; };
+		8F214D1E1E764974002E265B /* SignViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SignViewController.h; sourceTree = "<group>"; };
+		8F214D1F1E76497E002E265B /* SignViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SignViewController.m; sourceTree = "<group>"; };
+		8F214D211E7649D2002E265B /* SignTextViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SignTextViewController.h; sourceTree = "<group>"; };
+		8F214D221E7649D2002E265B /* SignTextViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SignTextViewController.m; sourceTree = "<group>"; };
+		8F214D241E7650C5002E265B /* ChangeThePassCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChangeThePassCell.h; sourceTree = "<group>"; };
+		8F214D251E7650C5002E265B /* ChangeThePassCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChangeThePassCell.m; sourceTree = "<group>"; };
 		8F308E9B1DF10E9B00D57714 /* ChengJiaoAnLiVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChengJiaoAnLiVC.h; sourceTree = "<group>"; };
 		8F308E9C1DF10E9B00D57714 /* ChengJiaoAnLiVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChengJiaoAnLiVC.m; sourceTree = "<group>"; };
 		8F308E9F1DF1101000D57714 /* PaiMaiZiXunXiangQingVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PaiMaiZiXunXiangQingVC.h; sourceTree = "<group>"; };
@@ -238,6 +251,8 @@
 		8F676CC41DDE9D2D007A0477 /* RegisteViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RegisteViewController.m; sourceTree = "<group>"; };
 		8F6A38C61DE2F87300688C83 /* PaiMaiBiaoDiVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PaiMaiBiaoDiVC.h; sourceTree = "<group>"; };
 		8F6A38C71DE2F87300688C83 /* PaiMaiBiaoDiVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PaiMaiBiaoDiVC.m; sourceTree = "<group>"; };
+		8FB119F71E756CA800827926 /* MyWeiTuoBiaoDiModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyWeiTuoBiaoDiModel.h; sourceTree = "<group>"; };
+		8FB119F81E756CA800827926 /* MyWeiTuoBiaoDiModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyWeiTuoBiaoDiModel.m; sourceTree = "<group>"; };
 		8FCD4F101DA8A13100CB113C /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
 		8FCD4F121DA8A13A00CB113C /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		8FCD4F141DA8A14800CB113C /* libstdc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libstdc++.tbd"; path = "usr/lib/libstdc++.tbd"; sourceTree = SDKROOT; };
@@ -641,6 +656,7 @@
 			isa = PBXGroup;
 			children = (
 				8FEB11331DEFC7E900F775E2 /* 个人中心 */,
+				8F214D1D1E7636B5002E265B /* 修改密码 */,
 				8FEB11321DEFC7D300F775E2 /* 实名认证 */,
 				8FE4192C1DEEEFDB0089BE9F /* 发布预告 */,
 				8FE69B5D1DED894B001814AD /* 个人信息 */,
@@ -677,6 +693,21 @@
 				8FDB6F7E1E715E1800C63951 /* WeiTuoXiuGaiVC.m */,
 			);
 			name = "委托拍卖";
+			sourceTree = "<group>";
+		};
+		8F214D1D1E7636B5002E265B /* 修改密码 */ = {
+			isa = PBXGroup;
+			children = (
+				8F214D211E7649D2002E265B /* SignTextViewController.h */,
+				8F214D221E7649D2002E265B /* SignTextViewController.m */,
+				8F214D1E1E764974002E265B /* SignViewController.h */,
+				8F214D1F1E76497E002E265B /* SignViewController.m */,
+				8F214D1A1E7636B0002E265B /* ChangeThePasswordVC.h */,
+				8F214D1B1E7636B0002E265B /* ChangeThePasswordVC.m */,
+				8F214D241E7650C5002E265B /* ChangeThePassCell.h */,
+				8F214D251E7650C5002E265B /* ChangeThePassCell.m */,
+			);
+			name = "修改密码";
 			sourceTree = "<group>";
 		};
 		8F308E9A1DF10E7C00D57714 /* 拍卖资讯 */ = {
@@ -1107,10 +1138,12 @@
 			children = (
 				8FE69B3B1DED2A4A001814AD /* MyWeiTuoViewController.h */,
 				8FE69B3C1DED2A4A001814AD /* MyWeiTuoViewController.m */,
-				8FE69B3E1DED2B6D001814AD /* MyWeiTuoTableViewCell.h */,
-				8FE69B3F1DED2B6D001814AD /* MyWeiTuoTableViewCell.m */,
 				8FDF035B1E6A8E8D00B29747 /* MyBiaoDiWeiTuoViC.h */,
 				8FDF035C1E6A8E8D00B29747 /* MyBiaoDiWeiTuoViC.m */,
+				8FE69B3E1DED2B6D001814AD /* MyWeiTuoTableViewCell.h */,
+				8FE69B3F1DED2B6D001814AD /* MyWeiTuoTableViewCell.m */,
+				8FB119F71E756CA800827926 /* MyWeiTuoBiaoDiModel.h */,
+				8FB119F81E756CA800827926 /* MyWeiTuoBiaoDiModel.m */,
 			);
 			name = "我委托的标的";
 			sourceTree = "<group>";
@@ -1424,9 +1457,11 @@
 				8FDB6F951E717AE000C63951 /* SGCollectionController.m in Sources */,
 				8FDF03611E6A973200B29747 /* BgBuyDaoViewController.m in Sources */,
 				8FDF035D1E6A8E8D00B29747 /* MyBiaoDiWeiTuoViC.m in Sources */,
+				8F214D231E7649D2002E265B /* SignTextViewController.m in Sources */,
 				8FE219AC1DE57ACA000C1D71 /* PaiMaiGongGaoVC.m in Sources */,
 				8FCD4F991DA8B4D300CB113C /* UIActivityIndicatorView+AFNetworking.m in Sources */,
 				8FCD4F891DA8B4D300CB113C /* NSData+ImageContentType.m in Sources */,
+				8F214D1C1E7636B0002E265B /* ChangeThePasswordVC.m in Sources */,
 				8FDB7A231E6557960014645C /* MJRefreshComponent.m in Sources */,
 				8F02FE551DA887B40051EDFC /* ScanCodeVC.m in Sources */,
 				8FDB7A241E6557960014645C /* MJRefreshFooter.m in Sources */,
@@ -1443,6 +1478,7 @@
 				8FCD4F801DA8B4D300CB113C /* AFHTTPRequestOperationManager.m in Sources */,
 				8FCD4F961DA8B4D300CB113C /* UIImageView+WebCache.m in Sources */,
 				8FCD4F8F1DA8B4D300CB113C /* SDWebImageManager.m in Sources */,
+				8F214D261E7650C5002E265B /* ChangeThePassCell.m in Sources */,
 				8F02FE521DA887740051EDFC /* HomeVC.m in Sources */,
 				8FE69B4E1DED573A001814AD /* BuyXiangQingVC.m in Sources */,
 				8FCD4F7F1DA8B4D300CB113C /* AFHTTPRequestOperation.m in Sources */,
@@ -1472,6 +1508,7 @@
 				8F326B681E66C911000C0C58 /* RightMyAddressCell.m in Sources */,
 				8FCD4F9B1DA8B4D300CB113C /* UIButton+AFNetworking.m in Sources */,
 				8FCD4FA31DA8B4D300CB113C /* UITableView+SDAutoTableViewCellHeight.m in Sources */,
+				8FB119F91E756CA800827926 /* MyWeiTuoBiaoDiModel.m in Sources */,
 				8FCD4FAB1DA8B4D300CB113C /* UIView+SDExtension.m in Sources */,
 				8FE4192F1DEEF03C0089BE9F /* ShiMingRenZhengVC.m in Sources */,
 				8FDB6F931E717AE000C63951 /* SGAssetModel.m in Sources */,
@@ -1512,6 +1549,7 @@
 				8FDB7A261E6557960014645C /* MJRefreshAutoGifFooter.m in Sources */,
 				8F345D6E1E6A630F00924840 /* SGTopTitleView.m in Sources */,
 				8FCD4F981DA8B4D300CB113C /* AFNetworkActivityIndicatorManager.m in Sources */,
+				8F214D201E76497E002E265B /* SignViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1644,16 +1682,20 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = 232982DK86;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = /Volumes/DISK0S3/HePaiWang/DistributionQuery/PrefixHeader.pch;
 				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/DistributionQuery/PrefixHeader.pch\"";
 				INFOPLIST_FILE = DistributionQuery/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRIVATE_HEADERS_FOLDER_PATH = "$(CONTENTS_FOLDER_PATH)/PrivateHeaders";
-				PRODUCT_BUNDLE_IDENTIFIER = XY.DistributionQuery;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hePaiWang.appXY;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -1663,16 +1705,21 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Shijiazhuang Zhenghe Network Co., Ltd. (ADSF8J5QX3)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = 232982DK86;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = /Volumes/DISK0S3/HePaiWang/DistributionQuery/PrefixHeader.pch;
 				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/DistributionQuery/PrefixHeader.pch\"";
 				INFOPLIST_FILE = DistributionQuery/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRIVATE_HEADERS_FOLDER_PATH = "$(CONTENTS_FOLDER_PATH)/PrivateHeaders";
-				PRODUCT_BUNDLE_IDENTIFIER = XY.DistributionQuery;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hePaiWang.appXY;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};

@@ -122,8 +122,9 @@
     _titleLabel.sd_layout
     .leftSpaceToView(_leftImage,15)
     .topSpaceToView(self.contentView,10)
+    .rightSpaceToView(self.contentView,15)
     .heightIs(20);
-    [_titleLabel setSingleLineAutoResizeWithMaxWidth:ScreenWidth-150];
+   // [_titleLabel setSingleLineAutoResizeWithMaxWidth:ScreenWidth-150];
     //起拍价图标
     _imagedan.sd_layout
     .leftEqualToView(_titleLabel)
@@ -204,6 +205,15 @@
     _priceLabel.text=model.price;
     _cityLabel.text=model.diqu;
     _timeLabel.text=model.time;
+    
+}
+-(void)setMd:(MyWeiTuoBiaoDiModel *)md{
+    _md=md;
+    [_leftImage setImageWithURL:[NSURL URLWithString:md.headImage] placeholderImage:[UIImage imageNamed:@"liebiao_pic1"]];
+     _titleLabel.text=md.titleName;
+     _priceLabel.text=md.priceName;
+    _cityLabel.text=md.diQu;
+    _timeLabel.text=md.timeName;
     
 }
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {

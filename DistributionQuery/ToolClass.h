@@ -28,7 +28,6 @@
 +(void)tellPhone:(NSString*)tell;
 #pragma mark --把登录返回的字典内容中nil转换成空字符串
 +(NSMutableDictionary*)isDictionary:(NSDictionary*)dic;
-
 #pragma mark --设置同一字符串 不同的颜色 不同大小
 /*
  titleStr ：哪条Label要变色
@@ -71,4 +70,6 @@
 +(NSString*)getUUIDStr;
 +(void)exitApplication;
 +(void)exitApplication2;
+#pragma mark --html解析
++(NSAttributedString * )HTML:(NSString*)string1;
 @end

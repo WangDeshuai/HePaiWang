@@ -175,9 +175,9 @@
         
     }else{
         if (indexPath.row==0) {
-            //修改密码ChangeThePasswordVC
-            ChangeThePasswordVC * vc =[ChangeThePasswordVC new];
-            vc.tagg=0;
+            //修改密码ChangeThePasswordVC   SignTextViewController
+            SignTextViewController * vc =[SignTextViewController new];
+           // vc.tagg=0;
             vc.hidesBottomBarWhenPushed=YES;
             [self.navigationController pushViewController:vc animated:YES];
         }

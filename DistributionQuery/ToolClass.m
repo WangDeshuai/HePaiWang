@@ -430,4 +430,13 @@ BOOL DeleteSingleFile(NSString *filePath){
 +(void)exitApplication2{
     exit(0);
 }
+#pragma mark --html解析
++(NSAttributedString * )HTML:(NSString*)string1
+{
+    NSString * htmlString = string1;
+    NSAttributedString * attributedString =[[NSAttributedString alloc]initWithData:[htmlString dataUsingEncoding:NSUnicodeStringEncoding] options:@{NSDocumentTypeDocumentAttribute:NSHTMLTextDocumentType} documentAttributes:nil error:nil];
+    
+    return attributedString;
+}
+
 @end

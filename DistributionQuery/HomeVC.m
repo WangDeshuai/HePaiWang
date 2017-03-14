@@ -314,10 +314,10 @@
 
 #pragma mark --滚动视图的button的点击事件
 -(void)bgviewClick:(UIButton*)btn{
-    NSLog(@"btnTage=%lu",btn.tag);
     PaiMaiBiaoDiModel * md=_paiMaiBiaoDiArr[btn.tag];
     PaiMaiBiaoDiXiangQingVC* vc =[PaiMaiBiaoDiXiangQingVC new];
     vc.messageID=md.messageID;
+    vc.hidesBottomBarWhenPushed=YES;
     [self.navigationController pushViewController:vc animated:YES];
 }
 #pragma mark --拍卖标的更多

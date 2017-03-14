@@ -9,6 +9,7 @@
 #import "PaiMaiGongGaoXiangQingVC.h"
 #import "PaiMaiBiaoDiModel.h"
 #import "XYAlertView.h"
+#import "HtmlViewController.h"
 @interface PaiMaiGongGaoXiangQingVC ()<UITableViewDelegate,UITableViewDataSource>
 {
     dispatch_source_t _timer;
@@ -23,6 +24,7 @@
 @property(nonatomic,strong) UILabel *secondLabel;//秒
 @property(nonatomic,strong) NSMutableArray * dataArr;//存上一篇，下一篇
 @property(nonatomic,strong) NSMutableArray * dataArrID;//存上一篇ID，下一篇ID
+@property(nonatomic,copy)NSString * htmlStr;
 @end
 
 @implementation PaiMaiGongGaoXiangQingVC
@@ -236,6 +238,13 @@
     .topSpaceToView(view11,5)
     .heightIs(80);
     //局开拍
+    int leftW=0;
+    if (ScreenWidth==320) {
+        leftW=25;
+    }else{
+        leftW=60;
+    }
+    
     UILabel * strLabel=[UILabel new];
     strLabel.text=@"距开拍";
     strLabel.font=[UIFont systemFontOfSize:20 weight:17];
@@ -244,7 +253,7 @@
     [view22 sd_addSubviews:@[strLabel]];
     strLabel.sd_layout
     .topSpaceToView(view22,10)
-    .leftSpaceToView(view22,60)
+    .leftSpaceToView(view22,leftW)
     .autoHeightRatio(0);
     [strLabel setSingleLineAutoResizeWithMaxWidth:120];
     //倒计时
@@ -519,14 +528,43 @@
     .topSpaceToView(paiMaiLabel,15)
     .heightIs(1);
 //公告详情
-    UIButton * gongGaoBtn =[UIButton buttonWithType:UIButtonTypeCustom];
-    [gongGaoBtn setImage:[UIImage imageNamed:@"bg11"] forState:0];
-    [addressView sd_addSubviews:@[gongGaoBtn]];
-    gongGaoBtn.sd_layout
-    .leftSpaceToView(addressView,0)
-    .rightSpaceToView(addressView,0)
-    .topSpaceToView(paiMaiLabel,30)
-    .heightIs(15);
+//    UIButton * gongGaoBtn =[UIButton buttonWithType:UIButtonTypeCustom];
+//    [gongGaoBtn setImage:[UIImage imageNamed:@"bg11"] forState:0];
+//    [addressView sd_addSubviews:@[gongGaoBtn]];
+//    gongGaoBtn.sd_layout
+//    .leftSpaceToView(addressView,0)
+//    .rightSpaceToView(addressView,0)
+//    .topSpaceToView(paiMaiLabel,30)
+//    .heightIs(15);
+    UILabel  * gongGaoLab =[UILabel new];
+    gongGaoLab.text=@"公告详情";
+    gongGaoLab.alpha=.6;
+    gongGaoLab.font=[UIFont systemFontOfSize:15];
+    gongGaoLab.userInteractionEnabled=YES;
+    [addressView sd_addSubviews:@[gongGaoLab]];
+    gongGaoLab.sd_layout
+    .leftSpaceToView(addressView,15)
+    .topSpaceToView(lineView,0)
+    .rightSpaceToView(addressView,25)
+    .heightIs(50);
+    
+    UIButton * rightBtn =[UIButton new];
+    [rightBtn setBackgroundImage:[UIImage imageNamed:@"person_arrow_right"] forState:0];
+    [addressView sd_addSubviews:@[rightBtn]];
+    rightBtn.sd_layout
+    .rightSpaceToView(addressView,15)
+    .centerYEqualToView(gongGaoLab)
+    .widthIs(16/2)
+    .heightIs(29/2);
+    
+    UITapGestureRecognizer * tap =[[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(tapp)];
+    [gongGaoLab addGestureRecognizer:tap];
+    _htmlStr=[dic objectForKey:@"auction_compete_declaration"];
+    
+    
+    //auction_compete_declaration
+//    addressView.backgroundColor=[UIColor redColor];
+//    gongGaoLab.backgroundColor=[UIColor yellowColor];
     
     //标的目标
     UIView * biaoView =[UIView new];
@@ -641,8 +679,12 @@
 
 
 
-
-
+#pragma mark --公告详情
+-(void)tapp{
+    HtmlViewController * html =[HtmlViewController new];
+    html.str=_htmlStr;
+    [self.navigationController pushViewController:html animated:YES];
+}
 
 
 

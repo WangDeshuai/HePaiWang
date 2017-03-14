@@ -36,6 +36,7 @@
 		8F345D721E6A635E00924840 /* MySelfViC.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F345D711E6A635E00924840 /* MySelfViC.m */; };
 		8F345D751E6A638900924840 /* CompanyVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F345D741E6A638900924840 /* CompanyVC.m */; };
 		8F3478A81E7004F00094EB96 /* PaiMaiGongGaoModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F3478A71E7004F00094EB96 /* PaiMaiGongGaoModel.m */; };
+		8F5EEC851E778C9900FE571D /* HtmlViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F5EEC841E778C9900FE571D /* HtmlViewController.m */; };
 		8F62F9181E6EC202005446AC /* PaiMaiBiaoDiModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F62F9171E6EC202005446AC /* PaiMaiBiaoDiModel.m */; };
 		8F676CC21DDE9CEB007A0477 /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F676CC11DDE9CEB007A0477 /* LoginViewController.m */; };
 		8F676CC51DDE9D2D007A0477 /* RegisteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F676CC41DDE9D2D007A0477 /* RegisteViewController.m */; };
@@ -243,6 +244,8 @@
 		8F345D741E6A638900924840 /* CompanyVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CompanyVC.m; sourceTree = "<group>"; };
 		8F3478A61E7004F00094EB96 /* PaiMaiGongGaoModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PaiMaiGongGaoModel.h; sourceTree = "<group>"; };
 		8F3478A71E7004F00094EB96 /* PaiMaiGongGaoModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PaiMaiGongGaoModel.m; sourceTree = "<group>"; };
+		8F5EEC831E778C9900FE571D /* HtmlViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HtmlViewController.h; sourceTree = "<group>"; };
+		8F5EEC841E778C9900FE571D /* HtmlViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HtmlViewController.m; sourceTree = "<group>"; };
 		8F62F9161E6EC202005446AC /* PaiMaiBiaoDiModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PaiMaiBiaoDiModel.h; sourceTree = "<group>"; };
 		8F62F9171E6EC202005446AC /* PaiMaiBiaoDiModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PaiMaiBiaoDiModel.m; sourceTree = "<group>"; };
 		8F676CC01DDE9CEB007A0477 /* LoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginViewController.h; sourceTree = "<group>"; };
@@ -1072,6 +1075,8 @@
 			children = (
 				8FDD67DC1DEC0D0F00CE295A /* PaiMaiGongGaoXiangQingVC.h */,
 				8FDD67DD1DEC0D0F00CE295A /* PaiMaiGongGaoXiangQingVC.m */,
+				8F5EEC831E778C9900FE571D /* HtmlViewController.h */,
+				8F5EEC841E778C9900FE571D /* HtmlViewController.m */,
 				8FE04DEC1E72CD2800A8E491 /* XYAlertView.h */,
 				8FE04DED1E72CD2800A8E491 /* XYAlertView.m */,
 			);
@@ -1420,6 +1425,7 @@
 				8FEB113E1DF007F700F775E2 /* YuGaoXiangQingVC.m in Sources */,
 				8FDB7A2E1E6557960014645C /* MJRefreshStateHeader.m in Sources */,
 				8FE431E61E67EF8A003DA47B /* XiaoXiView.m in Sources */,
+				8F5EEC851E778C9900FE571D /* HtmlViewController.m in Sources */,
 				8FCD4FA11DA8B4D300CB113C /* LCProgressHUD.m in Sources */,
 				8FCD4F971DA8B4D300CB113C /* UIView+WebCacheOperation.m in Sources */,
 				8FCD4F841DA8B4D300CB113C /* AFURLConnectionOperation.m in Sources */,
@@ -1688,7 +1694,7 @@
 				GCC_PREFIX_HEADER = /Volumes/DISK0S3/HePaiWang/DistributionQuery/PrefixHeader.pch;
 				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/DistributionQuery/PrefixHeader.pch\"";
 				INFOPLIST_FILE = DistributionQuery/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRIVATE_HEADERS_FOLDER_PATH = "$(CONTENTS_FOLDER_PATH)/PrivateHeaders";
 				PRODUCT_BUNDLE_IDENTIFIER = com.hePaiWang.appXY;
@@ -1712,7 +1718,7 @@
 				GCC_PREFIX_HEADER = /Volumes/DISK0S3/HePaiWang/DistributionQuery/PrefixHeader.pch;
 				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/DistributionQuery/PrefixHeader.pch\"";
 				INFOPLIST_FILE = DistributionQuery/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRIVATE_HEADERS_FOLDER_PATH = "$(CONTENTS_FOLDER_PATH)/PrivateHeaders";
 				PRODUCT_BUNDLE_IDENTIFIER = com.hePaiWang.appXY;

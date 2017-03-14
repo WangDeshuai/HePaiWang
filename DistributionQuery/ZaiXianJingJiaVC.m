@@ -19,7 +19,7 @@
 @property(nonatomic,assign)NSInteger currentIndex;
 @property(nonatomic,strong)NSMutableArray *dataArray0;
 @property(nonatomic,strong)NSMutableArray *dataArray1;
-
+@property(nonatomic,strong)UIView * liuYanView;
 
 @end
 
@@ -29,19 +29,83 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.title=@"在线竞价";
-    [self CreatGundong];//创建顶部滚动试图
+     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardUpOrDown:) name:UIKeyboardWillChangeFrameNotification object:nil];
+   // [self CreatGundong];//创建顶部滚动试图
     [self loadData];//加载数据源
     [self createTableView];//创建表
+   
 }
+- (void)keyboardUpOrDown:(NSNotification *)notifition
+{
+    NSDictionary * dic = notifition.userInfo;
+    //用NSValue来接收，因为它是坐标（结构体）
+    NSValue * value = [dic objectForKey:UIKeyboardFrameEndUserInfoKey];
+    //结构体转化为对象类型
+    CGRect rect = [value CGRectValue];
+    [UIView beginAnimations:nil context:nil];
+    [UIView setAnimationDuration:0.25];
+    _liuYanView.frame = CGRectMake(0,rect.origin.y-50-64, ScreenWidth, 50);
+    //表的坐标
+   _tableView.frame = CGRectMake(0, 0, ScreenWidth, _liuYanView.frame.origin.y);
+    
+    NSIndexPath * indexPath =[NSIndexPath indexPathForRow:0 inSection:0];
+    [_tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+     [UIView commitAnimations];
+    
+    
+}
+
+#pragma mark --创建留言区
+-(void)CreatLiuYan{
+    _liuYanView=[UIView new];
+    _liuYanView.backgroundColor=[UIColor yellowColor];
+    _liuYanView.frame=CGRectMake(0, ScreenHeight-50-64, ScreenWidth, 50);
+    [self.view addSubview:_liuYanView];
+    
+    UIButton * leftBtn =[UIButton buttonWithType:UIButtonTypeCustom];
+    [leftBtn setImage:[UIImage imageNamed:@"zaixian_mg"] forState:0];
+    leftBtn.adjustsImageWhenHighlighted=NO;
+   
+    UITextField * liuYanTextfield=[UITextField new];
+    liuYanTextfield.font=[UIFont systemFontOfSize:15];
+    liuYanTextfield.placeholder=@"想说点什么";
+    liuYanTextfield.backgroundColor=[UIColor greenColor];
+    
+    UIButton * sendBtn =[UIButton buttonWithType:UIButtonTypeCustom];
+    sendBtn.sd_cornerRadius=@(5);
+    sendBtn.backgroundColor=[UIColor redColor];
+    [sendBtn setTitle:@"发送" forState:0];
+    [_liuYanView sd_addSubviews:@[leftBtn,liuYanTextfield,sendBtn]];
+   
+    leftBtn.sd_layout
+    .leftSpaceToView(_liuYanView,15)
+    .centerYEqualToView(_liuYanView)
+    .widthIs(25)
+    .heightIs(25);
+    
+    sendBtn.sd_layout
+    .rightSpaceToView(_liuYanView,15)
+    .centerYEqualToView(_liuYanView)
+    .widthIs(70)
+    .heightIs(30);
+    
+    liuYanTextfield.sd_layout
+    .leftSpaceToView(leftBtn,10)
+    .centerYEqualToView(_liuYanView)
+    .rightSpaceToView(sendBtn,10)
+    .heightIs(30);
+}
+
 #pragma mark --创建滚动试图
--(void)CreatGundong{
+-(UIView * )CreatGundong:(UIView*)headView{
+    
     _view1=[UIView new];
     _view1.backgroundColor=[UIColor whiteColor];
-    [self.view sd_addSubviews:@[_view1]];
+    [headView sd_addSubviews:@[_view1]];
     _view1.sd_layout
-    .leftSpaceToView(self.view,0)
-    .rightSpaceToView(self.view,0)
-    .topSpaceToView(self.view,0)
+    .leftSpaceToView(headView,0)
+    .rightSpaceToView(headView,0)
+    .topSpaceToView(headView,0)
     .heightIs(200);
     
     //轮播图
@@ -117,7 +181,7 @@
     [peopleLab setSingleLineAutoResizeWithMaxWidth:200];
     
     [_view1 setupAutoHeightWithBottomView:peopleLab bottomMargin:10];
-    
+    return _view1;
 }
 
 
@@ -145,20 +209,15 @@
 //创建TableView
 -(void)createTableView{
     if (!_tableView) {
-        _tableView=[[UITableView alloc]init];//WithFrame:CGRectMake(0, 100, ScreenWidth, ScreenHeight-64) style:UITableViewStylePlain];
+        _tableView=[[UITableView alloc]initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight-64) style:UITableViewStylePlain];
         _tableView.backgroundColor=[UIColor clearColor];
         _tableView.showsVerticalScrollIndicator=NO;
         _tableView.dataSource=self;
         _tableView.delegate=self;
-        _tableView.tableFooterView = [[UIView alloc] init];
-        //_tableView.backgroundView=[[UIImageView alloc]initWithImage:[UIImage imageNamed:@"5.jpg"]];
-        //[self.view addSubview:_tableView];
-        [self.view sd_addSubviews:@[_tableView]];
-        _tableView.sd_layout
-        .leftSpaceToView(self.view,0)
-        .rightSpaceToView(self.view,0)
-        .topSpaceToView(_view1,10)
-        .heightIs(ScreenHeight-(275+75));
+        _tableView.keyboardDismissMode=UIScrollViewKeyboardDismissModeOnDrag;
+        _tableView.tableFooterView = [UIView new];
+        [self.view addSubview:_tableView];
+
     }
     [_tableView setTableHeaderView:[self headImageView]];
 }
@@ -185,18 +244,21 @@
 -(HeadImageView *)headImageView{
     if (!_headImageView) {
         _headImageView=[[HeadImageView alloc]init];
-        _headImageView.frame=CGRectMake(0, 0, ScreenWidth, 161);
+        _headImageView.frame=CGRectMake(0, 0, ScreenWidth, 161+300);
         _headImageView.backgroundColor=BG_COLOR;
-    
-        //创建_view2
+        UIView * view1 =[self CreatGundong:_headImageView];
+        [_headImageView addSubview:view1];
+        
+        
+//        //创建_view2
         _view2=[UIView new];
         _view2.backgroundColor=[UIColor whiteColor];
         [_headImageView sd_addSubviews:@[_view2]];
         _view2.sd_layout
         .leftSpaceToView(_headImageView,0)
         .rightSpaceToView(_headImageView,0)
-        .topSpaceToView(_headImageView,0);
-        
+        .topSpaceToView(view1,0);
+//
         //当前出价
         UILabel * dangQianLab =[UILabel new];
         dangQianLab.text=@"当前出价";
@@ -314,6 +376,12 @@
 -(void)refreshHeadLine:(NSInteger)currentIndex
 {
     _currentIndex=currentIndex;
+    if (currentIndex==0) {
+        [_liuYanView removeFromSuperview];
+        _tableView.frame=CGRectMake(0, 0, ScreenWidth, ScreenHeight-64);
+    }else{
+         [self CreatLiuYan];
+    }
     [_tableView reloadData];
 }
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath

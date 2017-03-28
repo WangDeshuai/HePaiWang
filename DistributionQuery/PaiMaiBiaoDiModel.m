@@ -33,7 +33,8 @@
         
         _diqu=[ToolClass isString:[NSString stringWithFormat:@"%@",[dic objectForKey:@"cityname"]]];
         _time=[ToolClass isString:[NSString stringWithFormat:@"%@",[dic objectForKey:@"auction_begin_time"]]];
-        _messageID=[ToolClass isString:[NSString stringWithFormat:@"%@",[dic objectForKey:@"target_id"]]];
+        _paiMaiID=[ToolClass isString:[NSString stringWithFormat:@"%@",[dic objectForKey:@"auction_id"]]];
+        _biaoDiID=[ToolClass isString:[NSString stringWithFormat:@"%@",[dic objectForKey:@"target_id"]]];
     }
     
     return self;

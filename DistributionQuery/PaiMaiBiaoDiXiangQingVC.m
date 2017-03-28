@@ -8,6 +8,8 @@
 
 #import "PaiMaiBiaoDiXiangQingVC.h"
 #import "ZaiXianJingJiaVC.h"
+#import "HtmlViewController.h"
+#import "Singleton.h"
 @interface PaiMaiBiaoDiXiangQingVC ()<SDCycleScrollViewDelegate,UITableViewDelegate,UITableViewDataSource>
 {
      dispatch_source_t _timer;
@@ -21,24 +23,35 @@
 @property(nonatomic,strong)UILabel *hourLabel;//时
 @property(nonatomic,strong)UILabel *minuteLabel;//分
 @property(nonatomic,strong) UILabel *secondLabel;//秒
+@property(nonatomic,strong)NSMutableArray * htmlArr;
 
 @end
 
 @implementation PaiMaiBiaoDiXiangQingVC
+-(void)viewWillAppear:(BOOL)animated{
+   
+ 
+    
+}
 
+-(void)viewWillDisappear:(BOOL)animated
+{
+    [Singleton sharedInstance].socket.userData = SocketOfflineByUser;
+    [[Singleton sharedInstance] cutOffSocket];
+
+}
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.title=@"拍卖标的详情";
     _dataArr=[[NSMutableArray alloc]initWithObjects:@"竞买须知",@"竞买公告",@"标的物介绍", nil];
+    _htmlArr=[NSMutableArray new];
     [self CreatTableView];
     [self CreatButton];
     
     
+ 
     
-    
-   
-
 }
 
 
@@ -53,12 +66,12 @@
     
 }
 
--(void)dataRiqi{
+-(void)dataRiqiData:(NSString*)riqi{
     
     NSDateFormatter *dateFormatter=[[NSDateFormatter alloc] init];
     [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
     //在这写上开始时间
-    NSDate *endDate = [dateFormatter dateFromString:@"2017-02-28 12:00:40"];
+    NSDate *endDate = [dateFormatter dateFromString:riqi];
     //NSDate *endDate_tomorrow = [[NSDate alloc] initWithTimeIntervalSinceReferenceDate:([endDate timeIntervalSinceReferenceDate] + 24*3600)];
     NSDate *startDate = [NSDate date];
     NSTimeInterval timeInterval =[endDate timeIntervalSinceDate:startDate];
@@ -128,7 +141,7 @@
     fabu.backgroundColor=[UIColor whiteColor];
     [fabu addTarget:self action:@selector(fabu) forControlEvents:UIControlEventTouchUpInside];
     fabu.frame=CGRectMake(0, ScreenHeight-55-64, ScreenWidth, 55);
-    [fabu setImage:[UIImage imageNamed:@"biaodi_bt_bottom"] forState:0];
+    [fabu setImage:[UIImage imageNamed:@"nav_bottom_jinru"] forState:0];
     [self.view addSubview:fabu];
     
 }
@@ -167,7 +180,12 @@
     return cell;
 }
 
-
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    HtmlViewController * vc =[HtmlViewController new];
+    vc.str=_htmlArr[indexPath.row];
+    [self.navigationController pushViewController:vc animated:YES];
+}
 -(UIView*)CreatTableHeadView{
     UIView * headView =[UIView new];
     headView.backgroundColor=BG_COLOR;
@@ -264,7 +282,7 @@
     .bottomSpaceToView(bgView,3);
     [self.minuteLabel setSingleLineAutoResizeWithMaxWidth:80];
     [bgView setupAutoWidthWithRightView:self.minuteLabel rightMargin:3];
-    [self dataRiqi];
+    [self dataRiqiData:@"2017-03-27 22:40:27"];
     
     
     
@@ -403,7 +421,7 @@
     [typeLabel setSingleLineAutoResizeWithMaxWidth:200];
     //自由竞价
     UILabel * ziyouLabel =[UILabel new];
-    ziyouLabel.text=@"自由竞价:1万";
+    ziyouLabel.text=@"自由竞价时间:1万";
     [self LabelShuXing:ziyouLabel];
     [_view2 sd_addSubviews:@[ziyouLabel]];
     ziyouLabel.sd_layout
@@ -423,7 +441,7 @@
     [baoLiu setSingleLineAutoResizeWithMaxWidth:200];
     //限时竞价
     UILabel * xianshiLabel =[UILabel new];
-    xianshiLabel.text=@"限时竞价:1万";
+    xianshiLabel.text=@"限时竞价时间:1万";
     [self LabelShuXing:xianshiLabel];
     [_view2 sd_addSubviews:@[xianshiLabel]];
     xianshiLabel.sd_layout
@@ -444,9 +462,123 @@
     [_view2 setupAutoHeightWithBottomView:youXian bottomMargin:10];
     [headView setupAutoHeightWithBottomView:_view2 bottomMargin:10];
     
-//    _view2.didFinishAutoLayoutBlock=^(CGRect rect){
-//        NSLog(@"输出左边%f",rect.size.height+rect.origin.y);
-//    };
+    //获取网络数据
+    [Engine paiMaiLieBiaoXiangQingPaiMaiID:_paiMaiID BiaoDiID:_biaoDiID success:^(NSDictionary *dic) {
+        NSString * code =[NSString stringWithFormat:@"%@",[dic objectForKey:@"code"]];
+        NSDictionary * contentDic =[dic objectForKey:@"content"];
+        if ([code isEqualToString:@"1"]) {
+           //1.轮播图赋值
+            NSArray * arrimage =[contentDic objectForKey:@"targetImgList"];
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                cycleScrollView2.imageURLStringsGroup =arrimage ;
+            });
+            //2.标题
+             titleLable.text=[contentDic objectForKey:@"target_name"];
+            //3.起拍价
+             qiPaiJiaLable.text=[NSString stringWithFormat:@"起拍价：%@万",[contentDic objectForKey:@"target_start_price"]];
+            qiPaiJiaLable.attributedText= [ToolClass attrStrFrom:qiPaiJiaLable.text intFond:13 Color:[UIColor blackColor] numberStr:@"起拍价："];
+            //4.报名人数
+             baoming.text=[NSString stringWithFormat:@"%@报名",[contentDic objectForKey:@"signup_number"]];
+            //5.提醒人数
+             tixingLabel.text=[NSString stringWithFormat:@"%@人设置提醒",[contentDic objectForKey:@"remaind_number"]];
+            //6.浏览数
+             liuLanLabel.text=[NSString stringWithFormat:@"%@人浏览",[contentDic objectForKey:@"browse_number"]];
+            //7.评估价
+             pinggujia.text=[NSString stringWithFormat:@"评估价:%@元",[contentDic objectForKey:@"target_estimated_price"]];
+            //8. 加价幅度
+            jiaLable.text=[NSString stringWithFormat:@"加价幅度:%@元",[contentDic objectForKey:@"auction_least_compete_step"]];
+            //9.保证金
+            baozhengjin.text=[NSString stringWithFormat:@"保证金:%@元",[contentDic objectForKey:@"auction_deposit_value"]];
+            //10.类型
+             typeLabel.text=[NSString stringWithFormat:@"类型:%@",[contentDic objectForKey:@"target_type_name"]];
+            //11.自由竞价时间
+            ziyouLabel.text=[NSString stringWithFormat:@"自由竞价时间:%@分",[contentDic objectForKey:@"auction_freely_compete_time"]];
+            //12.保留价
+             baoLiu.text=[NSString stringWithFormat:@"保留价:%@",[contentDic objectForKey:@"auction_use_reserve_price"]];
+            //13.限时竞价时间
+              xianshiLabel.text=[NSString stringWithFormat:@"限时竞价时间:%@分",[contentDic objectForKey:@"auction_limited_compete_time"]];
+            //14.优先购买权
+             youXian.text=[NSString stringWithFormat:@"优先购买权人:%@",[contentDic objectForKey:@"auction_use_preferential_buy"]];
+            //15.竞买须知 竞买公告  标的物介绍
+            NSString * str1 =[contentDic objectForKey:@"auction_compete_attention"];
+            NSString * str2 =[contentDic objectForKey:@"auction_compete_declaration"];
+            NSString * str3 =[contentDic objectForKey:@"target_description"];
+             [_htmlArr addObject:str1];
+             [_htmlArr addObject:str2];
+             [_htmlArr addObject:str3];
+            [_tableView reloadData];
+        }
+    } error:^(NSError *error) {
+        
+    }];
+    
+    
+    NSDictionary  * param =@{@"auction_id":_paiMaiID,@"target_id":_biaoDiID};
+    NSDictionary * dicc =@{@"action":@"app_connectTargetCompete",@"param":param};
+    NSString * jsonStr =[ToolClass getJsonStringFromObject:dicc];
+    [Engine socketLianJieJsonStr:jsonStr success:^(NSDictionary *dic) {
+        //ConvertStrToTime
+        NSString * msgtype =[dic objectForKey:@"msg_type"];
+        if ([msgtype isEqualToString:@"push"]) {
+            //推送过来的
+            NSDictionary * pushinfo=[dic objectForKey:@"pushInfo"];
+            NSString * puhscene =[pushinfo objectForKey:@"push_scene"];
+            if ([puhscene isEqualToString:@"resetCountDown"]) {
+                //代表是倒计时
+                NSDictionary * pushcontentDic =[pushinfo objectForKey:@"push_content"];
+                //标题
+                starLabel.text=[pushcontentDic objectForKey:@"target_status_name"];
+                //颜色
+                NSString * colorStr =[NSString stringWithFormat:@"%@",[pushcontentDic objectForKey:@"color_type"]];
+                if ([colorStr isEqualToString:@"1"]) {
+                    bgView.backgroundColor=[UIColor redColor];
+                }else if ([colorStr isEqualToString:@"2"]){
+                     bgView.backgroundColor=[UIColor yellowColor];
+                }else if ([colorStr isEqualToString:@"3"]){
+                     bgView.backgroundColor=[UIColor grayColor];
+                }
+//
+                
+                
+                //  countdown_remain_millisecond
+                NSString * sj = [NSString stringWithFormat:@"%@",[pushcontentDic objectForKey:@"remaintime_push_millisecond"]];
+               long long timeSr =[sj longLongValue];
+                NSLog(@"sj>>>%@",sj);
+                //判断一下状态1.content 2.stop 3.finish 4.none
+                NSString * statusStr =[NSString stringWithFormat:@"%@",[pushcontentDic objectForKey:@"countdown_status"]];
+                long long  strTime;
+                if ([statusStr isEqualToString:@"finish"]) {
+                    
+                }else if ([statusStr isEqualToString:@"stop"]){
+                    
+                }else if ([statusStr isEqualToString:@"none"]){
+                    
+                }else if ([statusStr isEqualToString:@"continue"]){
+                    if (timeSr<0) {
+                       strTime=-timeSr;
+                    }else{
+                       strTime=timeSr+10000000;
+                    }
+                    NSString * str= [ToolClass ConvertStrToTime:strTime];
+                    NSLog(@"输出是%@",str);
+                    [self dataRiqiData:str];
+                }
+                
+                
+            }
+//
+            
+        }else if ([msgtype isEqualToString:@"response"]){
+            //请求相应的
+        }
+        
+        
+        
+    } error: nil];
+    
+    
+    
+    
     
     
     return headView;

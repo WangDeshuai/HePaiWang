@@ -230,7 +230,7 @@
 #pragma mark --获取网络数据
 -(void)getInterDataPage:(int)page Search:(NSString*)sear BiaoDiFenLeiStyle:(NSString*)fenlei shengCode:(NSString*)shengcode CityCode:(NSString*)citycode PaiMaiStyle:(NSString*)style{
 //  BiaoDiStyle 标的的分类 Staus拍卖状态
-    [LCProgressHUD showMessage:@"请稍后..."];
+    //[LCProgressHUD showMessage:@"请稍后..."];
     [Engine firstPaiMaiBiaoDiViewSearchStr:sear BiaoDiStyle:fenlei ProvCode:shengcode CityCode:citycode Staus:style PageSize:@"10" PageIndex:[NSString stringWithFormat:@"%d",page] success:^(NSDictionary *dic) {
         NSString * code =[NSString stringWithFormat:@"%@",[dic objectForKey:@"code"]];
         if ([code isEqualToString:@"1"]) {
@@ -494,7 +494,10 @@
         
          [self dissmiss];
     }else{
+        PaiMaiBiaoDiModel * model =_dataArray[indexPath.row];
         PaiMaiBiaoDiXiangQingVC * vc =[PaiMaiBiaoDiXiangQingVC new];
+        vc.paiMaiID=model.paiMaiID;
+        vc.biaoDiID=model.biaoDiID;
         [self.navigationController pushViewController:vc animated:YES];
     }
     

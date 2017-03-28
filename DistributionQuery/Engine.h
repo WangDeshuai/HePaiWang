@@ -90,4 +90,12 @@ typedef void (^ErrorBlock)(NSError*error);
 
 #pragma mark --32个人中心_我委托的标的列表
 +(void)myCenterWeiTuoPage:(NSString*)page Status:(NSString*)style success:(SuccessBlock)aSuccess error:(ErrorBlock)aError;
+
+
+#pragma mark --33拍卖标的详情页所需数据
++(void)paiMaiLieBiaoXiangQingPaiMaiID:(NSString*)paimaiID BiaoDiID:(NSString*)biaodiID success:(SuccessBlock)aSuccess error:(ErrorBlock)aError;
+
+#pragma  mark --34socket长连接
++(void)socketLianJieJsonStr:(NSString*)str success:(SuccessBlock)aSuccess error:(ErrorBlock)aError;
+
 @end

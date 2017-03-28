@@ -15,6 +15,7 @@
 @property(nonatomic,copy)NSString *price;
 @property(nonatomic,copy)NSString *diqu;
 @property(nonatomic,copy)NSString *time;
-@property(nonatomic,copy)NSString * messageID;
+@property(nonatomic,copy)NSString * paiMaiID;
+@property(nonatomic,copy)NSString * biaoDiID;
 -(id)initWithBiaoDiDic:(NSDictionary*)dic;
 @end

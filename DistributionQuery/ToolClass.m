@@ -438,5 +438,46 @@ BOOL DeleteSingleFile(NSString *filePath){
     
     return attributedString;
 }
+#pragma mark --毫秒数转化为时间
++ (NSString *)ConvertStrToTime:(long long)timeStr
+
+{
+    //long long time=[timeStr longLongValue];
+    NSDate *d = [[NSDate alloc]initWithTimeIntervalSince1970:timeStr/1000.0];
+    NSDateFormatter *formatter = [[NSDateFormatter alloc]init];
+    [formatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+    NSString*timeString=[formatter stringFromDate:d];
+    return timeString;
+}
+
++(NSDictionary*)dictionaryWithContentsOfDatas:(NSString *)jsonString {
+    
+    if (jsonString == nil) {
+        return nil;
+    }
+    
+    NSData *jsonData = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
+    NSError *err;
+    NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:jsonData
+                                                        options:NSJSONReadingMutableContainers
+                                                          error:&err];
+    if(err) {
+        NSLog(@"json解析失败：%@",err);
+        return nil;
+    }
+    return dic;
+}
+    
++(NSString*)daoxuStr:(NSString*)str{
+    NSMutableString * reverseString = [NSMutableString string];
+    for(int i = 0 ; i < str.length; i ++){
+        //倒序读取字符并且存到可变数组数组中
+        unichar c = [str characterAtIndex:str.length- i -1];
+        [reverseString appendFormat:@"%c",c];
+    }
+    str = reverseString;
+    return str;
+}
+    
 
 @end

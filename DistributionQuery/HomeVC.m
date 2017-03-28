@@ -296,7 +296,7 @@
     
     //459+40
  //   _headView.backgroundColor=[UIColor greenColor];
-    NSLog(@">>>>scre=%f",ScreenWidth);
+   // NSLog(@">>>>scre=%f",ScreenWidth);
     if (ScreenWidth==414) {
         //6p
          _headView.sd_layout.heightIs(459+40+20);
@@ -316,7 +316,8 @@
 -(void)bgviewClick:(UIButton*)btn{
     PaiMaiBiaoDiModel * md=_paiMaiBiaoDiArr[btn.tag];
     PaiMaiBiaoDiXiangQingVC* vc =[PaiMaiBiaoDiXiangQingVC new];
-    vc.messageID=md.messageID;
+    vc.biaoDiID=md.biaoDiID;
+    vc.paiMaiID=md.paiMaiID;
     vc.hidesBottomBarWhenPushed=YES;
     [self.navigationController pushViewController:vc animated:YES];
 }

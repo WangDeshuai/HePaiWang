@@ -7,6 +7,7 @@
 //
 
 #import "Engine.h"
+#import "Singleton.h"
 //#import "AFNetworking.h"
 //#define SER_VICE @"http://119.29.83.154:8080/HePai/"
 @implementation Engine
@@ -889,5 +890,54 @@
         aError(error);
         
     }];
+}
+#pragma mark --33拍卖标的详情页所需数据
++(void)paiMaiLieBiaoXiangQingPaiMaiID:(NSString*)paimaiID BiaoDiID:(NSString*)biaodiID success:(SuccessBlock)aSuccess error:(ErrorBlock)aError{
+    
+    NSString * urlStr =[NSString stringWithFormat:@"%@entrust/app_getInfoInTargetCompeteDetailPage.action",SER_VICE];
+    
+    AFHTTPRequestOperationManager * manager =[AFHTTPRequestOperationManager manager];
+    NSMutableDictionary * dic =[NSMutableDictionary new];
+    NSString * token =[NSUSE_DEFO objectForKey:@"token"];
+    if (token) {
+         [dic setObject:token forKey:@"user_id"];
+    }
+    [dic setObject:@"ios" forKey:@"osType"];
+    [dic setObject:paimaiID forKey:@"auction_id"];
+    [dic setObject:biaodiID forKey:@"target_id"];
+    
+    [manager POST:urlStr parameters:dic success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSData *data = [NSJSONSerialization dataWithJSONObject:responseObject options:NSJSONWritingPrettyPrinted error:nil];
+        NSString *str = [[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding];
+        NSLog(@"33拍卖标的详情页所需数据%@",str);
+        
+        aSuccess(responseObject);
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"33拍卖标的详情页所需数据%@",error);
+        aError(error);
+        
+    }];
+    
+}
+#pragma  mark --34socket长连接
++(void)socketLianJieJsonStr:(NSString*)str success:(SuccessBlock)aSuccess error:(ErrorBlock)aError{
+    [Singleton sharedInstance].socketHost = @"192.168.1.103"; //host设定
+    [Singleton sharedInstance].socketPort = 8006; //port设定
+   
+    NSString * sss =[NSString stringWithFormat:@"%@#####",str];
+    [Singleton sharedInstance].messageContent=sss;
+    
+    [Singleton sharedInstance].cityNameBlock=^(NSDictionary*name){
+         aSuccess(name);
+    };
+    
+    
+    //在连接前先进行手动断开
+    [Singleton sharedInstance].socket.userData = SocketOfflineByUser;
+    [[Singleton sharedInstance] cutOffSocket];
+    
+    // 确保断开后再连，如果对一个正处于连接状态的socket进行连接，会出现崩溃
+    [Singleton sharedInstance].socket.userData = SocketOfflineByServer;
+    [[Singleton sharedInstance] socketConnectHost];
 }
 @end

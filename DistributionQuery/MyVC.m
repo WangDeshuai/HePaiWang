@@ -21,6 +21,7 @@
 #import "BaseNavigationController.h"
 #import "ChangeThePasswordVC.h"//修改密码
 #import "SignTextViewController.h"//签名
+#import "PhotoXuanZeViewController.h"
 //#import "<#header#>"
 @interface MyVC ()<UITableViewDelegate,UITableViewDataSource>
 {
@@ -175,7 +176,7 @@
         
     }else{
         if (indexPath.row==0) {
-            //修改密码ChangeThePasswordVC   SignTextViewController
+            //修改密码ChangeThePasswordVC   SignTextViewController PhotoXuanZeViewController
             SignTextViewController * vc =[SignTextViewController new];
            // vc.tagg=0;
             vc.hidesBottomBarWhenPushed=YES;

@@ -9,5 +9,9 @@
 #import <UIKit/UIKit.h>
 
 @interface ZaiXianJingJiaCell : UITableViewCell
+
 +(instancetype)cellWithTableView:(UITableView*)tableView CellID:(NSString*)cellID;
+@property (nonatomic,strong)UILabel * leftLabel;
+@property(nonatomic,strong)UILabel * centerLabel;
+@property(nonatomic,strong)UILabel * rightLabel;
 @end

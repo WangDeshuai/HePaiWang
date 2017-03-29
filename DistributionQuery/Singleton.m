@@ -25,7 +25,7 @@
 
 @implementation Singleton
 //每次最多读取多少
-#define MAX_BUFFER 1024
+#define MAX_BUFFER 3080
 //设置写入超时 -1 表示不会使用超时
 #define WRITE_TIME_OUT -1
 //设置读取超时 -1 表示不会使用超时
@@ -139,53 +139,58 @@
 -(void)delayMethod{
     
     NSData   *dataStream  = [_messageContent dataUsingEncoding:NSUTF8StringEncoding];
-    [self.socket writeData:dataStream withTimeout:1 tag:1];
+    [self.socket writeData:dataStream withTimeout:WRITE_TIME_OUT tag:1];
 }
-
+//3.发送数据
+- (void)sendMessage:(id)message
+{
+    //像服务器发送数据
+    NSData *cmdData = [message dataUsingEncoding:NSUTF8StringEncoding];
+    [self.socket writeData:cmdData withTimeout:WRITE_TIME_OUT tag:1];
+}
 
 //4.接受消息成功之后回调
 - (void)onSocket:(AsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag
 {
     //服务端返回消息数据量比较大时，可能分多次返回。所以在读取消息的时候，设置MAX_BUFFER表示每次最多读取多少，当data.length < MAX_BUFFER我们认为有可能是接受完一个完整的消息，然后才解析
     NSString *aString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-//    NSLog(@">>>%@",aString);
+    NSLog(@">>>%@",aString);
     NSString *cccc = [aString substringToIndex:[aString length] - 5];
-//     NSLog(@">>>%@",cccc);
 
+   
+    
+    
+    
     
     NSArray *array = [cccc componentsSeparatedByString:@"#####"];
    
     for (NSString * strr in array) {
-//       NSLog(@"输出%@",strr);;
          NSData * dataa = [strr dataUsingEncoding:NSUTF8StringEncoding];
          NSDictionary *jsonDict = [NSJSONSerialization JSONObjectWithData:dataa options:NSJSONReadingMutableLeaves error:nil];
-//        NSLog(@"字典%@",jsonDict);
         self.cityNameBlock(jsonDict);
     }
-    
-    
-    
-    
-    
-   
-//    NSString *b = [s stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"#!"]];
-   
-    
-   //NSDictionary * dicc =  (NSDictionary*)aString;
-   // NSLog(@"公司%@",dicc);
-     //self.cityNameBlock(jsonDict);
-//        NSLog(@"数据解析%@",dic);
-//        //解析出来的消息，可以通过通知、代理、block等传出去
-//        
-//    }
+ 
     
     
     [self.socket readDataWithTimeout:READ_TIME_OUT buffer:nil bufferOffset:0 maxLength:MAX_BUFFER tag:0];
     
 }
+-(BOOL)panduan:(NSString*)str{
+    //判断roadTitleLab.text 是否含有qingjoin
+    if([str rangeOfString:@"#####"].location !=NSNotFound)//_roaldSearchText
+    {
+        return YES;
+    }
+    else
+    {
+       return NO;
+    }
+}
+
 //发送消息成功之后回调
 - (void)onSocket:(AsyncSocket *)sock didWriteDataWithTag:(long)tag
 {
+    NSLog(@"回调");
     //读取消息
     [self.socket readDataWithTimeout:-1 buffer:nil bufferOffset:0 maxLength:MAX_BUFFER tag:0];
 }

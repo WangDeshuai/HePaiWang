@@ -74,6 +74,4 @@
 +(NSAttributedString * )HTML:(NSString*)string1;
 #pragma mark --毫秒数转化为时间
 +(NSString *)ConvertStrToTime:(long  long)timeStr;
-+(NSDictionary*)dictionaryWithContentsOfDatas:(NSString *)jsonString;
-+(NSString*)daoxuStr:(NSString*)ss;
 @end

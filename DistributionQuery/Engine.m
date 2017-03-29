@@ -909,7 +909,7 @@
     [manager POST:urlStr parameters:dic success:^(AFHTTPRequestOperation *operation, id responseObject) {
         NSData *data = [NSJSONSerialization dataWithJSONObject:responseObject options:NSJSONWritingPrettyPrinted error:nil];
         NSString *str = [[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding];
-        NSLog(@"33拍卖标的详情页所需数据%@",str);
+      //  NSLog(@"33拍卖标的详情页所需数据%@",str);
         
         aSuccess(responseObject);
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
@@ -921,17 +921,22 @@
 }
 #pragma  mark --34socket长连接
 +(void)socketLianJieJsonStr:(NSString*)str success:(SuccessBlock)aSuccess error:(ErrorBlock)aError{
+    
     [Singleton sharedInstance].socketHost = @"192.168.1.103"; //host设定
     [Singleton sharedInstance].socketPort = 8006; //port设定
-   
     NSString * sss =[NSString stringWithFormat:@"%@#####",str];
     [Singleton sharedInstance].messageContent=sss;
     
     [Singleton sharedInstance].cityNameBlock=^(NSDictionary*name){
          aSuccess(name);
     };
-    
-    
+    static dispatch_once_t hanwanjie;
+    //只执行一次
+    dispatch_once(&hanwanjie, ^{
+        NSLog(@"12345678910");
+        
+        
+    });
     //在连接前先进行手动断开
     [Singleton sharedInstance].socket.userData = SocketOfflineByUser;
     [[Singleton sharedInstance] cutOffSocket];
@@ -939,5 +944,6 @@
     // 确保断开后再连，如果对一个正处于连接状态的socket进行连接，会出现崩溃
     [Singleton sharedInstance].socket.userData = SocketOfflineByServer;
     [[Singleton sharedInstance] socketConnectHost];
+    
 }
 @end

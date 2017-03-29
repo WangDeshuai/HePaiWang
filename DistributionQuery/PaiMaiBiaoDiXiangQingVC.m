@@ -24,20 +24,42 @@
 @property(nonatomic,strong)UILabel *minuteLabel;//分
 @property(nonatomic,strong) UILabel *secondLabel;//秒
 @property(nonatomic,strong)NSMutableArray * htmlArr;
+//没有创建model,必须单个独立往在线竞价界面传值
+@property(nonatomic,strong)NSArray * lunbiArr;
+@property(nonatomic,copy)NSString *titlename;
+@property(nonatomic,copy)NSString * price1;
+@property(nonatomic,copy)NSString * price2;
+@property(nonatomic,copy)NSString * price3;
 
 @end
 
 @implementation PaiMaiBiaoDiXiangQingVC
 -(void)viewWillAppear:(BOOL)animated{
    
- 
+    static dispatch_once_t hanwanjie;
+    //只执行一次
+    dispatch_once(&hanwanjie, ^{
+        NSLog(@"12345678910");
+        [Singleton sharedInstance].socketHost = @"192.168.1.103"; //host设定
+        [Singleton sharedInstance].socketPort = 8006; //port设定
+        //在连接前先进行手动断开
+        [Singleton sharedInstance].socket.userData = SocketOfflineByUser;
+        [[Singleton sharedInstance] cutOffSocket];
+        
+        // 确保断开后再连，如果对一个正处于连接状态的socket进行连接，会出现崩溃
+        [Singleton sharedInstance].socket.userData = SocketOfflineByServer;
+        [[Singleton sharedInstance] socketConnectHost];
+        
+    });
+    
+    
     
 }
 
 -(void)viewWillDisappear:(BOOL)animated
 {
-    [Singleton sharedInstance].socket.userData = SocketOfflineByUser;
-    [[Singleton sharedInstance] cutOffSocket];
+//    [Singleton sharedInstance].socket.userData = SocketOfflineByUser;
+//    [[Singleton sharedInstance] cutOffSocket];
 
 }
 - (void)viewDidLoad {
@@ -46,6 +68,7 @@
     self.title=@"拍卖标的详情";
     _dataArr=[[NSMutableArray alloc]initWithObjects:@"竞买须知",@"竞买公告",@"标的物介绍", nil];
     _htmlArr=[NSMutableArray new];
+    
     [self CreatTableView];
     [self CreatButton];
     
@@ -146,7 +169,15 @@
     
 }
 -(void)fabu{
+    
     ZaiXianJingJiaVC * vc =[ZaiXianJingJiaVC new];
+    vc.paiMaiID=_paiMaiID;
+    vc.biaoDiID=_biaoDiID;
+    vc.lunbiArr=_lunbiArr;
+    vc.titlename=_titlename;
+    vc.price1=_price1;
+    vc.price2=_price2;
+    vc.price3=_price3;
     [self.navigationController pushViewController:vc animated:YES];
 }
 #pragma mark --创建表
@@ -472,8 +503,13 @@
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 cycleScrollView2.imageURLStringsGroup =arrimage ;
             });
+            _lunbiArr=arrimage;
             //2.标题
              titleLable.text=[contentDic objectForKey:@"target_name"];
+            _titlename=[contentDic objectForKey:@"target_name"];
+            _price1=[NSString stringWithFormat:@"%@",[contentDic objectForKey:@"auction_compete_step1"]];
+            _price2=[NSString stringWithFormat:@"%@",[contentDic objectForKey:@"auction_compete_step2"]];
+            _price3=[NSString stringWithFormat:@"%@",[contentDic objectForKey:@"auction_compete_step3"]];
             //3.起拍价
              qiPaiJiaLable.text=[NSString stringWithFormat:@"起拍价：%@万",[contentDic objectForKey:@"target_start_price"]];
             qiPaiJiaLable.attributedText= [ToolClass attrStrFrom:qiPaiJiaLable.text intFond:13 Color:[UIColor blackColor] numberStr:@"起拍价："];
@@ -513,68 +549,74 @@
     }];
     
     
-    NSDictionary  * param =@{@"auction_id":_paiMaiID,@"target_id":_biaoDiID};
+    NSDictionary  * param =@{@"auction_id":@"12",@"target_id":@"10"};
     NSDictionary * dicc =@{@"action":@"app_connectTargetCompete",@"param":param};
     NSString * jsonStr =[ToolClass getJsonStringFromObject:dicc];
-    [Engine socketLianJieJsonStr:jsonStr success:^(NSDictionary *dic) {
-        //ConvertStrToTime
-        NSString * msgtype =[dic objectForKey:@"msg_type"];
-        if ([msgtype isEqualToString:@"push"]) {
-            //推送过来的
-            NSDictionary * pushinfo=[dic objectForKey:@"pushInfo"];
-            NSString * puhscene =[pushinfo objectForKey:@"push_scene"];
-            if ([puhscene isEqualToString:@"resetCountDown"]) {
-                //代表是倒计时
-                NSDictionary * pushcontentDic =[pushinfo objectForKey:@"push_content"];
-                //标题
-                starLabel.text=[pushcontentDic objectForKey:@"target_status_name"];
-                //颜色
-                NSString * colorStr =[NSString stringWithFormat:@"%@",[pushcontentDic objectForKey:@"color_type"]];
-                if ([colorStr isEqualToString:@"1"]) {
-                    bgView.backgroundColor=[UIColor redColor];
-                }else if ([colorStr isEqualToString:@"2"]){
-                     bgView.backgroundColor=[UIColor yellowColor];
-                }else if ([colorStr isEqualToString:@"3"]){
-                     bgView.backgroundColor=[UIColor grayColor];
-                }
-//
-                
-                
-                //  countdown_remain_millisecond
-                NSString * sj = [NSString stringWithFormat:@"%@",[pushcontentDic objectForKey:@"remaintime_push_millisecond"]];
-               long long timeSr =[sj longLongValue];
-                NSLog(@"sj>>>%@",sj);
-                //判断一下状态1.content 2.stop 3.finish 4.none
-                NSString * statusStr =[NSString stringWithFormat:@"%@",[pushcontentDic objectForKey:@"countdown_status"]];
-                long long  strTime;
-                if ([statusStr isEqualToString:@"finish"]) {
-                    
-                }else if ([statusStr isEqualToString:@"stop"]){
-                    
-                }else if ([statusStr isEqualToString:@"none"]){
-                    
-                }else if ([statusStr isEqualToString:@"continue"]){
-                    if (timeSr<0) {
-                       strTime=-timeSr;
-                    }else{
-                       strTime=timeSr+10000000;
+    
+    NSString * sss =[NSString stringWithFormat:@"%@#####",jsonStr];
+    
+    [Singleton sharedInstance].messageContent=sss;
+    [[Singleton sharedInstance] sendMessage:sss];
+    [Singleton sharedInstance].cityNameBlock=^(NSDictionary*dic){
+        NSLog(@"详情倒计时%@",dic);
+                NSString * msgtype =[dic objectForKey:@"msg_type"];
+                if ([msgtype isEqualToString:@"push"]) {
+                    //推送过来的
+                    NSDictionary * pushinfo=[dic objectForKey:@"pushInfo"];
+                    NSString * puhscene =[pushinfo objectForKey:@"push_scene"];
+                    //代表是倒计时
+                    if ([puhscene isEqualToString:@"resetCountDown"]) {
+        
+                        NSDictionary * pushcontentDic =[pushinfo objectForKey:@"push_content"];
+                        //标题
+                        starLabel.text=[pushcontentDic objectForKey:@"target_status_name"];
+                        //颜色
+                        NSString * colorStr =[NSString stringWithFormat:@"%@",[pushcontentDic objectForKey:@"color_type"]];
+                        if ([colorStr isEqualToString:@"1"]) {
+                            bgView.backgroundColor=[UIColor redColor];
+                        }else if ([colorStr isEqualToString:@"2"]){
+                             bgView.backgroundColor=[UIColor yellowColor];
+                        }else if ([colorStr isEqualToString:@"3"]){
+                             bgView.backgroundColor=[UIColor grayColor];
+                        }
+        //
+        
+        
+                        //  countdown_remain_millisecond
+                        NSString * sj = [NSString stringWithFormat:@"%@",[pushcontentDic objectForKey:@"remaintime_push_millisecond"]];
+                       long long timeSr =[sj longLongValue];
+                        NSLog(@"sj>>>%@",sj);
+                        //判断一下状态1.content 2.stop 3.finish 4.none
+                        NSString * statusStr =[NSString stringWithFormat:@"%@",[pushcontentDic objectForKey:@"countdown_status"]];
+                        long long  strTime;
+                        if ([statusStr isEqualToString:@"finish"]) {
+        
+                        }else if ([statusStr isEqualToString:@"stop"]){
+        
+                        }else if ([statusStr isEqualToString:@"none"]){
+        
+                        }else if ([statusStr isEqualToString:@"continue"]){
+                            if (timeSr<0) {
+                               strTime=-timeSr;
+                            }else{
+                               strTime=timeSr+1000000;
+                            }
+                            NSString * str= [ToolClass ConvertStrToTime:strTime];
+                            NSLog(@"输出是%@",str);
+                            [self dataRiqiData:str];
+                        }
+                        
+                        
                     }
-                    NSString * str= [ToolClass ConvertStrToTime:strTime];
-                    NSLog(@"输出是%@",str);
-                    [self dataRiqiData:str];
+        //
+                    
+                }else if ([msgtype isEqualToString:@"response"]){
+                    //请求相应的
                 }
-                
-                
-            }
-//
-            
-        }else if ([msgtype isEqualToString:@"response"]){
-            //请求相应的
-        }
         
         
-        
-    } error: nil];
+    };
+    
     
     
     
@@ -585,7 +627,20 @@
 }
 
 
+-(void)shuju{
+    NSDictionary  * param =@{@"auction_id":@"12",@"target_id":@"10"};
+    NSDictionary * dicc =@{@"action":@"app_connectTargetCompete",@"param":param};
+    NSString * jsonStr =[ToolClass getJsonStringFromObject:dicc];
+    
+    NSString * sss =[NSString stringWithFormat:@"%@#####",jsonStr];
+    
+     [Singleton sharedInstance].messageContent=sss;
+     [[Singleton sharedInstance] sendMessage:sss];
+    [Singleton sharedInstance].cityNameBlock=^(NSDictionary*dic){
+        NSLog(@"这不是输出吗%@",dic);
+    };
 
+}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

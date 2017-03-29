@@ -8,9 +8,7 @@
 
 #import "ZaiXianJingJiaCell.h"
 @interface ZaiXianJingJiaCell()
-@property (nonatomic,strong)UILabel * leftLabel;
-@property(nonatomic,strong)UILabel * centerLabel;
-@property(nonatomic,strong)UILabel * rightLabel;
+
 @end
 @implementation ZaiXianJingJiaCell
 
@@ -42,17 +40,42 @@
     _centerLabel=[UILabel new];
     [self.contentView sd_addSubviews:@[_leftLabel,_rightLabel,_centerLabel]];
     //属性
-    _leftLabel.font=[UIFont systemFontOfSize:16];
+    _leftLabel.font=[UIFont systemFontOfSize:14];
     _leftLabel.alpha=.6;
-    _rightLabel.font=[UIFont systemFontOfSize:16];
+    _rightLabel.font=[UIFont systemFontOfSize:14];
     _rightLabel.alpha=.6;
-    _centerLabel.font=[UIFont systemFontOfSize:16];
+    _centerLabel.font=[UIFont systemFontOfSize:14];
     _centerLabel.alpha=.6;
     
+//    _leftLabel.backgroundColor=[UIColor redColor];
+//    _centerLabel.backgroundColor=[UIColor yellowColor];
+//    _rightLabel.backgroundColor=[UIColor magentaColor];
+    
+     _leftLabel.textAlignment=1;
+     _centerLabel.textAlignment=0;
+     _rightLabel.textAlignment=1;
+    
+    _centerLabel.textColor=[UIColor redColor];
+   
     //坐标
     _leftLabel.sd_layout
-    .leftSpaceToView(self.contentView,15)
-    .topSpaceToView(self.contentView,15);
+    .leftSpaceToView(self.contentView,0)
+    .topSpaceToView(self.contentView,12)
+    .widthIs(ScreenWidth/3.5)
+    .heightIs(20);
+    
+    _centerLabel.sd_layout
+    .centerXEqualToView(self.contentView)
+    .topEqualToView(_leftLabel)
+    .heightIs(20)
+    .widthIs(ScreenWidth/4);
+    
+    _rightLabel.sd_layout
+    .rightSpaceToView(self.contentView,0)
+    .topSpaceToView(self.contentView,12)
+    .widthIs(ScreenWidth/3.5*1.5)
+    .heightIs(20);
+   // [_rightLabel setSingleLineAutoResizeWithMaxWidth:220];
     
 }
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {

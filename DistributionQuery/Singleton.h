@@ -41,5 +41,7 @@ enum{
 -(void)cutOffSocket;// 断开socket连接
 //发送请求消息的内容
 @property(nonatomic,copy)NSString * messageContent;
+// 发送消息
+- (void)sendMessage:(id)message;
 
 @end

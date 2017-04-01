@@ -7,9 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "BaseTableBarVC.h"
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
-
+{
+    BaseTableBarVC * _vcc;
+}
 @property (strong, nonatomic) UIWindow *window;
 
 

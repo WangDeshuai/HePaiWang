@@ -30,6 +30,8 @@
 @property(nonatomic,copy)NSString * price1;
 @property(nonatomic,copy)NSString * price2;
 @property(nonatomic,copy)NSString * price3;
+@property(nonatomic,strong)UILabel * starLabel;
+@property(nonatomic,strong)UIView *bgView;
 
 @end
 
@@ -52,7 +54,7 @@
         
     });
     
-    
+    [self socketData];
     
 }
 
@@ -94,10 +96,16 @@
     NSDateFormatter *dateFormatter=[[NSDateFormatter alloc] init];
     [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
     //在这写上开始时间
-    NSDate *endDate = [dateFormatter dateFromString:riqi];
+   // NSDate *endDate = [dateFormatter dateFromString:riqi];
     //NSDate *endDate_tomorrow = [[NSDate alloc] initWithTimeIntervalSinceReferenceDate:([endDate timeIntervalSinceReferenceDate] + 24*3600)];
-    NSDate *startDate = [NSDate date];
-    NSTimeInterval timeInterval =[endDate timeIntervalSinceDate:startDate];
+    //NSDate *startDate = [NSDate date];
+     NSTimeInterval timeInterval=[riqi doubleValue] / 1000.0;
+    if (timeInterval==0) {
+        self.dayLabel.text = @"0天";
+        self.hourLabel.text = @"0时";
+        self.minuteLabel.text = @"0分";
+        self.secondLabel.text = @"0秒";
+    }
     if (_timer==nil) {
         __block int timeout = timeInterval; //倒计时时间
         
@@ -117,42 +125,46 @@
                         //时间到了，执行这
                     });
                 }else{
-                    int days = (int)(timeout/(3600*24));
-                    if (days==0) {
-                        self.dayLabel.text = @"";
-                    }
-                    int hours = (int)((timeout-days*24*3600)/3600);
-                    int minute = (int)(timeout-days*24*3600-hours*3600)/60;
-                    int second = timeout-days*24*3600-hours*3600-minute*60;
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        if (days==0) {
-                            self.dayLabel.text = @"0天";
-                        }else{
-                            self.dayLabel.text = [NSString stringWithFormat:@"%d天",days];
-                        }
-                        if (hours<10) {
-                            self.hourLabel.text = [NSString stringWithFormat:@"0%d时",hours];
-                        }else{
-                            self.hourLabel.text = [NSString stringWithFormat:@"%d时",hours];
-                        }
-                        if (minute<10) {
-                            self.minuteLabel.text = [NSString stringWithFormat:@"0%d分",minute];
-                        }else{
-                            self.minuteLabel.text = [NSString stringWithFormat:@"%d分",minute];
-                        }
-                        if (second<10) {
-                            self.secondLabel.text = [NSString stringWithFormat:@"0%d秒",second];
-                        }else{
-                            self.secondLabel.text = [NSString stringWithFormat:@"%d秒",second];
-                        }
-                        
-                    });
+                     [self timeJiShi:timeout];
                     timeout--;
                 }
             });
             dispatch_resume(_timer);
         }
     }
+}
+-(void)timeJiShi:(int)timeout{
+    int days = (int)(timeout/(3600*24));
+    if (days==0) {
+        self.dayLabel.text = @"";
+    }
+    int hours = (int)((timeout-days*24*3600)/3600);
+    int minute = (int)(timeout-days*24*3600-hours*3600)/60;
+    int second = timeout-days*24*3600-hours*3600-minute*60;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (days==0) {
+            self.dayLabel.text = @"0天";
+        }else{
+            self.dayLabel.text = [NSString stringWithFormat:@"%d天",days];
+        }
+        if (hours<10) {
+            self.hourLabel.text = [NSString stringWithFormat:@"%d时",hours];
+        }else{
+            self.hourLabel.text = [NSString stringWithFormat:@"%d时",hours];
+        }
+        if (minute<10) {
+            self.minuteLabel.text = [NSString stringWithFormat:@"%d分",minute];
+        }else{
+            self.minuteLabel.text = [NSString stringWithFormat:@"%d分",minute];
+        }
+        if (second<10) {
+            self.secondLabel.text = [NSString stringWithFormat:@"%d秒",second];
+        }else{
+            self.secondLabel.text = [NSString stringWithFormat:@"%d秒",second];
+        }
+        
+    });
+    
 }
 
 
@@ -197,7 +209,7 @@
 -(UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
    
-    NSString * cellID =[NSString stringWithFormat:@"%lu%lu",indexPath.section,indexPath.row];
+    NSString * cellID =[NSString stringWithFormat:@"%lu%lu",(long)indexPath.section,(long)indexPath.row];
     
     UITableViewCell * cell =[tableView dequeueReusableCellWithIdentifier:cellID];
     if (!cell) {
@@ -259,25 +271,39 @@
     };
     //等待开始拍卖
     UIView * bgView =[UIView new];
+    _bgView=bgView;
     bgView.backgroundColor=[UIColor redColor];
     [headView  sd_addSubviews:@[bgView]];
     bgView.sd_layout
     .rightSpaceToView(headView,15)
     .topSpaceToView(headView,10)
-    .widthIs(100)
-    .heightIs(112/2);
-//等带开始
+    .heightIs(120/2);
+    //等带开始
     UILabel * starLabel=[UILabel new];
+    _starLabel=starLabel;
     starLabel.text=@"等待开始";
     starLabel.textAlignment=1;
     starLabel.textColor=[UIColor whiteColor];
-    starLabel.font=[UIFont systemFontOfSize:17 weight:18];
+    starLabel.font=[UIFont systemFontOfSize:15 weight:18];
     [bgView sd_addSubviews:@[starLabel]];
     starLabel.sd_layout
     .leftSpaceToView(bgView,0)
     .rightSpaceToView(bgView,0)
-    .topSpaceToView(bgView,2)
+    .topSpaceToView(bgView,3)
     .heightIs(20);
+    
+    
+    
+    UIView * timeView =[UIView new];
+    timeView.backgroundColor=[UIColor whiteColor];
+    [bgView sd_addSubviews:@[timeView]];
+    timeView.sd_layout
+    .topSpaceToView(starLabel,3)
+    .leftSpaceToView(bgView,3)
+    .rightSpaceToView(bgView,3)
+    .bottomSpaceToView(bgView,3);
+    
+    
     //倒计时时间
     //(天数)
     self.dayLabel=[UILabel new];
@@ -286,7 +312,7 @@
     self.dayLabel.backgroundColor=[UIColor whiteColor];
     [bgView sd_addSubviews:@[self.dayLabel]];
     self.dayLabel.sd_layout
-    .leftSpaceToView(bgView,3)
+    .leftSpaceToView(bgView,10)
     .topSpaceToView(starLabel,3)
     .bottomSpaceToView(bgView,3);
     [self.dayLabel setSingleLineAutoResizeWithMaxWidth:80];
@@ -312,8 +338,34 @@
     .topSpaceToView(starLabel,3)
     .bottomSpaceToView(bgView,3);
     [self.minuteLabel setSingleLineAutoResizeWithMaxWidth:80];
-    [bgView setupAutoWidthWithRightView:self.minuteLabel rightMargin:3];
-    [self dataRiqiData:@"2017-03-27 22:40:27"];
+    
+    self.secondLabel=[UILabel new];
+    self.secondLabel.textColor=[UIColor blackColor];
+    self.secondLabel.font=[UIFont systemFontOfSize:14];
+    self.secondLabel.backgroundColor=[UIColor whiteColor];
+    [bgView sd_addSubviews:@[self.secondLabel]];
+    self.secondLabel.sd_layout
+    .leftSpaceToView(self.minuteLabel,-1)
+    .topSpaceToView(starLabel,3)
+    .bottomSpaceToView(bgView,3);
+    [self.secondLabel setSingleLineAutoResizeWithMaxWidth:80];
+    
+    [bgView setupAutoWidthWithRightView:self.secondLabel rightMargin:10];
+    
+    self.dayLabel.textAlignment=1;
+    self.hourLabel.textAlignment=1;
+    self.minuteLabel.textAlignment=1;
+    self.secondLabel.textAlignment=1;
+    
+    //        self.dayLabel.backgroundColor=[UIColor redColor];
+    //        self.hourLabel.backgroundColor=[UIColor blueColor];
+    //        self.minuteLabel.backgroundColor=[UIColor magentaColor];
+    //        self.secondLabel.backgroundColor=[UIColor yellowColor];
+    [self dataRiqiData:@"0"];
+    
+
+    
+
     
     
     
@@ -549,6 +601,18 @@
     }];
     
     
+ 
+    
+    
+    
+    
+    
+    
+    
+    return headView;
+}
+
+-(void)socketData{
     NSDictionary  * param =@{@"auction_id":@"12",@"target_id":@"10"};
     NSDictionary * dicc =@{@"action":@"app_connectTargetCompete",@"param":param};
     NSString * jsonStr =[ToolClass getJsonStringFromObject:dicc];
@@ -559,71 +623,79 @@
     [[Singleton sharedInstance] sendMessage:sss];
     [Singleton sharedInstance].cityNameBlock=^(NSDictionary*dic){
         NSLog(@"详情倒计时%@",dic);
-                NSString * msgtype =[dic objectForKey:@"msg_type"];
-                if ([msgtype isEqualToString:@"push"]) {
-                    //推送过来的
-                    NSDictionary * pushinfo=[dic objectForKey:@"pushInfo"];
-                    NSString * puhscene =[pushinfo objectForKey:@"push_scene"];
-                    //代表是倒计时
-                    if ([puhscene isEqualToString:@"resetCountDown"]) {
-        
-                        NSDictionary * pushcontentDic =[pushinfo objectForKey:@"push_content"];
-                        //标题
-                        starLabel.text=[pushcontentDic objectForKey:@"target_status_name"];
-                        //颜色
-                        NSString * colorStr =[NSString stringWithFormat:@"%@",[pushcontentDic objectForKey:@"color_type"]];
-                        if ([colorStr isEqualToString:@"1"]) {
-                            bgView.backgroundColor=[UIColor redColor];
-                        }else if ([colorStr isEqualToString:@"2"]){
-                             bgView.backgroundColor=[UIColor yellowColor];
-                        }else if ([colorStr isEqualToString:@"3"]){
-                             bgView.backgroundColor=[UIColor grayColor];
-                        }
-        //
-        
-        
-                        //  countdown_remain_millisecond
-                        NSString * sj = [NSString stringWithFormat:@"%@",[pushcontentDic objectForKey:@"remaintime_push_millisecond"]];
-                       long long timeSr =[sj longLongValue];
-                        NSLog(@"sj>>>%@",sj);
-                        //判断一下状态1.content 2.stop 3.finish 4.none
-                        NSString * statusStr =[NSString stringWithFormat:@"%@",[pushcontentDic objectForKey:@"countdown_status"]];
-                        long long  strTime;
-                        if ([statusStr isEqualToString:@"finish"]) {
-        
-                        }else if ([statusStr isEqualToString:@"stop"]){
-        
-                        }else if ([statusStr isEqualToString:@"none"]){
-        
-                        }else if ([statusStr isEqualToString:@"continue"]){
-                            if (timeSr<0) {
-                               strTime=-timeSr;
-                            }else{
-                               strTime=timeSr+1000000;
-                            }
-                            NSString * str= [ToolClass ConvertStrToTime:strTime];
-                            NSLog(@"输出是%@",str);
-                            [self dataRiqiData:str];
-                        }
-                        
-                        
-                    }
-        //
-                    
-                }else if ([msgtype isEqualToString:@"response"]){
-                    //请求相应的
-                }
-        
-        
+        NSString * msgtype =[dic objectForKey:@"msg_type"];
+        if ([msgtype isEqualToString:@"push"]) {
+            //推送过来的
+            NSDictionary * pushinfo=[dic objectForKey:@"pushInfo"];
+            NSString * puhscene =[pushinfo objectForKey:@"push_scene"];
+            //代表是倒计时
+            if ([puhscene isEqualToString:@"resetCountDown"]) {
+                
+                NSDictionary * pushcontentDic =[pushinfo objectForKey:@"push_content"];
+                [self timeDaoJiShi:pushcontentDic Label:_starLabel uiview:_bgView];
+            }
+        }else if ([msgtype isEqualToString:@"response"]){
+            //请求相应的
+        }
     };
+}
+-(void)timeDaoJiShi:(NSDictionary*)contentDic  Label:(UILabel*)starLabel uiview:(UIView*)bgView{
+    
+    //标题
+    starLabel.text=[contentDic objectForKey:@"target_status_name"];
+    //颜色
+    NSString * colorStr =[NSString stringWithFormat:@"%@",[contentDic objectForKey:@"color_type"]];
+    if ([colorStr isEqualToString:@"1"]) {
+        bgView.backgroundColor=[UIColor redColor];
+    }else if ([colorStr isEqualToString:@"2"]){
+        bgView.backgroundColor=JXColor(53, 152, 255, 1);
+    }else if ([colorStr isEqualToString:@"3"]){
+        bgView.backgroundColor=[UIColor grayColor];
+    }
+    
+    //  countdown_remain_millisecond
+    NSString * sj = [NSString stringWithFormat:@"%@",[contentDic objectForKey:@"countdown_remain_millisecond"]];
+    long long timeSr =[sj longLongValue];
+    
+    //判断一下状态1.content 2.stop 3.finish 4.none
+    NSString * statusStr =[NSString stringWithFormat:@"%@",[contentDic objectForKey:@"countdown_status"]];
+    
+    if ([statusStr isEqualToString:@"finish"]) {
+        NSLog(@"finish输出是%lld",timeSr);
+        // [self dataRiqiData:[NSString stringWithFormat:@"%lld",timeSr]];
+        _timer = nil;
+        [self timeJiShi:(int)timeSr/1000];
+        
+    }else if ([statusStr isEqualToString:@"stop"]){
+        NSLog(@"stop输出是%lld",timeSr);
+        [self dataRiqiData:[NSString stringWithFormat:@"%lld",timeSr]];
+        dispatch_source_set_event_handler(_timer, ^{
+            dispatch_source_cancel(_timer);
+            _timer = nil;
+            [self timeJiShi:(int)timeSr/1000];
+        });
+        
+    }else if ([statusStr isEqualToString:@"none"]){
+        // [self dataRiqiData:[NSString stringWithFormat:@"%lld",timeSr]];
+        _timer = nil;
+        [self timeJiShi:(int)timeSr/1000];
+    }else if ([statusStr isEqualToString:@"continue"]){
+        long long  strTime;
+        if (timeSr<0) {
+            strTime=-timeSr;
+        }else{
+            strTime=timeSr;
+        }
+        NSLog(@"continue输出是%lld",strTime);
+        _timer = nil;
+        [self dataRiqiData:[NSString stringWithFormat:@"%lld",strTime]];
+    }else if ([statusStr isEqualToString:@"error"]){
+        NSLog(@"error输出是%lld",timeSr);
+        _timer = nil;
+        [self timeJiShi:(int)timeSr/1000];
+    }
     
     
-    
-    
-    
-    
-    
-    return headView;
 }
 
 

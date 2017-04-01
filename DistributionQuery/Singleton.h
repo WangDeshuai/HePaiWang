@@ -32,6 +32,8 @@ enum{
 @property (nonatomic, assign) UInt16         socketPort;    // socket的prot
 
 @property (nonatomic, retain) NSTimer        *connectTimer; // 计时器
+@property(nonatomic,strong)NSMutableArray * arrayData;
+@property(nonatomic,strong)NSMutableData * mData;
 
 @property(nonatomic,copy)void(^cityNameBlock)(NSDictionary*name);
 + (Singleton *)sharedInstance;

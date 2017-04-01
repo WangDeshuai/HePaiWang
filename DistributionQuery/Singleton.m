@@ -25,14 +25,14 @@
 
 @implementation Singleton
 //每次最多读取多少
-#define MAX_BUFFER 3080
+#define MAX_BUFFER 1024
 //设置写入超时 -1 表示不会使用超时
 #define WRITE_TIME_OUT -1
 //设置读取超时 -1 表示不会使用超时
 #define READ_TIME_OUT -1
 +(Singleton *) sharedInstance
 {
-    
+   
     static Singleton *sharedInstace = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -64,6 +64,7 @@
 -(void)onSocket:(AsyncSocket *)sock didConnectToHost:(NSString *)host port:(UInt16)port
 {
     NSLog(@"socket连接成功");
+    _arrayData=[NSMutableArray new];
     //多长时间发送一次心跳
     self.connectTimer = [NSTimer scheduledTimerWithTimeInterval:3 target:self selector:@selector(longConnectToSocket) userInfo:nil repeats:YES];
     [self.connectTimer fire];
@@ -148,43 +149,99 @@
     NSData *cmdData = [message dataUsingEncoding:NSUTF8StringEncoding];
     [self.socket writeData:cmdData withTimeout:WRITE_TIME_OUT tag:1];
 }
-
+//读取数据，有数据就会触发代理
+- (void)readDataWithTimeout:(NSTimeInterval)timeout tag:(long)tag{
+    
+}
+//直到读到这个长度的数据，才会触发代理
+- (void)readDataToLength:(NSUInteger)length withTimeout:(NSTimeInterval)timeout tag:(long)tag{
+    
+}
 //4.接受消息成功之后回调
 - (void)onSocket:(AsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag
 {
-    //服务端返回消息数据量比较大时，可能分多次返回。所以在读取消息的时候，设置MAX_BUFFER表示每次最多读取多少，当data.length < MAX_BUFFER我们认为有可能是接受完一个完整的消息，然后才解析
-    NSString *aString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-    NSLog(@">>>%@",aString);
-    NSString *cccc = [aString substringToIndex:[aString length] - 5];
-
+    
    
-    
-    
-    
-    
-    NSArray *array = [cccc componentsSeparatedByString:@"#####"];
-   
-    for (NSString * strr in array) {
-         NSData * dataa = [strr dataUsingEncoding:NSUTF8StringEncoding];
-         NSDictionary *jsonDict = [NSJSONSerialization JSONObjectWithData:dataa options:NSJSONReadingMutableLeaves error:nil];
-        self.cityNameBlock(jsonDict);
+    if (_mData == nil) {
+        _mData = [[NSMutableData alloc] init];
     }
- 
+    [_mData appendData:data];
+    NSString *httpResponse = [[NSString alloc] initWithData:_mData encoding:NSUTF8StringEncoding];
+    NSLog(@"源数据%@",httpResponse);
+    //这一行 应该在底下的方法中，如果出错就是这的问题
+    [self blockBack:httpResponse];
+    
+//      NSRange range = [httpResponse rangeOfString:@"#####"];
+//    if(range.location != NSNotFound)
+//    {
+//       // NSString *aString = [[NSString alloc] initWithData:_mData encoding:NSUTF8StringEncoding];
+//       // NSLog(@"源数据%@",aString);
+//       // [self blockBack:aString];
+////        \数据读取完毕。进行相关操作
+////        \注意操作完毕释放_mdata
+//        _mData = nil;
+//    }
+  
+   
     
     
-    [self.socket readDataWithTimeout:READ_TIME_OUT buffer:nil bufferOffset:0 maxLength:MAX_BUFFER tag:0];
+//    //1.区分一下每次aString中返回的结果是否有#####
+//    if ([self panduan:aString]==NO) {
+//        //2.不包含####(把不包含#的放到数组中)
+//        [_arrayData addObject:aString];
+//        
+//    }else{
+//        //包含###
+//        if (_arrayData.count==0) {
+//            //3.数组为0，说明1条数据是完整的，否则是不完整的
+//            [self blockBack:aString];
+//        }else{
+//            //4.把数组中所有元素都拼接起来
+//            NSString *string = [_arrayData componentsJoinedByString:@""];
+//            //5.在把最后一个拼接起来，形成完整的字符串
+//            NSString * str =[NSString stringWithFormat:@"%@%@",string,aString];
+//            //6.返回数据
+//            [self blockBack:str];
+//            [_arrayData removeAllObjects];
+//        }
+    
+        
+
+   // }
+    
+    
+    
+   
     
 }
+//返回数据
+-(void)blockBack:(NSString*)aString{
+    //把最后5个#去掉，取出#号之前的字符cccc
+    NSString *cccc = [aString substringToIndex:[aString length] - 5];
+    //把每条完整的数据存到数组中
+    NSArray *array = [cccc componentsSeparatedByString:@"#####"];
+    
+    for (NSString * strr in array) {
+        NSData * dataa = [strr dataUsingEncoding:NSUTF8StringEncoding];
+        NSDictionary *jsonDict = [NSJSONSerialization JSONObjectWithData:dataa options:NSJSONReadingMutableLeaves error:nil];
+       // NSLog(@"执行几次");
+       self.cityNameBlock(jsonDict);
+    }
+    
+    [self.socket readDataWithTimeout:READ_TIME_OUT buffer:nil bufferOffset:0 maxLength:MAX_BUFFER tag:0];
+}
+
+
 -(BOOL)panduan:(NSString*)str{
-    //判断roadTitleLab.text 是否含有qingjoin
-    if([str rangeOfString:@"#####"].location !=NSNotFound)//_roaldSearchText
-    {
+    //从字符串中取出最后5个字符，看是不是#####
+    NSString *sssa = [str substringFromIndex:[str length] - 5];
+    if ([sssa isEqualToString:@"#####"]) {
+        //是的话返回YES
         return YES;
+    }else{
+        return NO;
     }
-    else
-    {
-       return NO;
-    }
+    
 }
 
 //发送消息成功之后回调

@@ -37,10 +37,18 @@
 @property(nonatomic,strong)UILabel * dangQianLab;//当前出价
 @property(nonatomic,strong)UILabel* peopleLab;//记录出价人
 
+@property(nonatomic,strong)UILabel * starLabel;//倒计时标题
+@property(nonatomic,strong)UIView *bgView;//倒计时背景色
+
+@property(nonatomic,strong)UITextField *liuYanTextfield;//留言版
+
 @end
 
 @implementation ZaiXianJingJiaVC
-
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
@@ -78,7 +86,7 @@
    _tableView.frame = CGRectMake(0, 0, ScreenWidth, _liuYanView.frame.origin.y);
     
     NSIndexPath * indexPath =[NSIndexPath indexPathForRow:0 inSection:0];
-    [_tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+    [_tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionBottom animated:NO];
      [UIView commitAnimations];
     
     
@@ -90,11 +98,20 @@
     NSDateFormatter *dateFormatter=[[NSDateFormatter alloc] init];
     [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
     //在这写上开始时间
-    NSDate *endDate = [dateFormatter dateFromString:riqi];
+    //NSDate *endDate = [dateFormatter dateFromString:riqi];
     //NSDate *endDate_tomorrow = [[NSDate alloc] initWithTimeIntervalSinceReferenceDate:([endDate timeIntervalSinceReferenceDate] + 24*3600)];
-    NSDate *startDate = [NSDate date];
-    NSTimeInterval timeInterval =[endDate timeIntervalSinceDate:startDate];
-    if (_timer==nil) {
+    //NSDate *startDate = [NSDate date];
+   // NSTimeInterval timeInterval =[endDate timeIntervalSinceNow];//[endDate timeIntervalSinceDate:startDate];
+    NSTimeInterval timeInterval=[riqi doubleValue] / 1000.0;
+    if (timeInterval==0) {
+        self.dayLabel.text = @"0天";
+        self.hourLabel.text = @"0时";
+        self.minuteLabel.text = @"0分";
+        self.secondLabel.text = @"0秒";
+        return;
+    }
+    
+   else if (_timer==nil) {
         __block int timeout = timeInterval; //倒计时时间
         
         if (timeout!=0) {
@@ -112,37 +129,9 @@
                         self.secondLabel.text = @"0秒";
                         //时间到了，执行这
                     });
-                }else{
-                    int days = (int)(timeout/(3600*24));
-                    if (days==0) {
-                        self.dayLabel.text = @"";
-                    }
-                    int hours = (int)((timeout-days*24*3600)/3600);
-                    int minute = (int)(timeout-days*24*3600-hours*3600)/60;
-                    int second = timeout-days*24*3600-hours*3600-minute*60;
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        if (days==0) {
-                            self.dayLabel.text = @"0天";
-                        }else{
-                            self.dayLabel.text = [NSString stringWithFormat:@"%d天",days];
-                        }
-                        if (hours<10) {
-                            self.hourLabel.text = [NSString stringWithFormat:@"0%d时",hours];
-                        }else{
-                            self.hourLabel.text = [NSString stringWithFormat:@"%d时",hours];
-                        }
-                        if (minute<10) {
-                            self.minuteLabel.text = [NSString stringWithFormat:@"0%d分",minute];
-                        }else{
-                            self.minuteLabel.text = [NSString stringWithFormat:@"%d分",minute];
-                        }
-                        if (second<10) {
-                            self.secondLabel.text = [NSString stringWithFormat:@"0%d秒",second];
-                        }else{
-                            self.secondLabel.text = [NSString stringWithFormat:@"%d秒",second];
-                        }
-                        
-                    });
+                }
+                else{
+                    [self timeJiShi:timeout];
                     timeout--;
                 }
             });
@@ -152,8 +141,39 @@
 }
 
 
-
-
+-(void)timeJiShi:(int)timeout{
+    int days = (int)(timeout/(3600*24));
+    if (days==0) {
+        self.dayLabel.text = @"";
+    }
+    int hours = (int)((timeout-days*24*3600)/3600);
+    int minute = (int)(timeout-days*24*3600-hours*3600)/60;
+    int second = timeout-days*24*3600-hours*3600-minute*60;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (days==0) {
+            self.dayLabel.text = @"0天";
+        }else{
+            self.dayLabel.text = [NSString stringWithFormat:@"%d天",days];
+        }
+        if (hours<10) {
+            self.hourLabel.text = [NSString stringWithFormat:@"%d时",hours];
+        }else{
+            self.hourLabel.text = [NSString stringWithFormat:@"%d时",hours];
+        }
+        if (minute<10) {
+            self.minuteLabel.text = [NSString stringWithFormat:@"%d分",minute];
+        }else{
+            self.minuteLabel.text = [NSString stringWithFormat:@"%d分",minute];
+        }
+        if (second<10) {
+            self.secondLabel.text = [NSString stringWithFormat:@"%d秒",second];
+        }else{
+            self.secondLabel.text = [NSString stringWithFormat:@"%d秒",second];
+        }
+        
+    });
+    
+}
 
 #pragma mark --创建留言区
 -(void)CreatLiuYan{
@@ -167,6 +187,7 @@
     leftBtn.adjustsImageWhenHighlighted=NO;
    
     UITextField * liuYanTextfield=[UITextField new];
+    _liuYanTextfield=liuYanTextfield;
     liuYanTextfield.font=[UIFont systemFontOfSize:15];
     liuYanTextfield.placeholder=@"想说点什么";
     liuYanTextfield.backgroundColor=[UIColor greenColor];
@@ -175,6 +196,7 @@
     sendBtn.sd_cornerRadius=@(5);
     sendBtn.backgroundColor=[UIColor redColor];
     [sendBtn setTitle:@"发送" forState:0];
+    [sendBtn addTarget:self action:@selector(sendContent) forControlEvents:UIControlEventTouchUpInside];
     [_liuYanView sd_addSubviews:@[leftBtn,liuYanTextfield,sendBtn]];
    
     leftBtn.sd_layout
@@ -196,257 +218,44 @@
     .heightIs(30);
 }
 
-#pragma mark --创建滚动试图
-//-(UIView * )CreatGundong:(UIView*)headView{
-//    
-//    _view1=[UIView new];
-//    _view1.backgroundColor=[UIColor whiteColor];
-//    [headView sd_addSubviews:@[_view1]];
-//    _view1.sd_layout
-//    .leftSpaceToView(headView,0)
-//    .rightSpaceToView(headView,0)
-//    .topSpaceToView(headView,0)
-//    .heightIs(200);
-//    
-//    //轮播图
-//    NSArray * arr =_lunbiArr;//@[@"banner"];
-//    SDCycleScrollView*  cycleScrollView2 = [SDCycleScrollView cycleScrollViewWithFrame:CGRectMake(0, 0, ScreenWidth, 540*ScreenWidth/1080) delegate:self placeholderImage:[UIImage imageNamed:@"banner"]];
-//    cycleScrollView2.pageControlAliment = SDCycleScrollViewPageContolAlimentCenter;
-//    cycleScrollView2.currentPageDotColor = [UIColor whiteColor];
-//    [_view1 addSubview:cycleScrollView2];
-//    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-//        cycleScrollView2.imageURLStringsGroup = arr;
-//    });
-//    cycleScrollView2.clickItemOperationBlock = ^(NSInteger index) {
-//        // NSLog(@">>>>>  %ld", (long)index);
-//        
-//    };
-//    
-//    
-//    //等待开始拍卖
-//    UIView * bgView =[UIView new];
-//    bgView.backgroundColor=[UIColor redColor];
-//    [_view1  sd_addSubviews:@[bgView]];
-//    bgView.sd_layout
-//    .rightSpaceToView(_view1,15)
-//    .topSpaceToView(_view1,10)
-//    .widthIs(100)
-//    .heightIs(112/2);
-//    //等带开始
-//    UILabel * starLabel=[UILabel new];
-//    starLabel.text=@"等待开始";
-//    starLabel.textAlignment=1;
-//    starLabel.textColor=[UIColor whiteColor];
-//    starLabel.font=[UIFont systemFontOfSize:17 weight:18];
-//    [bgView sd_addSubviews:@[starLabel]];
-//    starLabel.sd_layout
-//    .leftSpaceToView(bgView,0)
-//    .rightSpaceToView(bgView,0)
-//    .topSpaceToView(bgView,2)
-//    .heightIs(20);
-//    //倒计时时间
-//    //(天数)
-//    self.dayLabel=[UILabel new];
-//    self.dayLabel.textColor=[UIColor blackColor];
-//    self.dayLabel.font=[UIFont systemFontOfSize:14];
-//    self.dayLabel.backgroundColor=[UIColor whiteColor];
-//    [bgView sd_addSubviews:@[self.dayLabel]];
-//    self.dayLabel.sd_layout
-//    .leftSpaceToView(bgView,3)
-//    .topSpaceToView(starLabel,3)
-//    .bottomSpaceToView(bgView,3);
-//    [self.dayLabel setSingleLineAutoResizeWithMaxWidth:80];
-//    //(时)
-//    self.hourLabel=[UILabel new];
-//    self.hourLabel.textColor=[UIColor blackColor];
-//    self.hourLabel.font=[UIFont systemFontOfSize:14];
-//    self.hourLabel.backgroundColor=[UIColor whiteColor];
-//    [bgView sd_addSubviews:@[self.hourLabel]];
-//    self.hourLabel.sd_layout
-//    .leftSpaceToView(_dayLabel,-1)
-//    .topSpaceToView(starLabel,3)
-//    .bottomSpaceToView(bgView,3);
-//    [self.hourLabel setSingleLineAutoResizeWithMaxWidth:80];
-//    //分
-//    self.minuteLabel=[UILabel new];
-//    self.minuteLabel.textColor=[UIColor blackColor];
-//    self.minuteLabel.font=[UIFont systemFontOfSize:14];
-//    self.minuteLabel.backgroundColor=[UIColor whiteColor];
-//    [bgView sd_addSubviews:@[self.minuteLabel]];
-//    self.minuteLabel.sd_layout
-//    .leftSpaceToView(self.hourLabel,-1)
-//    .topSpaceToView(starLabel,3)
-//    .bottomSpaceToView(bgView,3);
-//    [self.minuteLabel setSingleLineAutoResizeWithMaxWidth:80];
-//    [bgView setupAutoWidthWithRightView:self.minuteLabel rightMargin:3];
-//    [self dataRiqiData:@"2017-03-27 22:40:27"];
-//    
-//    
-//    
-//    //下一件btn
-//    UIButton * nenxtbtn =[UIButton buttonWithType:UIButtonTypeCustom];
-//    [nenxtbtn setBackgroundImage:[UIImage imageNamed:@"zaixian_bt2"] forState:0];
-//    [_view1 sd_addSubviews:@[nenxtbtn]];
-//    nenxtbtn.sd_layout//
-//    .rightSpaceToView(_view1,15)
-//    .topSpaceToView(cycleScrollView2,15)
-//    .widthIs(137/2)
-//    .heightIs(50/2);
-//    //上一件btn
-//    UIButton * upbtn =[UIButton buttonWithType:UIButtonTypeCustom];
-//    [upbtn setBackgroundImage:[UIImage imageNamed:@"zaixian_bt1"] forState:0];
-//    [_view1 sd_addSubviews:@[upbtn]];
-//    upbtn.sd_layout//
-//    .rightSpaceToView(nenxtbtn,10)
-//    .centerYEqualToView(nenxtbtn)
-//    .widthIs(137/2)
-//    .heightIs(50/2);
-//    
-//    //标题
-//    UILabel * titleLabel =[UILabel new];
-//    titleLabel.text=_titlename;//@"日产50顿烘干设备专线王璇大山炮王璇大山";
-//    titleLabel.font=[UIFont systemFontOfSize:16];
-//    titleLabel.alpha=.8;
-//    titleLabel.numberOfLines=0;
-//    [_view1 sd_addSubviews:@[titleLabel]];
-//    titleLabel.sd_layout
-//    .leftSpaceToView(_view1,15)
-//    .topSpaceToView(cycleScrollView2,15)
-//    .rightSpaceToView(upbtn,10)
-//    .autoHeightRatio(0);
-//    //当前出价
-//    UILabel * dangQianLab =[UILabel new];
-//    dangQianLab.text=@"当前出价：14万";
-//    dangQianLab.font=[UIFont systemFontOfSize:17];
-//    dangQianLab.textColor=[UIColor redColor];
-//    dangQianLab.attributedText= [ToolClass attrStrFrom:dangQianLab.text intFond:14 Color:[UIColor blackColor] numberStr:@"当前出价："];
-//    dangQianLab.alpha=.6;
-//    [_view1 sd_addSubviews:@[dangQianLab]];
-//    dangQianLab.sd_layout
-//    .leftEqualToView(titleLabel)
-//    .topSpaceToView(titleLabel,20)
-//    .widthIs(150)
-//    .heightIs(20);
-//    
-//    //出价人
-//    UILabel * peopleLab =[UILabel new];
-//    peopleLab.text=@"出价人：033";
-//    peopleLab.font=[UIFont systemFontOfSize:14];
-//    peopleLab.alpha=.6;
-//    peopleLab.numberOfLines=0;
-//    [_view1 sd_addSubviews:@[peopleLab]];
-//    peopleLab.sd_layout
-//    .rightSpaceToView(_view1,15)
-//    .centerYEqualToView(dangQianLab)
-//    .heightIs(20);
-//    [peopleLab setSingleLineAutoResizeWithMaxWidth:200];
-//    
-//    [_view1 setupAutoHeightWithBottomView:peopleLab bottomMargin:10];
-//    
-//    
-//
-//    
-//    
-//    
-//    //_paiMaiID _biaoDiID
-//    
-//    NSDictionary  * param =@{@"auction_id":@"12",@"target_id":@"10"};
-//    
-//    NSDictionary * dicc =@{@"action":@"app_qryTargetCompeteStatus",@"param":param};
+#pragma mark --发送按钮点击事件
+-(void)sendContent{
+    
+    NSDictionary  * param1 =@{@"auction_id":@"12",@"target_id":@"10"};
+    NSDictionary * dicc1 =@{@"action":@"app_qryTargetCompeteSpeakRecord",@"param":param1};
+    NSString * jsonStr1 =[ToolClass getJsonStringFromObject:dicc1];
+    [Engine socketLianJieJsonStr:jsonStr1 success:^(NSDictionary *dic) {
+        NSLog(@"输出发言记录%@",dic);
+    }];
+    
+//    NSDictionary  * param =@{@"auction_id":@"12",@"target_id":@"10",@"user_id":@"22",@"speak_content":_liuYanTextfield.text};
+//    NSDictionary * dicc =@{@"action":@"app_speakInCompetePage",@"param":param};
 //    NSString * jsonStr =[ToolClass getJsonStringFromObject:dicc];
-//    
-//    NSString * sss =[NSString stringWithFormat:@"%@#####",jsonStr];
-//   
-//    [[Singleton sharedInstance] sendMessage:sss];
-//    [Singleton sharedInstance].cityNameBlock=^(NSDictionary*dic){
-//        NSLog(@"数%@",dic);
-//    };
-//    
-//    [Singleton sharedInstance].cityNameBlock=^(NSDictionary*dic){
-//       NSLog(@"在线竞价%@",dic);
-//                NSString * msg_type =[NSString stringWithFormat:@"%@",[dic objectForKey:@"msg_type"]];
-//                    //对应请求返回的信息
-//                if ([msg_type isEqualToString:@"response"]) {
-//                    NSDictionary * responseInfo =[dic objectForKey:@"responseInfo"];
-//                    NSString * code =[NSString stringWithFormat:@"%@",[NSString stringWithFormat:@"%@",[responseInfo objectForKey:@"code"]]];
-//                    NSString * action =[responseInfo objectForKey:@"action"];
-//                    /*
-//                     1.如果action=app_qryTargetCompeteStatus 倒计时接口
-//                     2.如果action=app_qryUserCompeteRecord   出价记录接口
-//                     */
-//                    //倒计时
-//                    if ([code isEqualToString:@"1"] && [action isEqualToString:@"app_qryTargetCompeteStatus"] ) {
-//                        NSDictionary * contentDic =[responseInfo objectForKey:@"content"];
-//                        [self timeDaoJiShi:contentDic Label:starLabel uiview:bgView];
-//                        
-//                    }
-//                    //查询出价记录ZaiXianModel
-//                    if ([code isEqualToString:@"1"] && [action isEqualToString:@"app_qryUserCompeteRecord"] ){
-//                        NSArray *contentArr =[responseInfo objectForKey:@"content"];
-//                        for (NSDictionary * dicc in contentArr) {
-//                            ZaiXianModel * model =[[ZaiXianModel alloc]initWithChuJiaJiluDic:dicc];
-//                            [_dataArray0 addObject:model];
-//                            [_dataArray1 addObject:model];
-//                        }
-//                        //当前出价
-//                        if (_dataArray0.count!=0) {
-//                            ZaiXianModel * model=_dataArray0[0];
-//                            dangQianLab.text=[NSString stringWithFormat:@"当前出价：%@",model.moneyName];
-//                            peopleLab.text=[NSString stringWithFormat:@"出价人：%@",model.jingPaiNum];
-//                        }else{
-//                            dangQianLab.text=[NSString stringWithFormat:@"当前出价：%@",@"暂无"];
-//                            peopleLab.text=[NSString stringWithFormat:@"出价人：%@",@"暂无"];
-//                        }
-//                        dangQianLab.attributedText= [ToolClass attrStrFrom:dangQianLab.text intFond:14 Color:[UIColor blackColor] numberStr:@"当前出价："];
-//                        
-//                        [_tableView reloadData];
-//                    
-//                    
-//                    }
-//                    
-//                    
-//                    
-//                    
-//                    
-//                //response那个括号
-//                }else if (([msg_type isEqualToString:@"push"])){
-//                    NSDictionary * pushInfoDic =[dic objectForKey:@"pushInfo"];
-//                    NSString * push_scene =[NSString stringWithFormat:@"%@",[pushInfoDic objectForKey:@"push_scene"]];
-//                    //推送的倒计时
-//                    if ([push_scene isEqualToString:@"resetCountDown"]) {
-//                        NSDictionary * push_content =[pushInfoDic objectForKey:@"push_content"];
-//                         [self timeDaoJiShi:push_content Label:starLabel uiview:bgView];
-//                    }
-//                    
+//    [Engine socketLianJieJsonStr:jsonStr success:^(NSDictionary *dic) {
+//        NSLog(@"发言的内容%@",dic);
+//        NSString * msg_type=[NSString stringWithFormat:@"%@",[dic objectForKey:@"msg_type"]];
+//       //请求对应的部分
+//        if ([msg_type isEqualToString:@"response"]) {
+//            NSDictionary * responseInfoDic =[dic objectForKey:@"responseInfo"];
+//            NSString * action =[NSString stringWithFormat:@"%@",[responseInfoDic objectForKey:@"action"]];
+//            NSString * code =[NSString stringWithFormat:@"%@",[responseInfoDic objectForKey:@"code"]];
+//            [LCProgressHUD showMessage:[responseInfoDic objectForKey:@"msg"]];
+//            if ([action isEqualToString:@"app_speakInCompetePage"] && [code isEqualToString:@"1"]) {
+//                _liuYanTextfield.text=@"";
+//            }
+//            
 //
-//                    
-//                    
-//                    
-//                    
-//                    
-//                    
-//                    //竞价记录增加数据
-//                    if ([push_scene isEqualToString:@"newCompeteRecord"]) {
-//                        NSDictionary * push_content =[pushInfoDic objectForKey:@"push_content"];
-//                        ZaiXianModel * mode =[[ZaiXianModel alloc]initWithChuJiaJiluDic:push_content];
-//                        [_dataArray0 insertObject:mode atIndex:0];
-//                        dangQianLab.text=[NSString stringWithFormat:@"当前出价：%@",mode.moneyName];
-//                        peopleLab.text=[NSString stringWithFormat:@"出价人：%@",mode.jingPaiNum];
-//                    }
-//                     dangQianLab.attributedText= [ToolClass attrStrFrom:dangQianLab.text intFond:14 Color:[UIColor blackColor] numberStr:@"当前出价："];
-//                    [_tableView reloadData];
-//                }
+//        }//推送部分
+//        else if ([msg_type isEqualToString:@"push"]){
+//            
+//        }
 //        
-//        
-//        
-//    };
-//
-//    
-//    
-//    return _view1;
-//}
+//    }];
+}
 
 
+
+#pragma mark --倒计时暂停区域(无倒计时)
 -(void)timeDaoJiShi:(NSDictionary*)contentDic  Label:(UILabel*)starLabel uiview:(UIView*)bgView{
     
     //标题
@@ -456,7 +265,7 @@
     if ([colorStr isEqualToString:@"1"]) {
         bgView.backgroundColor=[UIColor redColor];
     }else if ([colorStr isEqualToString:@"2"]){
-        bgView.backgroundColor=[UIColor yellowColor];
+        bgView.backgroundColor=JXColor(53, 152, 255, 1);
     }else if ([colorStr isEqualToString:@"3"]){
         bgView.backgroundColor=[UIColor grayColor];
     }
@@ -464,25 +273,43 @@
     //  countdown_remain_millisecond
     NSString * sj = [NSString stringWithFormat:@"%@",[contentDic objectForKey:@"countdown_remain_millisecond"]];
     long long timeSr =[sj longLongValue];
-    NSLog(@"sj>>>%@",sj);
+    
     //判断一下状态1.content 2.stop 3.finish 4.none
     NSString * statusStr =[NSString stringWithFormat:@"%@",[contentDic objectForKey:@"countdown_status"]];
-    long long  strTime;
+    
     if ([statusStr isEqualToString:@"finish"]) {
+        NSLog(@"finish输出是%lld",timeSr);
+       // [self dataRiqiData:[NSString stringWithFormat:@"%lld",timeSr]];
+        _timer = nil;
+        [self timeJiShi:(int)timeSr/1000];
         
     }else if ([statusStr isEqualToString:@"stop"]){
-        
+          NSLog(@"stop输出是%lld",timeSr);
+        [self dataRiqiData:[NSString stringWithFormat:@"%lld",timeSr]];
+        dispatch_source_set_event_handler(_timer, ^{
+            dispatch_source_cancel(_timer);
+            _timer = nil;
+            [self timeJiShi:(int)timeSr/1000];
+        });
+
     }else if ([statusStr isEqualToString:@"none"]){
-        
+        // [self dataRiqiData:[NSString stringWithFormat:@"%lld",timeSr]];
+        _timer = nil;
+         [self timeJiShi:(int)timeSr/1000];
     }else if ([statusStr isEqualToString:@"continue"]){
+        long long  strTime;
         if (timeSr<0) {
             strTime=-timeSr;
         }else{
-            strTime=timeSr+1000000;
+            strTime=timeSr;
         }
-        NSString * str= [ToolClass ConvertStrToTime:strTime];
-        NSLog(@"输出是%@",str);
-        [self dataRiqiData:str];
+        NSLog(@"continue输出是%lld",strTime);
+        _timer = nil;
+        [self dataRiqiData:[NSString stringWithFormat:@"%lld",strTime]];
+    }else if ([statusStr isEqualToString:@"error"]){
+        NSLog(@"error输出是%lld",timeSr);
+        _timer = nil;
+         [self timeJiShi:(int)timeSr/1000];
     }
     
 
@@ -494,19 +321,21 @@
     _dataArray0=[[NSMutableArray alloc]init];
     _dataArray1=[[NSMutableArray alloc]init];
     
-    
+    //1.请求出价记录的
     NSDictionary  * param =@{@"auction_id":@"12",@"target_id":@"10"};
-    
     NSDictionary * dicc =@{@"action":@"app_qryUserCompeteRecord",@"param":param};
     NSString * jsonStr =[ToolClass getJsonStringFromObject:dicc];
-    NSString * sss =[NSString stringWithFormat:@"%@#####",jsonStr];
-    [[Singleton sharedInstance] sendMessage:sss];
-    [Singleton sharedInstance].cityNameBlock=^(NSDictionary*dic){
-        NSLog(@"竞价记录%@",dic);
-    };
-//
-    
-    
+    [Engine socketLianJieJsonStr:jsonStr success:^(NSDictionary *dic) {
+        
+    }];
+    //4.请求留言专区的
+    NSDictionary  * param1 =@{@"auction_id":@"12",@"target_id":@"10"};
+    NSDictionary * dicc1 =@{@"action":@"app_qryTargetCompeteSpeakRecord",@"param":param1};
+    NSString * jsonStr1 =[ToolClass getJsonStringFromObject:dicc1];
+    [Engine socketLianJieJsonStr:jsonStr1 success:^(NSDictionary *dic) {
+        NSLog(@"输出发言记录%@",dic);
+    }];
+
     
 
 }
@@ -586,25 +415,39 @@
 
         //等待开始拍卖
         UIView * bgView =[UIView new];
+        _bgView=bgView;
         bgView.backgroundColor=[UIColor redColor];
         [view1  sd_addSubviews:@[bgView]];
         bgView.sd_layout
         .rightSpaceToView(view1,15)
         .topSpaceToView(view1,10)
-        .widthIs(100)
-        .heightIs(112/2);
+        .heightIs(120/2);
         //等带开始
         UILabel * starLabel=[UILabel new];
+        _starLabel=starLabel;
         starLabel.text=@"等待开始";
         starLabel.textAlignment=1;
         starLabel.textColor=[UIColor whiteColor];
-        starLabel.font=[UIFont systemFontOfSize:17 weight:18];
+        starLabel.font=[UIFont systemFontOfSize:15 weight:18];
         [bgView sd_addSubviews:@[starLabel]];
         starLabel.sd_layout
         .leftSpaceToView(bgView,0)
         .rightSpaceToView(bgView,0)
-        .topSpaceToView(bgView,2)
+        .topSpaceToView(bgView,3)
         .heightIs(20);
+        
+        
+        
+        UIView * timeView =[UIView new];
+        timeView.backgroundColor=[UIColor whiteColor];
+        [bgView sd_addSubviews:@[timeView]];
+        timeView.sd_layout
+        .topSpaceToView(starLabel,3)
+        .leftSpaceToView(bgView,3)
+        .rightSpaceToView(bgView,3)
+        .bottomSpaceToView(bgView,3);
+        
+        
         //倒计时时间
         //(天数)
         self.dayLabel=[UILabel new];
@@ -613,10 +456,10 @@
         self.dayLabel.backgroundColor=[UIColor whiteColor];
         [bgView sd_addSubviews:@[self.dayLabel]];
         self.dayLabel.sd_layout
-        .leftSpaceToView(bgView,3)
+        .leftSpaceToView(bgView,10)
         .topSpaceToView(starLabel,3)
         .bottomSpaceToView(bgView,3);
-        [self.dayLabel setSingleLineAutoResizeWithMaxWidth:80];
+         [self.dayLabel setSingleLineAutoResizeWithMaxWidth:80];
         //(时)
         self.hourLabel=[UILabel new];
         self.hourLabel.textColor=[UIColor blackColor];
@@ -639,8 +482,30 @@
         .topSpaceToView(starLabel,3)
         .bottomSpaceToView(bgView,3);
         [self.minuteLabel setSingleLineAutoResizeWithMaxWidth:80];
-        [bgView setupAutoWidthWithRightView:self.minuteLabel rightMargin:3];
-        [self dataRiqiData:@"2017-03-27 22:40:27"];
+        
+        self.secondLabel=[UILabel new];
+        self.secondLabel.textColor=[UIColor blackColor];
+        self.secondLabel.font=[UIFont systemFontOfSize:14];
+        self.secondLabel.backgroundColor=[UIColor whiteColor];
+        [bgView sd_addSubviews:@[self.secondLabel]];
+        self.secondLabel.sd_layout
+        .leftSpaceToView(self.minuteLabel,-1)
+        .topSpaceToView(starLabel,3)
+        .bottomSpaceToView(bgView,3);
+        [self.secondLabel setSingleLineAutoResizeWithMaxWidth:80];
+        
+        [bgView setupAutoWidthWithRightView:self.secondLabel rightMargin:10];
+
+        self.dayLabel.textAlignment=1;
+        self.hourLabel.textAlignment=1;
+        self.minuteLabel.textAlignment=1;
+        self.secondLabel.textAlignment=1;
+        
+//        self.dayLabel.backgroundColor=[UIColor redColor];
+//        self.hourLabel.backgroundColor=[UIColor blueColor];
+//        self.minuteLabel.backgroundColor=[UIColor magentaColor];
+//        self.secondLabel.backgroundColor=[UIColor yellowColor];
+        [self dataRiqiData:@"0"];
         
         
         
@@ -722,7 +587,7 @@
         
 //        //创建_view2
        UIView* view2=[UIView new];
-        view2.backgroundColor=[UIColor greenColor];
+        view2.backgroundColor=[UIColor whiteColor];
         [_headImageView sd_addSubviews:@[view2]];
         view2.sd_layout
         .leftSpaceToView(_headImageView,0)
@@ -828,94 +693,95 @@
         
         
         //_paiMaiID _biaoDiID
-        
+        //2.倒计时时间(返回的结果中还包含了)
         NSDictionary  * param =@{@"auction_id":@"12",@"target_id":@"10"};
-        
         NSDictionary * dicc =@{@"action":@"app_qryTargetCompeteStatus",@"param":param};
         NSString * jsonStr =[ToolClass getJsonStringFromObject:dicc];
-        
-        NSString * sss =[NSString stringWithFormat:@"%@#####",jsonStr];
-        
-        [[Singleton sharedInstance] sendMessage:sss];
-        [Singleton sharedInstance].cityNameBlock=^(NSDictionary*dic){
-            NSLog(@"数%@",dic);
-        };
-        
-        [Singleton sharedInstance].cityNameBlock=^(NSDictionary*dic){
-            NSLog(@"在线竞价%@",dic);
-            NSString * msg_type =[NSString stringWithFormat:@"%@",[dic objectForKey:@"msg_type"]];
-            //对应请求返回的信息
-            if ([msg_type isEqualToString:@"response"]) {
-                NSDictionary * responseInfo =[dic objectForKey:@"responseInfo"];
-                NSString * code =[NSString stringWithFormat:@"%@",[NSString stringWithFormat:@"%@",[responseInfo objectForKey:@"code"]]];
-                NSString * action =[responseInfo objectForKey:@"action"];
-                /*
-                 1.如果action=app_qryTargetCompeteStatus 倒计时接口
-                 2.如果action=app_qryUserCompeteRecord   出价记录接口
-                 */
-                //倒计时
-                if ([code isEqualToString:@"1"] && [action isEqualToString:@"app_qryTargetCompeteStatus"] ) {
-                    NSDictionary * contentDic =[responseInfo objectForKey:@"content"];
-                    [self timeDaoJiShi:contentDic Label:starLabel uiview:bgView];
-                    
-                }
-                //查询出价记录ZaiXianModel
-                if ([code isEqualToString:@"1"] && [action isEqualToString:@"app_qryUserCompeteRecord"] ){
-                    NSArray *contentArr =[responseInfo objectForKey:@"content"];
-                    for (NSDictionary * dicc in contentArr) {
-                        ZaiXianModel * model =[[ZaiXianModel alloc]initWithChuJiaJiluDic:dicc];
-                        [_dataArray0 addObject:model];
-                        [_dataArray1 addObject:model];
+       
+        [Engine socketLianJieJsonStr:jsonStr success:^(NSDictionary *dic) {
+                //NSLog(@"2.在线竞价%@",dic);
+                NSString * msg_type =[NSString stringWithFormat:@"%@",[dic objectForKey:@"msg_type"]];
+                [LCProgressHUD hide];
+                //对应请求返回的信息
+                if ([msg_type isEqualToString:@"response"]) {
+                    NSDictionary * responseInfo =[dic objectForKey:@"responseInfo"];
+                    NSString * code =[NSString stringWithFormat:@"%@",[NSString stringWithFormat:@"%@",[responseInfo objectForKey:@"code"]]];
+                    NSString * action =[responseInfo objectForKey:@"action"];
+                    /*
+                     1.如果action=app_qryTargetCompeteStatus 倒计时接口
+                     2.如果action=app_qryUserCompeteRecord   出价记录接口
+                     */
+                    //倒计时
+                    if ([code isEqualToString:@"1"] && [action isEqualToString:@"app_qryTargetCompeteStatus"] ) {
+                        NSDictionary * contentDic =[responseInfo objectForKey:@"content"];
+                        [self timeDaoJiShi:contentDic Label:starLabel uiview:bgView];
+                        
                     }
-                    //当前出价
-                    if (_dataArray0.count!=0) {
-                        ZaiXianModel * model=_dataArray0[0];
-                          priceLabel.text=model.moneyName;
-                        dangQianLab.text=[NSString stringWithFormat:@"当前出价：%@",model.moneyName];
-                        peopleLab.text=[NSString stringWithFormat:@"出价人：%@",model.jingPaiNum];
-                    }else{
-                        dangQianLab.text=[NSString stringWithFormat:@"当前出价：%@",@"暂无"];
-                        peopleLab.text=[NSString stringWithFormat:@"出价人：%@",@"暂无"];
+                    //查询出价记录ZaiXianModel
+                    if ([code isEqualToString:@"1"] && [action isEqualToString:@"app_qryUserCompeteRecord"] ){
+                        NSArray *contentArr =[responseInfo objectForKey:@"content"];
+                        for (NSDictionary * dicc in contentArr) {
+                            ZaiXianModel * model =[[ZaiXianModel alloc]initWithChuJiaJiluDic:dicc];
+                            [_dataArray0 addObject:model];
+                            [_dataArray1 addObject:model];
+                        }
+                        //当前出价
+                        if (_dataArray0.count!=0) {
+                            ZaiXianModel * model=_dataArray0[0];
+                            priceLabel.text=model.moneyName;
+                            dangQianLab.text=[NSString stringWithFormat:@"当前出价：%@",model.moneyName];
+                            peopleLab.text=[NSString stringWithFormat:@"出价人：%@",model.jingPaiNum];
+                        }else{
+                            dangQianLab.text=[NSString stringWithFormat:@"当前出价：%@",@"暂无"];
+                            peopleLab.text=[NSString stringWithFormat:@"出价人：%@",@"暂无"];
+                        }
+                        dangQianLab.attributedText= [ToolClass attrStrFrom:dangQianLab.text intFond:14 Color:[UIColor blackColor] numberStr:@"当前出价："];
+                        
+                        [_tableView reloadData];
+                        
+                        
+                    }
+                    
+                    
+                    //response那个括号
+                }else if (([msg_type isEqualToString:@"push"])){
+                    NSDictionary * pushInfoDic =[dic objectForKey:@"pushInfo"];
+                    NSString * push_scene =[NSString stringWithFormat:@"%@",[pushInfoDic objectForKey:@"push_scene"]];
+                    //推送的倒计时
+                    if ([push_scene isEqualToString:@"resetCountDown"]) {
+                        NSDictionary * push_content =[pushInfoDic objectForKey:@"push_content"];
+                        [self timeDaoJiShi:push_content Label:starLabel uiview:bgView];
+                    }
+                    
+                    //竞价记录增加数据
+                    if ([push_scene isEqualToString:@"newCompeteRecord"]) {
+                        NSDictionary * push_content =[pushInfoDic objectForKey:@"push_content"];
+                        ZaiXianModel * mode =[[ZaiXianModel alloc]initWithChuJiaJiluDic:push_content];
+                        
+                        if (_currentIndex==0) {
+                            NSMutableArray *indexPaths = [[NSMutableArray alloc] init];
+                            [_dataArray0 insertObject:mode atIndex:0];
+                            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:1 inSection:0];
+                            [indexPaths addObject: indexPath];
+                            [self.tableView beginUpdates];
+                            [self.tableView insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationTop];
+                            [self.tableView endUpdates];
+                        }
+                        
+                        
+                        
+                        priceLabel.text=mode.moneyName;
+                        dangQianLab.text=[NSString stringWithFormat:@"当前出价：%@",mode.moneyName];
+                        peopleLab.text=[NSString stringWithFormat:@"出价人：%@",mode.jingPaiNum];
                     }
                     dangQianLab.attributedText= [ToolClass attrStrFrom:dangQianLab.text intFond:14 Color:[UIColor blackColor] numberStr:@"当前出价："];
-                    
                     [_tableView reloadData];
-                    
-                    
                 }
                 
                 
                 
-                
-                
-                //response那个括号
-            }else if (([msg_type isEqualToString:@"push"])){
-                NSDictionary * pushInfoDic =[dic objectForKey:@"pushInfo"];
-                NSString * push_scene =[NSString stringWithFormat:@"%@",[pushInfoDic objectForKey:@"push_scene"]];
-                //推送的倒计时
-                if ([push_scene isEqualToString:@"resetCountDown"]) {
-                    NSDictionary * push_content =[pushInfoDic objectForKey:@"push_content"];
-                    [self timeDaoJiShi:push_content Label:starLabel uiview:bgView];
-                }
-                
-                //竞价记录增加数据
-                if ([push_scene isEqualToString:@"newCompeteRecord"]) {
-                    NSDictionary * push_content =[pushInfoDic objectForKey:@"push_content"];
-                    ZaiXianModel * mode =[[ZaiXianModel alloc]initWithChuJiaJiluDic:push_content];
-                    [_dataArray0 insertObject:mode atIndex:0];
-                    priceLabel.text=mode.moneyName;
-                    dangQianLab.text=[NSString stringWithFormat:@"当前出价：%@",mode.moneyName];
-                    peopleLab.text=[NSString stringWithFormat:@"出价人：%@",mode.jingPaiNum];
-                }
-                dangQianLab.attributedText= [ToolClass attrStrFrom:dangQianLab.text intFond:14 Color:[UIColor blackColor] numberStr:@"当前出价："];
-                [_tableView reloadData];
-            }
             
-            
-            
-        };
-        
-        
+        }];
         
         
 
@@ -923,12 +789,17 @@
         
         
         
+       
+        
+        
+        
+        
         [_headImageView setupAutoHeightWithBottomView:view2 bottomMargin:10];
         
-        
+        __weak __typeof(_headImageView)weakSelf = _headImageView;
         _headImageView.didFinishAutoLayoutBlock=^(CGRect rect){
-            NSLog(@">>>>%f",rect.size.height+rect.origin.y);
-            _headImageView.sd_layout
+            //NSLog(@">>>>%f",rect.size.height+rect.origin.y);
+            weakSelf.sd_layout
             .heightIs( rect.size.height+rect.origin.y);
         };
     }
@@ -989,17 +860,20 @@
 -(void)chuJiaPrice{
     NSString * token =[NSUSE_DEFO objectForKey:@"token"];
     if (token==nil) {
-        [LCProgressHUD showMessage:@"出价token空"];
+        [LCProgressHUD showMessage:@"请您先登录在拍卖"];
         return;
     }
-   
+    
+  
+    
+   //3.出价记录
     NSDictionary  * param =@{@"auction_id":@"12",@"target_id":@"10",@"user_id":token,@"bid_money":[NSString stringWithFormat:@"%d",_daoQianTag]};
     NSDictionary * dicc =@{@"action":@"app_bidToTargetCompete",@"param":param};
     NSString * jsonStr =[ToolClass getJsonStringFromObject:dicc];
-    NSString * sss =[NSString stringWithFormat:@"%@#####",jsonStr];
-    [[Singleton sharedInstance] sendMessage:sss];
-        [Singleton sharedInstance].cityNameBlock=^(NSDictionary*dic){
-            NSLog(@"出价记录%@",dic);
+    
+    [Engine socketLianJieJsonStr:jsonStr success:^(NSDictionary *dic) {
+        
+            NSLog(@"3出价记录%@",dic);
             NSString * msg_type =[NSString stringWithFormat:@"%@",[dic objectForKey:@"msg_type"]];
             //请求接口相应状态
             if ([msg_type isEqualToString:@"response"]) {
@@ -1019,17 +893,93 @@
                 if ([push_scene isEqualToString:@"newCompeteRecord"]) {
                     NSDictionary * push_content =[pushInfoDic objectForKey:@"push_content"];
                     ZaiXianModel * mode =[[ZaiXianModel alloc]initWithChuJiaJiluDic:push_content];
-                    [_dataArray0 insertObject:mode atIndex:0];
+                    
+                    if (_currentIndex==0) {
+                        NSMutableArray *indexPaths = [[NSMutableArray alloc] init];
+                        [_dataArray0 insertObject:mode atIndex:0];
+                        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:1 inSection:0];
+                        [indexPaths addObject: indexPath];
+                        [self.tableView beginUpdates];
+                        [self.tableView insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationTop];
+                        [self.tableView endUpdates];
+                    }
+                   
+                    
+                    
+                    
                     _priceLabel.text=mode.moneyName;
                     _dangQianLab.text=[NSString stringWithFormat:@"当前出价：%@",mode.moneyName];
                     _peopleLab.text=[NSString stringWithFormat:@"出价人：%@",mode.jingPaiNum];
                 }
+                //更新推送时间
+                else if ([push_scene isEqualToString:@"resetCountDown"]){
+                    NSDictionary * push_content =[pushInfoDic objectForKey:@"push_content"];
+                    [self timeDaoJiShi:push_content Label:_starLabel uiview:_bgView];
+                }
                 _dangQianLab.attributedText= [ToolClass attrStrFrom:_dangQianLab.text intFond:14 Color:[UIColor blackColor] numberStr:@"当前出价："];
-                [_tableView reloadData];
+                
+                
+                // [_tableView reloadData];
             }
             
-        };
+        
+    }];
     
+    
+    
+    
+    
+//    NSString * sss =[NSString stringWithFormat:@"%@#####",jsonStr];
+//    [[Singleton sharedInstance] sendMessage:sss];
+//        [Singleton sharedInstance].cityNameBlock=^(NSDictionary*dic){
+//            NSLog(@"3出价记录%@",dic);
+//            NSString * msg_type =[NSString stringWithFormat:@"%@",[dic objectForKey:@"msg_type"]];
+//            //请求接口相应状态
+//            if ([msg_type isEqualToString:@"response"]) {
+//                NSDictionary * responseInfoDic=[dic objectForKey:@"responseInfo"];
+//                NSString * action =[responseInfoDic objectForKey:@"action"];
+//                //app_bidToTargetCompete代表的是出价状态
+//                if ([action isEqualToString:@"app_bidToTargetCompete"]) {
+//                    [LCProgressHUD showMessage:[responseInfoDic objectForKey:@"msg"]];
+//                }
+//                
+//                
+//            }//推送状态
+//            else if ([msg_type isEqualToString:@"push"]){
+//                NSDictionary * pushInfoDic =[dic objectForKey:@"pushInfo"];
+//                NSString * push_scene =[NSString stringWithFormat:@"%@",[pushInfoDic objectForKey:@"push_scene"]];
+//                //竞价记录增加数据
+//                if ([push_scene isEqualToString:@"newCompeteRecord"]) {
+//                    NSDictionary * push_content =[pushInfoDic objectForKey:@"push_content"];
+//                    ZaiXianModel * mode =[[ZaiXianModel alloc]initWithChuJiaJiluDic:push_content];
+//                    
+//                    NSMutableArray *indexPaths = [[NSMutableArray alloc] init];
+//                    [_dataArray0 insertObject:mode atIndex:0];
+//                    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:1 inSection:0];
+//                    [indexPaths addObject: indexPath];
+//                    [self.tableView beginUpdates];
+//                    [self.tableView insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationTop];
+//                    [self.tableView endUpdates];
+//                    
+//                    
+//                    
+//                    _priceLabel.text=mode.moneyName;
+//                    _dangQianLab.text=[NSString stringWithFormat:@"当前出价：%@",mode.moneyName];
+//                    _peopleLab.text=[NSString stringWithFormat:@"出价人：%@",mode.jingPaiNum];
+//                }
+//                //更新推送时间
+//                else if ([push_scene isEqualToString:@"resetCountDown"]){
+//                    NSDictionary * push_content =[pushInfoDic objectForKey:@"push_content"];
+//                    [self timeDaoJiShi:push_content Label:_starLabel uiview:_bgView];
+//                }
+//                _dangQianLab.attributedText= [ToolClass attrStrFrom:_dangQianLab.text intFond:14 Color:[UIColor blackColor] numberStr:@"当前出价："];
+//                
+//                
+//               // [_tableView reloadData];
+//            }
+//            
+//        };
+//    
     
 }
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section

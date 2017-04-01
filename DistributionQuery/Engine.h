@@ -96,6 +96,6 @@ typedef void (^ErrorBlock)(NSError*error);
 +(void)paiMaiLieBiaoXiangQingPaiMaiID:(NSString*)paimaiID BiaoDiID:(NSString*)biaodiID success:(SuccessBlock)aSuccess error:(ErrorBlock)aError;
 
 #pragma  mark --34socket长连接
-+(void)socketLianJieJsonStr:(NSString*)str success:(SuccessBlock)aSuccess error:(ErrorBlock)aError;
++(void)socketLianJieJsonStr:(NSString*)str success:(SuccessBlock)aSuccess ;
 
 @end

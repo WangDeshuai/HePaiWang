@@ -204,13 +204,13 @@
     [UIView beginAnimations:nil context:nil];
     [UIView setAnimationDuration:0.25];
     //表的坐标
-    float f =(ScreenHeight-ScreenWidth-50)/2;
+   // float f =(ScreenHeight-ScreenWidth-50)/2;
 //    UIWindow *window = [UIApplication sharedApplication].delegate.window;
 //     self.center = window.center;
     if (rect.origin.y==ScreenHeight) {
         //键盘落下
         self.center = WINDOW.center;
-         self.bounds = CGRectMake(0,  0, _selfWith,_selfWith );
+        self.bounds = CGRectMake(0,  0, _selfWith,_selfWith );
     }else{
         //键盘升起
         if (ScreenWidth==320) {

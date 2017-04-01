@@ -8,7 +8,7 @@
 
 #import "AppDelegate.h"
 #import "ViewController.h"
-#import "BaseTableBarVC.h"
+
 #import "HomeVC.h"
 @interface AppDelegate ()
 
@@ -20,7 +20,8 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
      self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    self.window.rootViewController = [BaseTableBarVC new];
+    _vcc=[BaseTableBarVC new];
+    self.window.rootViewController =_vcc ;
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
    

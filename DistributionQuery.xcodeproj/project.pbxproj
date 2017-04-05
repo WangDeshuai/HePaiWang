@@ -189,6 +189,9 @@
 		8FEB113A1DEFD1F000F775E2 /* JiaoGeGuanLiVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 8FEB11391DEFD1F000F775E2 /* JiaoGeGuanLiVC.m */; };
 		8FEB113E1DF007F700F775E2 /* YuGaoXiangQingVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 8FEB113D1DF007F700F775E2 /* YuGaoXiangQingVC.m */; };
 		8FEB11411DF02E7F00F775E2 /* PaiMaiZiXunVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 8FEB11401DF02E7F00F775E2 /* PaiMaiZiXunVC.m */; };
+		8FFC52371E948DEB00AA8029 /* LiuYanZhuanQuCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8FFC52361E948DEB00AA8029 /* LiuYanZhuanQuCell.m */; };
+		8FFC523C1E94D9DF00AA8029 /* GCDAsyncSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 8FFC52391E94D9DF00AA8029 /* GCDAsyncSocket.m */; };
+		8FFC523D1E94D9DF00AA8029 /* GCDAsyncUdpSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 8FFC523B1E94D9DF00AA8029 /* GCDAsyncUdpSocket.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -562,6 +565,12 @@
 		8FEB113D1DF007F700F775E2 /* YuGaoXiangQingVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YuGaoXiangQingVC.m; sourceTree = "<group>"; };
 		8FEB113F1DF02E7F00F775E2 /* PaiMaiZiXunVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PaiMaiZiXunVC.h; sourceTree = "<group>"; };
 		8FEB11401DF02E7F00F775E2 /* PaiMaiZiXunVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PaiMaiZiXunVC.m; sourceTree = "<group>"; };
+		8FFC52351E948DEB00AA8029 /* LiuYanZhuanQuCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LiuYanZhuanQuCell.h; sourceTree = "<group>"; };
+		8FFC52361E948DEB00AA8029 /* LiuYanZhuanQuCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LiuYanZhuanQuCell.m; sourceTree = "<group>"; };
+		8FFC52381E94D9DF00AA8029 /* GCDAsyncSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCDAsyncSocket.h; sourceTree = "<group>"; };
+		8FFC52391E94D9DF00AA8029 /* GCDAsyncSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCDAsyncSocket.m; sourceTree = "<group>"; };
+		8FFC523A1E94D9DF00AA8029 /* GCDAsyncUdpSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCDAsyncUdpSocket.h; sourceTree = "<group>"; };
+		8FFC523B1E94D9DF00AA8029 /* GCDAsyncUdpSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCDAsyncUdpSocket.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -767,6 +776,10 @@
 				8F03AA3F1E8A10DE00E18B28 /* AsyncSocket.m */,
 				8F03AA401E8A10DE00E18B28 /* AsyncUdpSocket.h */,
 				8F03AA411E8A10DE00E18B28 /* AsyncUdpSocket.m */,
+				8FFC52381E94D9DF00AA8029 /* GCDAsyncSocket.h */,
+				8FFC52391E94D9DF00AA8029 /* GCDAsyncSocket.m */,
+				8FFC523A1E94D9DF00AA8029 /* GCDAsyncUdpSocket.h */,
+				8FFC523B1E94D9DF00AA8029 /* GCDAsyncUdpSocket.m */,
 			);
 			path = socket;
 			sourceTree = "<group>";
@@ -1350,6 +1363,8 @@
 				8FD36F281E8BB08000CF3D8D /* ZaiXianModel.m */,
 				8FE991651DE6C172008AB2EA /* ZaiXianJingJiaCell.h */,
 				8FE991661DE6C172008AB2EA /* ZaiXianJingJiaCell.m */,
+				8FFC52351E948DEB00AA8029 /* LiuYanZhuanQuCell.h */,
+				8FFC52361E948DEB00AA8029 /* LiuYanZhuanQuCell.m */,
 				8FE991571DE68028008AB2EA /* HeadImageView.h */,
 				8FE991581DE68028008AB2EA /* HeadImageView.m */,
 				8FE9915A1DE68039008AB2EA /* HeadLineView.h */,
@@ -1621,6 +1636,7 @@
 				8FEB113A1DEFD1F000F775E2 /* JiaoGeGuanLiVC.m in Sources */,
 				8FCD4F8C1DA8B4D300CB113C /* SDWebImageDecoder.m in Sources */,
 				8FCD4F801DA8B4D300CB113C /* AFHTTPRequestOperationManager.m in Sources */,
+				8FFC523D1E94D9DF00AA8029 /* GCDAsyncUdpSocket.m in Sources */,
 				8FCD4F961DA8B4D300CB113C /* UIImageView+WebCache.m in Sources */,
 				8F5EECDA1E77C25200FE571D /* TZPhotoPickerController.m in Sources */,
 				8FCD4F8F1DA8B4D300CB113C /* SDWebImageManager.m in Sources */,
@@ -1639,6 +1655,7 @@
 				8F308EA11DF1101000D57714 /* PaiMaiZiXunXiangQingVC.m in Sources */,
 				8FDB7A321E6557960014645C /* UIScrollView+MJRefresh.m in Sources */,
 				8FCD4F881DA8B4D300CB113C /* MKAnnotationView+WebCache.m in Sources */,
+				8FFC52371E948DEB00AA8029 /* LiuYanZhuanQuCell.m in Sources */,
 				8FDB7A211E6557960014645C /* MJRefreshAutoFooter.m in Sources */,
 				8FE69B551DED6EE7001814AD /* XiaoXiTableViewCell.m in Sources */,
 				8F03AA421E8A10DE00E18B28 /* AsyncSocket.m in Sources */,
@@ -1648,6 +1665,7 @@
 				8FCD4F861DA8B4D300CB113C /* AFURLResponseSerialization.m in Sources */,
 				8FDB7A2A1E6557960014645C /* MJRefreshBackNormalFooter.m in Sources */,
 				8FCD4F851DA8B4D300CB113C /* AFURLRequestSerialization.m in Sources */,
+				8FFC523C1E94D9DF00AA8029 /* GCDAsyncSocket.m in Sources */,
 				8F326B6B1E66D501000C0C58 /* ShengCityModel.m in Sources */,
 				8FCD4F931DA8B4D300CB113C /* UIImage+MultiFormat.m in Sources */,
 				8FDB7A391E656B4E0014645C /* XiaoXiModel.m in Sources */,

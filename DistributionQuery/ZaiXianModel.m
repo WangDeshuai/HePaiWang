@@ -27,4 +27,16 @@
     
     return self;
 }
+//竞买留言专区
+-(id)initWithLiuYanZhuanQu:(NSDictionary*)dic{
+    self=[super init];
+    if (self) {
+        _faYanPeopleID=[ToolClass isString:[NSString stringWithFormat:@"%@",[dic objectForKey:@"id"]]];
+        _faYanPeopleName=[ToolClass isString:[NSString stringWithFormat:@"%@",[dic objectForKey:@"speak_name"]]];
+        _faYanPeopleTime=[ToolClass isString:[NSString stringWithFormat:@"%@",[dic objectForKey:@"speak_time"]]];
+        _faYanPeopleContent=[ToolClass isString:[NSString stringWithFormat:@"%@",[dic objectForKey:@"speak_content"]]];
+    }
+    
+    return self;
+}
 @end

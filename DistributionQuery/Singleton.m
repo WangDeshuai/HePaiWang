@@ -25,7 +25,7 @@
 
 @implementation Singleton
 //每次最多读取多少
-#define MAX_BUFFER 1024
+#define MAX_BUFFER 3072
 //设置写入超时 -1 表示不会使用超时
 #define WRITE_TIME_OUT -1
 //设置读取超时 -1 表示不会使用超时
@@ -160,60 +160,91 @@
 //4.接受消息成功之后回调
 - (void)onSocket:(AsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag
 {
-    
+   NSString *aString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+     NSLog(@"源数据%@",aString);
+//
    
-    if (_mData == nil) {
-        _mData = [[NSMutableData alloc] init];
-    }
-    [_mData appendData:data];
-    NSString *httpResponse = [[NSString alloc] initWithData:_mData encoding:NSUTF8StringEncoding];
-    NSLog(@"源数据%@",httpResponse);
-    //这一行 应该在底下的方法中，如果出错就是这的问题
-    [self blockBack:httpResponse];
+//    if (_mData == nil) {
+//        _mData = [[NSMutableData alloc] init];
+//    }
+//    [_mData appendData:data];
+   // NSString *httpResponse = [[NSString alloc] initWithData:_mData encoding:NSUTF8StringEncoding];
+//
+   // NSLog(@"源数据%@",httpResponse);
+   // 这一行 应该在底下的方法中，如果出错就是这的问题
+   // [self blockBack:httpResponse];
     
 //      NSRange range = [httpResponse rangeOfString:@"#####"];
 //    if(range.location != NSNotFound)
 //    {
-//       // NSString *aString = [[NSString alloc] initWithData:_mData encoding:NSUTF8StringEncoding];
-//       // NSLog(@"源数据%@",aString);
-//       // [self blockBack:aString];
+//        NSString *aString1 = [[NSString alloc] initWithData:_mData encoding:NSUTF8StringEncoding];
+//        [self blockBack:aString1];
 ////        \数据读取完毕。进行相关操作
 ////        \注意操作完毕释放_mdata
 //        _mData = nil;
 //    }
-  
+
    
     
     
-//    //1.区分一下每次aString中返回的结果是否有#####
-//    if ([self panduan:aString]==NO) {
-//        //2.不包含####(把不包含#的放到数组中)
-//        [_arrayData addObject:aString];
-//        
-//    }else{
-//        //包含###
-//        if (_arrayData.count==0) {
-//            //3.数组为0，说明1条数据是完整的，否则是不完整的
-//            [self blockBack:aString];
-//        }else{
-//            //4.把数组中所有元素都拼接起来
-//            NSString *string = [_arrayData componentsJoinedByString:@""];
-//            //5.在把最后一个拼接起来，形成完整的字符串
-//            NSString * str =[NSString stringWithFormat:@"%@%@",string,aString];
-//            //6.返回数据
-//            [self blockBack:str];
-//            [_arrayData removeAllObjects];
-//        }
+    //1.区分一下每次aString中返回的结果是否有#####
+    if ([self panduan:aString]==NO) {
+        //2.不包含####(把不包含#的放到数组中)
+       // NSLog(@"我曹%@",aString);[ToolClass isString:aString]
+        [_arrayData addObject:aString];
+        
+        
+    }else{
+        //包含###
+        if (_arrayData.count==0) {
+            //3.数组为0，说明1条数据是完整的，否则是不完整的
+            [self blockBack:aString];
+        }else{
+            //4.把数组中所有元素都拼接起来
+            NSString *string = [_arrayData componentsJoinedByString:@""];
+            //5.在把最后一个拼接起来，形成完整的字符串
+            NSString * str =[NSString stringWithFormat:@"%@%@",string,aString];
+            //6.返回数据
+            [self blockBack:str];
+            [_arrayData removeAllObjects];
+        }
     
         
 
-   // }
+    }
     
     
     
-   
+   [self.socket readDataWithTimeout:READ_TIME_OUT buffer:nil bufferOffset:0 maxLength:LONG_MAX tag:0];
     
 }
+
+
+//-(void)socketReceive :(NSData *)data
+//{
+//    
+//    //NSError *error;
+//    
+//    NSData *typedata = [data subdataWithRange:NSMakeRange(0,1)];
+//    
+//    NSData *flagdata = [data subdataWithRange:NSMakeRange(1,5)];
+//    
+//    NSData *contentdata = [data subdataWithRange:NSMakeRange(5, data.length-5)];
+//    
+//    NSString *typeStr  = [[NSString alloc]initWithData:typedata encoding:NSUTF8StringEncoding];
+//    
+//    NSString *flagStr  = [[NSString alloc]initWithData:flagdata encoding:NSUTF8StringEncoding];
+//    
+//    NSString *contentStr = [[NSString alloc]initWithData:contentdata encoding:NSUTF8StringEncoding];
+//  
+//   
+//   
+//}
+
+
+
+
+
 //返回数据
 -(void)blockBack:(NSString*)aString{
     //把最后5个#去掉，取出#号之前的字符cccc
@@ -227,8 +258,7 @@
        // NSLog(@"执行几次");
        self.cityNameBlock(jsonDict);
     }
-    
-    [self.socket readDataWithTimeout:READ_TIME_OUT buffer:nil bufferOffset:0 maxLength:MAX_BUFFER tag:0];
+   
 }
 
 
@@ -249,6 +279,7 @@
 {
     NSLog(@"回调");
     //读取消息
-    [self.socket readDataWithTimeout:-1 buffer:nil bufferOffset:0 maxLength:MAX_BUFFER tag:0];
+   
+    [self.socket readDataWithTimeout:-1 buffer:nil bufferOffset:0 maxLength: LONG_MAX tag:0];
 }
 @end

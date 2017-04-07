@@ -64,7 +64,6 @@
     _dataArray1=[[NSMutableArray alloc]init];
    //加载数据源
     [self createTableView];//创建表
-    [self CreatLiuYan];
     
 //    NSDictionary  * param =@{@"auction_id":@"12",@"target_id":@"10"};
 //    NSDictionary * dicc =@{@"action":@"app_qryTargetCompeteSpeakRecord",@"param":param};
@@ -105,7 +104,7 @@
     
 }
 
-#pragma mark --倒计时代码
+#pragma mark --倒计时代码   155555555
 -(void)dataRiqiData:(NSString*)riqi{
     
     NSDateFormatter *dateFormatter=[[NSDateFormatter alloc] init];
@@ -191,10 +190,19 @@
 #pragma mark --创建留言区
 -(void)CreatLiuYan{
     _liuYanView=[UIView new];
-    _liuYanView.backgroundColor=[UIColor yellowColor];
-    _liuYanView.hidden=YES;
+    _liuYanView.backgroundColor=[UIColor whiteColor];
     _liuYanView.frame=CGRectMake(0, ScreenHeight-50-64, ScreenWidth, 50);
     [self.view addSubview:_liuYanView];
+    
+    UIView * linview =[UIView new];
+    linview.backgroundColor=BG_COLOR;
+    [_liuYanView sd_addSubviews:@[linview]];
+    linview.sd_layout
+    .leftSpaceToView(_liuYanView,0)
+    .rightSpaceToView(_liuYanView,0)
+    .topSpaceToView(_liuYanView,0)
+    .heightIs(1);
+    
     
     UIButton * leftBtn =[UIButton buttonWithType:UIButtonTypeCustom];
     [leftBtn setImage:[UIImage imageNamed:@"zaixian_mg"] forState:0];
@@ -204,7 +212,9 @@
     _liuYanTextfield=liuYanTextfield;
     liuYanTextfield.font=[UIFont systemFontOfSize:15];
     liuYanTextfield.placeholder=@"想说点什么";
-    liuYanTextfield.backgroundColor=[UIColor greenColor];
+//    liuYanTextfield.backgroundColor=[UIColor whiteColor];
+//    liuYanTextfield.layer.borderColor=[UIColor lightGrayColor].CGColor;
+//    liuYanTextfield.layer.borderWidth=.5;
     
     UIButton * sendBtn =[UIButton buttonWithType:UIButtonTypeCustom];
     sendBtn.sd_cornerRadius=@(5);
@@ -267,6 +277,7 @@
                 [self.tableView beginUpdates];
                 [self.tableView insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationTop];
                 [self.tableView endUpdates];
+                [_tableView reloadData];
             }else if (_currentIndex==0){
                  [_dataArray1 insertObject:md atIndex:0];
                 [_tableView reloadData];
@@ -351,21 +362,12 @@
     [Engine socketLianJieJsonStr:jsonStr success:^(NSDictionary *dic) {
         
     }];
-    
+    //2.请求时间的
     NSDictionary  * param2 =@{@"auction_id":@"12",@"target_id":@"10"};
     NSDictionary * dicc2 =@{@"action":@"app_qryTargetCompeteStatus",@"param":param2};
     NSString * jsonStr2 =[ToolClass getJsonStringFromObject:dicc2];
     [Engine socketLianJieJsonStr:jsonStr2 success:^(NSDictionary *dic) {
         NSLog(@"看看%@",dic);
-    }];
-    
-    //4.请求留言专区的
-    NSDictionary  * param1 =@{@"auction_id":@"12",@"target_id":@"10"};
-    NSDictionary * dicc1 =@{@"action":@"app_qryTargetCompeteSpeakRecord",@"param":param1};
-    NSString * jsonStr1 =[ToolClass getJsonStringFromObject:dicc1];
-    [Engine socketLianJieJsonStr:jsonStr1 success:^(NSDictionary *dic) {
-        
-//            NSLog(@"请求留言专区的%@",dic);
             NSString * msg_type =[NSString stringWithFormat:@"%@",[dic objectForKey:@"msg_type"]];
             [LCProgressHUD hide];
             //对应请求返回的信息
@@ -476,15 +478,150 @@
             
             
             
+            
+            
+            
+            
+        
+        
+        
+    }];
+    
+    
+    
+   // [self liuYanZhuanQu];
+
+}
+
+-(void)liuYanZhuanQu{
+    //4.请求留言专区的
+    NSDictionary  * param1 =@{@"auction_id":@"12",@"target_id":@"10"};
+    NSDictionary * dicc1 =@{@"action":@"app_qryTargetCompeteSpeakRecord",@"param":param1};
+    NSString * jsonStr1 =[ToolClass getJsonStringFromObject:dicc1];
+    [Engine socketLianJieJsonStr:jsonStr1 success:^(NSDictionary *dic) {
+        
+        //            NSLog(@"请求留言专区的%@",dic);
+        NSString * msg_type =[NSString stringWithFormat:@"%@",[dic objectForKey:@"msg_type"]];
+        [LCProgressHUD hide];
+        //对应请求返回的信息
+        if ([msg_type isEqualToString:@"response"]) {
+            NSDictionary * responseInfo =[dic objectForKey:@"responseInfo"];
+            NSString * code =[NSString stringWithFormat:@"%@",[NSString stringWithFormat:@"%@",[responseInfo objectForKey:@"code"]]];
+            NSString * action =[responseInfo objectForKey:@"action"];
+            /*
+             1.如果action=app_qryTargetCompeteStatus 倒计时接口
+             2.如果action=app_qryUserCompeteRecord   出价记录接口
+             */
+            //倒计时
+            if ([code isEqualToString:@"1"] && [action isEqualToString:@"app_qryTargetCompeteStatus"] ) {
+                NSDictionary * contentDic =[responseInfo objectForKey:@"content"];
+                [self timeDaoJiShi:contentDic Label:_starLabel uiview:_bgView];
+                
+            }
+            //查询出价记录ZaiXianModel
+            if ([code isEqualToString:@"1"] && [action isEqualToString:@"app_qryUserCompeteRecord"] ){
+                NSArray *contentArr =[responseInfo objectForKey:@"content"];
+                for (NSDictionary * dicc in contentArr) {
+                    ZaiXianModel * model =[[ZaiXianModel alloc]initWithChuJiaJiluDic:dicc];
+                    [_dataArray0 addObject:model];
+                }
+                //当前出价
+                if (_dataArray0.count!=0) {
+                    ZaiXianModel * model=_dataArray0[0];
+                    _priceLabel.text=model.moneyName;
+                    _dangQianLab.text=[NSString stringWithFormat:@"当前出价：%@",model.moneyName];
+                    _peopleLab.text=[NSString stringWithFormat:@"出价人：%@",model.jingPaiNum];
+                }else{
+                    _dangQianLab.text=[NSString stringWithFormat:@"当前出价：%@",@"暂无"];
+                    _peopleLab.text=[NSString stringWithFormat:@"出价人：%@",@"暂无"];
+                }
+                _dangQianLab.attributedText= [ToolClass attrStrFrom:_dangQianLab.text intFond:14 Color:[UIColor blackColor] numberStr:@"当前出价："];
+                
+                [_tableView reloadData];
+                
+                
+            }
+            //竞买留言区
+            if ([code isEqualToString:@"1"]&&[action isEqualToString:@"app_qryTargetCompeteSpeakRecord"]) {
+                [self buyLiuYanQuResponseInfoDic:responseInfo];
+            }
+            
+            
+            //response那个括号
+        }else if (([msg_type isEqualToString:@"push"])){
+            NSDictionary * pushInfoDic =[dic objectForKey:@"pushInfo"];
+            NSString * push_scene =[NSString stringWithFormat:@"%@",[pushInfoDic objectForKey:@"push_scene"]];
+            //推送的倒计时
+            if ([push_scene isEqualToString:@"resetCountDown"]) {
+                NSDictionary * push_content =[pushInfoDic objectForKey:@"push_content"];
+                [self timeDaoJiShi:push_content Label:_starLabel uiview:_bgView];
+            }
+            
+            //推送竞价记录增加数据
+            if ([push_scene isEqualToString:@"newCompeteRecord"]) {
+                NSDictionary * push_content =[pushInfoDic objectForKey:@"push_content"];
+                ZaiXianModel * mode =[[ZaiXianModel alloc]initWithChuJiaJiluDic:push_content];
+                
+                if (_currentIndex==0) {
+                    NSMutableArray *indexPaths = [[NSMutableArray alloc] init];
+                    [_dataArray0 insertObject:mode atIndex:0];
+                    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:1 inSection:0];
+                    [indexPaths addObject: indexPath];
+                    [self.tableView beginUpdates];
+                    [self.tableView insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationTop];
+                    [self.tableView endUpdates];
+                }else if (_currentIndex==1){
+                    [_dataArray0 insertObject:mode atIndex:0];
+                    [_tableView reloadData];
+                }
+                
+                
+                
+                _priceLabel.text=mode.moneyName;
+                _dangQianLab.text=[NSString stringWithFormat:@"当前出价：%@",mode.moneyName];
+                _peopleLab.text=[NSString stringWithFormat:@"出价人：%@",mode.jingPaiNum];
+            }
+            _dangQianLab.attributedText= [ToolClass attrStrFrom:_dangQianLab.text intFond:14 Color:[UIColor blackColor] numberStr:@"当前出价："];
+            //推送的留言
+            if ([push_scene isEqualToString:@"newSpeakRecord"]) {
+                NSDictionary * contentDic =[pushInfoDic objectForKey:@"push_content"];
+                ZaiXianModel * md =[[ZaiXianModel alloc]initWithLiuYanZhuanQu:contentDic];
+                if (_currentIndex==1) {
+                    NSMutableArray *indexPaths = [[NSMutableArray alloc] init];
+                    [_dataArray1 insertObject:md atIndex:0];
+                    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
+                    [indexPaths addObject: indexPath];
+                    [self.tableView beginUpdates];
+                    [self.tableView insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationTop];
+                    [self.tableView endUpdates];
+                }
+                else{
+                    [_dataArray1 insertObject:md atIndex:0];
+                    [_tableView reloadData];
+                }
+                
+            }
+            
+            
+            
+            
+            //
+        }
+        
+        
+        
+        
         
         
         
         
     }];
-
     
 
 }
+
+
+
 //创建TableView
 -(void)createTableView{
    // if (!_tableView) {
@@ -1134,7 +1271,7 @@
     if (_currentIndex==0) {
         return 44;
     }else{
-         return 80;
+         return [_tableView cellHeightForIndexPath:indexPath model:_dataArray1[indexPath.row] keyPath:@"model" cellClass:[LiuYanZhuanQuCell class] contentViewWidth:[ToolClass  cellContentViewWith]];;
     }
    
 }
@@ -1165,13 +1302,18 @@
 {
     _currentIndex=currentIndex;
     if (currentIndex==0) {
-//        [_liuYanView removeFromSuperview];
-        _liuYanView.hidden=YES;
+        [_liuYanView removeFromSuperview];
         _tableView.frame=CGRectMake(0, 0, ScreenWidth, ScreenHeight-64);
     }else{
-         //[self CreatLiuYan];
+         [self CreatLiuYan];
         _liuYanView.hidden=NO;
-         _tableView.frame=CGRectMake(0, 0, ScreenWidth, ScreenHeight-64-50);
+        _tableView.frame=CGRectMake(0, 0, ScreenWidth, ScreenHeight-64-50);
+        if (_dataArray1.count==0) {
+            NSLog(@"等于0了");
+            [self liuYanZhuanQu];
+        }
+        
+        
     }
     [_tableView reloadData];
 }

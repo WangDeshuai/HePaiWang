@@ -44,9 +44,9 @@
         titlelabel.text=title;
         titlelabel.textAlignment=1;
         if (ScreenWidth==320) {
-            titlelabel.font=[UIFont systemFontOfSize:14];
+            titlelabel.font=[UIFont systemFontOfSize:15];
         }else{
-              titlelabel.font=[UIFont systemFontOfSize:16];
+              titlelabel.font=[UIFont systemFontOfSize:17];
         }
       
         titlelabel.backgroundColor=[UIColor lightGrayColor];
@@ -57,7 +57,7 @@
         .leftSpaceToView(self,0)
         .rightSpaceToView(self,0)
         .topSpaceToView(self,0)
-        .heightIs(35);
+        .heightIs(50);
         
         
         

@@ -191,7 +191,7 @@
     if ([self panduan:aString]==NO) {
         //2.不包含####(把不包含#的放到数组中)
        // NSLog(@"我曹%@",aString);[ToolClass isString:aString]
-        [_arrayData addObject:aString];
+        [_arrayData addObject:[ToolClass isString:aString]];
         
         
     }else{

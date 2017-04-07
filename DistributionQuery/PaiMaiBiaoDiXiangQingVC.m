@@ -10,6 +10,7 @@
 #import "ZaiXianJingJiaVC.h"
 #import "HtmlViewController.h"
 #import "Singleton.h"
+#import "XYAlertView.h"
 @interface PaiMaiBiaoDiXiangQingVC ()<SDCycleScrollViewDelegate,UITableViewDelegate,UITableViewDataSource>
 {
      dispatch_source_t _timer;
@@ -41,7 +42,6 @@
     static dispatch_once_t hanwanjie;
     //只执行一次
     dispatch_once(&hanwanjie, ^{
-        NSLog(@"12345678910");
         [Singleton sharedInstance].socketHost = @"192.168.1.103"; //host设定
         [Singleton sharedInstance].socketPort = 8006; //port设定
         //在连接前先进行手动断开
@@ -70,7 +70,7 @@
     self.title=@"拍卖标的详情";
     _dataArr=[[NSMutableArray alloc]initWithObjects:@"竞买须知",@"竞买公告",@"标的物介绍", nil];
     _htmlArr=[NSMutableArray new];
-    
+    [self CreatRightBtn];
     [self CreatTableView];
     [self CreatButton];
     
@@ -78,8 +78,36 @@
  
     
 }
-
-
+#pragma mark --右按钮
+-(void)CreatRightBtn{
+    UIButton * rightbtn=[UIButton buttonWithType:UIButtonTypeCustom];
+    rightbtn.frame=CGRectMake(0, 0, 70, 30);
+    [rightbtn setTitle:@"申请报名" forState:0];
+    rightbtn.titleLabel.font=[UIFont systemFontOfSize:16];
+    rightbtn.contentHorizontalAlignment=UIControlContentHorizontalAlignmentLeft;
+    [rightbtn addTarget:self action:@selector(backPopBtnPop2) forControlEvents:UIControlEventTouchUpInside];
+    UIBarButtonItem * leftBtn2 =[[UIBarButtonItem alloc]initWithCustomView:rightbtn];
+    self.navigationItem.rightBarButtonItems=@[leftBtn2];
+}
+-(void)backPopBtnPop2{
+    XYAlertView * xv =[[XYAlertView alloc]initWithTitle:@"我要报名" alerMessage:@"提交信息" canCleBtn:@"提交信息" otheBtn:@""];
+    __weak __typeof(xv)weakSelf = xv;
+    xv.NameBlock=^(NSString*people,NSString*phone,NSString*other){
+        // 调用接口
+        [LCProgressHUD showMessage:@"正在发布..."];
+        [Engine BaoMingCanJianPaiMaiID:_paiMaiID BiaoDiID:_biaoDiID Phone:phone PeopleName:people MessageName:other success:^(NSDictionary *dic) {
+            [LCProgressHUD showMessage:[dic objectForKey:@"msg"]];
+            NSString * code =[NSString stringWithFormat:@"%@",[dic objectForKey:@"code"]];
+            if ([code isEqualToString:@"1"]) {
+                [weakSelf dissmiss];
+            }
+        } error:^(NSError *error) {
+            
+        }];
+    };
+    
+    [xv show];
+}
 
 -(NSString *)getyyyymmdd{
     NSDate *now = [NSDate date];

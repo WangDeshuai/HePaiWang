@@ -1091,6 +1091,15 @@
 			path = PageControl;
 			sourceTree = "<group>";
 		};
+		8FD15CA51E9B19670068D2BD /* 已买到的标的详情 */ = {
+			isa = PBXGroup;
+			children = (
+				8FE69B4C1DED573A001814AD /* BuyXiangQingVC.h */,
+				8FE69B4D1DED573A001814AD /* BuyXiangQingVC.m */,
+			);
+			name = "已买到的标的详情";
+			sourceTree = "<group>";
+		};
 		8FDB6F801E717AE000C63951 /* SGImagePickerController */ = {
 			isa = PBXGroup;
 			children = (
@@ -1312,10 +1321,9 @@
 				8FDF03601E6A973200B29747 /* BgBuyDaoViewController.m */,
 				8FE69B491DED54B2001814AD /* BuyDaoViewController.h */,
 				8FE69B4A1DED54B2001814AD /* BuyDaoViewController.m */,
-				8FE69B4C1DED573A001814AD /* BuyXiangQingVC.h */,
-				8FE69B4D1DED573A001814AD /* BuyXiangQingVC.m */,
 				8FE00AB01E6CFF6100737C21 /* BuyBiaoDiModel.h */,
 				8FE00AB11E6CFF6100737C21 /* BuyBiaoDiModel.m */,
+				8FD15CA51E9B19670068D2BD /* 已买到的标的详情 */,
 				8FEB113B1DEFD1F600F775E2 /* 交割管理 */,
 				8FEB11371DEFD1CB00F775E2 /* 交易明细 */,
 			);

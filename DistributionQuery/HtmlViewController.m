@@ -21,15 +21,15 @@
     NSLog(@"输出>>>%@",_str);
     
     UILabel * gongGaoXiangQing =[UILabel new];
-    gongGaoXiangQing.font=[UIFont systemFontOfSize:16];
+//    gongGaoXiangQing.font=[UIFont systemFontOfSize:16];
     gongGaoXiangQing.alpha=.6;
 //    gongGaoXiangQing.text=_str;
     gongGaoXiangQing.attributedText=[ToolClass HTML:_str];
     [self.view sd_addSubviews:@[gongGaoXiangQing]];
     gongGaoXiangQing.sd_layout
-    .leftSpaceToView(self.view,15)
-    .rightSpaceToView(self.view,15)
-    .topSpaceToView(self.view,20)
+    .leftSpaceToView(self.view,0)
+    .rightSpaceToView(self.view,0)
+    .topSpaceToView(self.view,0)
     .autoHeightRatio(0);
     
     

@@ -95,7 +95,13 @@ typedef void (^ErrorBlock)(NSError*error);
 #pragma mark --33拍卖标的详情页所需数据
 +(void)paiMaiLieBiaoXiangQingPaiMaiID:(NSString*)paimaiID BiaoDiID:(NSString*)biaodiID success:(SuccessBlock)aSuccess error:(ErrorBlock)aError;
 
-#pragma  mark --34socket长连接
+
+#pragma mark --34个人中心我已买到的标的(17接口详情页)
++(void)mycenterMyBuyBiaoDiXiangQingBiaoDiID:(NSString*)biaoDiID success:(SuccessBlock)aSuccess error:(ErrorBlock)aError;
+#pragma  mark --socket长连接
 +(void)socketLianJieJsonStr:(NSString*)str success:(SuccessBlock)aSuccess ;
+
+
+
 
 @end

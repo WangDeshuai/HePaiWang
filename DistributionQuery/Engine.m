@@ -909,7 +909,7 @@
     [manager POST:urlStr parameters:dic success:^(AFHTTPRequestOperation *operation, id responseObject) {
         NSData *data = [NSJSONSerialization dataWithJSONObject:responseObject options:NSJSONWritingPrettyPrinted error:nil];
         NSString *str = [[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding];
-      //  NSLog(@"33拍卖标的详情页所需数据%@",str);
+        NSLog(@"33拍卖标的详情页所需数据%@",str);
         
         aSuccess(responseObject);
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
@@ -919,6 +919,35 @@
     }];
     
 }
+
+#pragma mark --34个人中心我已买到的标的(17接口详情页)
++(void)mycenterMyBuyBiaoDiXiangQingBiaoDiID:(NSString*)biaoDiID success:(SuccessBlock)aSuccess error:(ErrorBlock)aError{
+    NSString * urlStr =[NSString stringWithFormat:@"%@entrust/app_qryMyPurchasedTargetDetail.action",SER_VICE];
+    
+    AFHTTPRequestOperationManager * manager =[AFHTTPRequestOperationManager manager];
+    NSMutableDictionary * dic =[NSMutableDictionary new];
+    NSString * token =[NSUSE_DEFO objectForKey:@"token"];
+    if (token==nil) {
+        [LCProgressHUD showMessage:@"34个人中心已买到的标的详情页我token"];
+    }
+    [dic setObject:token forKey:@"user_id"];
+    [dic setObject:@"ios" forKey:@"osType"];
+    [dic setObject:biaoDiID forKey:@"target_id"];
+    
+    [manager POST:urlStr parameters:dic success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSData *data = [NSJSONSerialization dataWithJSONObject:responseObject options:NSJSONWritingPrettyPrinted error:nil];
+        NSString *str = [[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding];
+        NSLog(@"34个人中心我已买到的标的(17接口详情页)%@",str);
+        
+        aSuccess(responseObject);
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"34个人中心我已买到的标的(17接口详情页)%@",error);
+        aError(error);
+        
+    }];
+}
+
+
 #pragma  mark --34socket长连接
 +(void)socketLianJieJsonStr:(NSString*)str success:(SuccessBlock)aSuccess {
     

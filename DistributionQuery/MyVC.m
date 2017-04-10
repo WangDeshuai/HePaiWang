@@ -52,7 +52,7 @@
    
     [self dataArr];
     [self CreatTableView];
-    
+    self.view.backgroundColor=[UIColor blackColor];
 }
 #pragma mark --创建数据源
 -(void)dataArr{
@@ -72,7 +72,7 @@
 }
 -(void)CreatTableView{
     if (!_tableView) {
-        _tableView=[[UITableView alloc]initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight) style:UITableViewStylePlain];
+        _tableView=[[UITableView alloc]initWithFrame:CGRectMake(0, 20, ScreenWidth, ScreenHeight) style:UITableViewStylePlain];
     }
     _tableView.dataSource=self;
     _tableView.delegate=self;
@@ -177,7 +177,7 @@
     }else{
         if (indexPath.row==0) {
             //修改密码ChangeThePasswordVC   SignTextViewController PhotoXuanZeViewController
-            PhotoXuanZeViewController * vc =[PhotoXuanZeViewController new];
+            SignTextViewController * vc =[SignTextViewController new];
            // vc.tagg=0;
             vc.hidesBottomBarWhenPushed=YES;
             [self.navigationController pushViewController:vc animated:YES];
@@ -205,8 +205,8 @@
     bgImage.sd_layout
     .leftSpaceToView(headView,0)
     .rightSpaceToView(headView,0)
-    .topSpaceToView(headView,0)
-    .heightIs(332/2);
+    .topSpaceToView(headView,-20)
+    .heightIs(332/2+20);
     //头像
     UIButton * headImage =[[UIButton alloc]init];
     [headImage setImageForState:0 withURL:[NSURL URLWithString:@""] placeholderImage:[UIImage imageNamed:@"headImage"]];

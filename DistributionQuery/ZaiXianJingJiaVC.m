@@ -1339,8 +1339,11 @@
             
         }else{
             ZaiXianModel * md =_dataArray0[indexPath.row-1];
-            
-            cell.leftLabel.text=md.jingPaiNum;
+            if ([md.jingPaiNum isEqualToString:@""]) {
+                cell.leftLabel.text=@"暂无";
+            }else{
+                 cell.leftLabel.text=md.jingPaiNum;
+            }
             cell.centerLabel.text=md.moneyName;
             cell.rightLabel.text=md.timeName;
         }

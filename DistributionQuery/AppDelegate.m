@@ -24,9 +24,9 @@
     self.window.rootViewController =_vcc ;
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
-   
+   [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent animated:YES];
    [self setupNavBar];
-   
+   [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];  
     return YES;
 }
 

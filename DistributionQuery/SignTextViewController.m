@@ -8,6 +8,7 @@
 
 #import "SignTextViewController.h"
 #import "SignViewController.h"
+#import "SignView.h"
 @interface SignTextViewController ()<ImageDalegate>
 @property(nonatomic,strong)UIImageView * imageView;
 @end
@@ -41,7 +42,17 @@
     SignViewController *vc1=[[SignViewController alloc]init];
     vc1.delegate=self;
     [self.navigationController pushViewController:vc1 animated:YES];
-    //[self presentViewController:vc1 animated:YES completion:nil];
+//    SignView * vc =[[SignView alloc]initWithFrame:CGRectMake(0, 700, ScreenWidth, ScreenHeight/2)];
+//    
+//    vc.delegate=self;
+//    [self.view addSubview:vc];
+//    [self.view bringSubviewToFront:vc];
+//    [UIView animateWithDuration:1 animations:^{
+//        vc.frame=CGRectMake(0, ScreenHeight-ScreenHeight/2-64, ScreenWidth, ScreenHeight/2);
+//        
+//    }];
+    
+    
 }
 - (void)showImage:(UIImage *)image
 {

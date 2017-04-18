@@ -110,7 +110,9 @@
 }
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    BuyBiaoDiModel * md =_dataArray[indexPath.row];
     BuyXiangQingVC * vc =[BuyXiangQingVC new];
+    vc.biaoDiid=md.biaoDiId;
     [self.navigationController pushViewController:vc animated:YES];
 }
 - (void)didReceiveMemoryWarning {

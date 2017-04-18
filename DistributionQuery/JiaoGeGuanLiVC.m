@@ -7,10 +7,12 @@
 //
 
 #import "JiaoGeGuanLiVC.h"
-
+#import "BuyBiaoDiModel.h"
+#import "QueRenChengJiaoVC.h"
 @interface JiaoGeGuanLiVC ()<UITableViewDataSource,UITableViewDelegate>
 @property(nonatomic,strong)UITableView * tableView;
 @property(nonatomic,strong)NSMutableArray * nameArr;
+@property(nonatomic,strong)BuyBiaoDiModel * md;
 @end
 
 @implementation JiaoGeGuanLiVC
@@ -19,8 +21,17 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.title=@"交割管理";
+//    self.view.backgroundColor=[UIColor redColor];
     [self shujuYuan];
     [self CreatTabelView];
+    if (_tagg==2) {
+        [self jiaoGeJieXiData];
+    }else{
+        [self jiaoGeJieXiData];
+        [self CreatTwoBtn];
+    }
+    
+   
 }
 -(void)shujuYuan{
     NSArray * arr1 =@[@"标的编号",@"标的名称",@"所 在 地"];
@@ -30,10 +41,83 @@
     _nameArr=[[NSMutableArray alloc]initWithObjects:arr1,arr2,arr3,arr4, nil];
 }
 
+
+#pragma mark --创建按钮
+-(void)CreatTwoBtn{
+    NSArray * btnArr =@[@"查看拍卖成交确认书",@"确认收货"];
+    int k =(ScreenWidth-60)/2;
+    for (int i =0; i<btnArr.count; i++) {
+        UIButton * btn =[UIButton buttonWithType:UIButtonTypeCustom];
+        [btn setTitle:btnArr[i] forState:0];
+        btn.backgroundColor=[UIColor redColor];
+        btn.sd_cornerRadius=@(5);
+        btn.titleLabel.font=[UIFont systemFontOfSize:15];
+        btn.tag=i;
+        [btn addTarget:self action:@selector(btnClink:) forControlEvents:UIControlEventTouchUpInside];
+        [self.view sd_addSubviews:@[btn]];
+        btn.sd_layout
+        .leftSpaceToView(self.view,20+(k+20)*i)
+        .bottomSpaceToView(self.view,10)
+        .widthIs(k)
+        .heightIs(40);
+    }
+}
+
+#pragma mark --点击状态
+-(void)btnClink:(UIButton*)btn{
+    if (btn.tag==0) {
+        //查看拍卖成交确认书
+        QueRenChengJiaoVC * vc =[QueRenChengJiaoVC new];
+        [self.navigationController pushViewController:vc animated:YES];
+    }else{
+        //确认收货
+    }
+}
+//已买到的--交割管理
+-(void)jiaoGeJieXiData{
+    [Engine jiaoGeGuanLiBiaoDiID:@"10" success:^(NSDictionary *dic) {
+        NSString * code =[NSString stringWithFormat:@"%@",[dic objectForKey:@"code"]];
+        if ([code isEqualToString:@"1"]) {
+            NSDictionary * contentDic =[dic objectForKey:@"content"];
+            
+            BuyBiaoDiModel * md =[[BuyBiaoDiModel alloc]initWithJiaoGeGuanLiDic:contentDic];
+            _md=md;
+            
+        }else{
+            [LCProgressHUD showMessage:[dic objectForKey:@"msg"]];
+        }
+        [_tableView reloadData];
+    } error:^(NSError *error) {
+        
+    }];
+}
+
+//我的委托  交割管理
+-(void)myweituoJiaoGeData{
+    [Engine myWeiTuoJiaoGeGuanLiID:@"10" success:^(NSDictionary *dic) {
+        NSString * code =[NSString stringWithFormat:@"%@",[dic objectForKey:@"code"]];
+        if ([code isEqualToString:@"1"]) {
+            NSDictionary * contentDic =[dic objectForKey:@"content"];
+            
+            BuyBiaoDiModel * md =[[BuyBiaoDiModel alloc]initWithJiaoGeGuanLiDic:contentDic];
+            _md=md;
+            
+        }else{
+            [LCProgressHUD showMessage:[dic objectForKey:@"msg"]];
+        }
+        [_tableView reloadData];
+    } error:^(NSError *error) {
+        
+    }];
+}
+
+
+
+
 #pragma mark --创建表
 -(void)CreatTabelView{
     if (!_tableView) {
-        _tableView=[[UITableView alloc]initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight-64) style:UITableViewStylePlain];
+        _tableView=[[UITableView alloc]initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight-64-50) style:UITableViewStylePlain];
     }
     _tableView.dataSource=self;
     _tableView.delegate=self;
@@ -90,36 +174,36 @@
         contentLaebl.textAlignment=0;
         if (indexPath.row==0) {
             //标的编号
-            contentLaebl.text=@"254129572";
+            contentLaebl.text=_md.jgBianHao;
             
         }else if (indexPath.row==1){
             //标的名称
-            contentLaebl.text=@"桑坦纳江铃北京现代等53辆机动车";
+            contentLaebl.text=_md.jgName;
         }else{
             //所在地
-            contentLaebl.text=@"河北省石家庄";
+            contentLaebl.text=_md.jgAddress;
         }
     }else if (indexPath.section==1){
         //还需缴纳尾款
-        contentLaebl.text=@"2000元";
+        contentLaebl.text=_md.jgWeiKuan;
     }else if (indexPath.section==2){
         if (indexPath.row==0) {
             //目前标的状态
-             contentLaebl.text=@"成交等待交割";
+             contentLaebl.text=_md.jgZhuTai;
         }else if (indexPath.row==1){
             //委托人联系方式
-            contentLaebl.text=@"18333152969";
+            contentLaebl.text=_md.jgWeiTuoStyle;
         }else{
             //交货地址
-            contentLaebl.text=@"河北省石家庄市长安区广安大街33号";
+            contentLaebl.text=_md.jgJiaoHuoDiZhi;
         }
     }else{
         if (indexPath.row==0) {
             //合拍标的交割服务专员
-            contentLaebl.text=@"张三";
+            contentLaebl.text=_md.jgHePaiBiaoDi;
         }else{
             //联系电话
-            contentLaebl.text=@"18333152832";
+            contentLaebl.text=_md.jgPhone;
         }
     }
     

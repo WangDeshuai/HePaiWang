@@ -9,6 +9,7 @@
 #import "MyBiaoDiWeiTuoViC.h"
 #import "MyWeiTuoTableViewCell.h"
 #import "MyWeiTuoBiaoDiModel.h"
+#import "MyWeiTuoXiangQingVC.h"
 @interface MyBiaoDiWeiTuoViC ()<UITableViewDelegate,UITableViewDataSource>
 @property(nonatomic,strong)UITableView * tableView;
 @property(nonatomic,strong)UIButton * lastBtn;
@@ -105,6 +106,13 @@
     cell.md=_dataArray[indexPath.row];
     return cell;
 }
+
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    MyWeiTuoXiangQingVC * vc =[MyWeiTuoXiangQingVC new];
+    [self.navigationController pushViewController:vc animated:YES];
+}
+
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     return 120;

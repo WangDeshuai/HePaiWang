@@ -160,7 +160,7 @@
       imageBtn.frame=CGRectMake(15, ScreenHeight-64-49-50, ScreenWidth-30, 35);
         imageBtn.titleLabel.font=[UIFont systemFontOfSize:13];
     }else{
-       imageBtn.frame=CGRectMake(10, ScreenHeight-64-49-50, ScreenWidth-20, 45);
+       imageBtn.frame=CGRectMake(10, ScreenHeight-64-49-50-130, ScreenWidth-20, 45);
          imageBtn.titleLabel.font=[UIFont systemFontOfSize:15];
     }
     

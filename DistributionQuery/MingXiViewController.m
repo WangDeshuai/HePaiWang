@@ -7,10 +7,11 @@
 //
 
 #import "MingXiViewController.h"
-
+#import "BuyBiaoDiModel.h"
 @interface MingXiViewController ()<UITableViewDelegate,UITableViewDataSource>
 @property(nonatomic,strong)UITableView * tableView;
 @property(nonatomic,strong)NSMutableArray * nameArr;
+@property(nonatomic,strong)BuyBiaoDiModel * md;
 @end
 
 @implementation MingXiViewController
@@ -21,6 +22,12 @@
     self.title=@"交易明细";
     [self shujuYuan];
     [self CreatTabelView];
+    if (_tagg==2) {
+        [self jiaoYiMingXiDataMyweiTuo];
+    }else{
+        [self jiaoYiMingXiData];
+    }
+    
 }
 -(void)shujuYuan{
     NSArray * arr1 =@[@"标的编号",@"标的名称",@"所在地"];
@@ -28,6 +35,39 @@
     _nameArr=[[NSMutableArray alloc]initWithObjects:arr1,arr2, nil];
 }
 
+
+//交易明细数据请求 已买到的
+-(void)jiaoYiMingXiData{
+    [Engine jiaoYiMingXiBiaoDiID:@"10" success:^(NSDictionary *dic) {
+        NSString * code =[NSString stringWithFormat:@"%@",[dic objectForKey:@"code"]];
+        if ([code isEqualToString:@"1"]) {
+            NSDictionary * contentDic =[dic objectForKey:@"content"];
+            BuyBiaoDiModel * md =[[BuyBiaoDiModel alloc]initWithJiaoYiMingXiDic:contentDic];
+            _md=md;
+        }else{
+            [LCProgressHUD showMessage:[dic objectForKey:@"msg"]];
+        }
+        [_tableView reloadData];
+    } error:^(NSError *error) {
+        [LCProgressHUD showMessage:@"后台错误或网络超时"];
+    }];
+}
+//交易明细数据,我委托的
+-(void)jiaoYiMingXiDataMyweiTuo{
+    [Engine myWeiTuoJiaoYiXiangXiID:@"10" success:^(NSDictionary *dic) {
+        NSString * code =[NSString stringWithFormat:@"%@",[dic objectForKey:@"code"]];
+        if ([code isEqualToString:@"1"]) {
+            NSDictionary * contentDic =[dic objectForKey:@"content"];
+            BuyBiaoDiModel * md =[[BuyBiaoDiModel alloc]initWithJiaoYiMingXiDic:contentDic];
+            _md=md;
+        }else{
+            [LCProgressHUD showMessage:[dic objectForKey:@"msg"]];
+        }
+        [_tableView reloadData];
+    } error:^(NSError *error) {
+         [LCProgressHUD showMessage:@"后台错误或网络超时"];
+    }];
+}
 
 
 #pragma mark --创建表
@@ -51,11 +91,45 @@
     UITableViewCell * cell =[tableView dequeueReusableCellWithIdentifier:@"Cell"];
     if (!cell) {
         cell=[[UITableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"Cell"];
+        UILabel * namelabel =[UILabel new];
+        namelabel.tag=10;
+        [cell sd_addSubviews:@[namelabel]];
     }
+    UILabel * namelabel =[cell viewWithTag:10];
+    namelabel.textAlignment=2;
+    namelabel.sd_layout
+    .rightSpaceToView(cell,15)
+    .centerYEqualToView(cell)
+    .leftSpaceToView(cell,100)
+    .heightIs(20);
+    
+    
     
     cell.textLabel.text=_nameArr[indexPath.section][indexPath.row];
     cell.textLabel.font=[UIFont systemFontOfSize:16];
     cell.textLabel.alpha=.6;
+    if (indexPath.section==0) {
+        if (indexPath.row==0) {
+            namelabel.text=_md.mxBianHao;
+        }else if (indexPath.row==1){
+            namelabel.text=_md.mxName;
+        }else if (indexPath.row==2){
+            namelabel.text=_md.mxAddress;
+        }
+    }else if (indexPath.section==1){
+        if (indexPath.row==0) {
+             namelabel.text=_md.mxBaoZheng;
+        }else if (indexPath.row==1){
+            namelabel.text=_md.mxChengJiao;
+        }else if (indexPath.row==2){
+            namelabel.text=_md.mxYongJin;
+        }else if (indexPath.row==3){
+            namelabel.text=_md.mxZonge;
+        }else if (indexPath.row==4){
+            namelabel.text=_md.mxWeiKuan;
+        }
+       
+    }
     return cell;
 }
 

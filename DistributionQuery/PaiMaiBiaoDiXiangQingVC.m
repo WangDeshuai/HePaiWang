@@ -41,8 +41,8 @@
    
     static dispatch_once_t hanwanjie;
     //只执行一次
-    dispatch_once(&hanwanjie, ^{
-        [Singleton sharedInstance].socketHost = @"192.168.1.103"; //host设定
+    dispatch_once(&hanwanjie, ^{//119.29.83.154 192.168.1.103
+        [Singleton sharedInstance].socketHost = SOCRT; //host设定
         [Singleton sharedInstance].socketPort = 8006; //port设定
         //在连接前先进行手动断开
         [Singleton sharedInstance].socket.userData = SocketOfflineByUser;

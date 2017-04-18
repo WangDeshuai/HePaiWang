@@ -9,5 +9,6 @@
 #import "BaseViewController.h"
 
 @interface JiaoGeGuanLiVC : BaseViewController
-
+//tagg==2代表从 我委托的标的，其它是已买到的标的
+@property(nonatomic,assign)NSInteger tagg;
 @end

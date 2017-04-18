@@ -1,14 +1,13 @@
 //
-//  SignViewController.m
-//  SignTest
+//  SignView.m
+//  DistributionQuery
 //
-//  Created by  on 16/8/23.
-//  Copyright © 2016年 shixiaodan. All rights reserved.
+//  Created by Macx on 17/4/18.
+//  Copyright © 2017年 Macx. All rights reserved.
 //
 
-#import "SignViewController.h"
-
-@interface SignViewController ()
+#import "SignView.h"
+@interface SignView()
 @property(nonatomic,assign)CGPoint lastPoint;
 @property(nonatomic,assign)BOOL isSwiping;
 @property(nonatomic,assign)CGFloat red;
@@ -23,69 +22,104 @@
 @property(nonatomic, strong) NSMutableArray *cancleArray;
 @end
 
-@implementation SignViewController
 
-- (void)viewDidLoad {
-    [super viewDidLoad];
-    self.title=@"开始签名";
-    UIButton * saveButton=[UIButton buttonWithType:UIButtonTypeCustom];
-    [saveButton setTitle:@"保存" forState:UIControlStateNormal];
-    saveButton.frame=CGRectMake(100, 20, 50, 50);
-    [saveButton addTarget:self action:@selector(saveButtonClick) forControlEvents:UIControlEventTouchUpInside];
-    UIBarButtonItem * leftBtn2 =[[UIBarButtonItem alloc]initWithCustomView:saveButton];
-    self.navigationItem.rightBarButtonItems=@[leftBtn2];
-    
-    
-    
-    
-    
-    
-    
-    
-    self.imageView=[[UIImageView alloc]initWithFrame:CGRectMake(0, 200, self.view.frame.size.width, 300)];
-    self.imageView.layer.borderWidth = 1.0;
-    self.imageView.layer.borderColor =[[UIColor colorWithRed:0x33/255.0 green:0x33/255.0 blue:0x33/255.0 alpha:1] CGColor];
-    [self.view addSubview:self.imageView];
-    
-    self.view.backgroundColor=[UIColor whiteColor];
-}
-//-(void)buttonClick
-//{
-//    [self dismissViewControllerAnimated:YES completion:^{
-//        
-//    }];
-//}
--(void)saveButtonClick
+@implementation SignView
+- (instancetype)initWithFrame:(CGRect)frame
 {
-    [_xPoints removeAllObjects];
-    [_yPoints removeAllObjects];
-    [_cancleArray removeAllObjects];
-    self.imageView.image=nil;
-//    [self showImage:self.imageView.image];
-//    [self.navigationController popViewControllerAnimated:YES];
+    self = [super initWithFrame:frame];
+    if (self) {
+        
+        UIView * headView =[UIView new];
+        headView.backgroundColor=BG_COLOR;
+        [self sd_addSubviews:@[headView]];
+        headView.sd_layout
+        .leftSpaceToView(self,0)
+        .rightSpaceToView(self,0)
+        .topSpaceToView(self,0)
+        .heightIs(45);
+//        //确认
+        UIButton * sureBtn =[UIButton buttonWithType:UIButtonTypeCustom];
+        sureBtn.sd_cornerRadius=@(3);
+        sureBtn.backgroundColor=[UIColor redColor];
+        [sureBtn setTitle:@"确认签字" forState:0];
+        [sureBtn addTarget:self action:@selector(queRenBtn:) forControlEvents:UIControlEventTouchUpInside];
+        sureBtn.tag=1;
+        sureBtn.titleLabel.font=[UIFont systemFontOfSize:15];
+        [headView sd_addSubviews:@[sureBtn]];
+        sureBtn.sd_layout
+        .widthIs(70)
+        .rightSpaceToView(headView,10)
+        .centerYEqualToView(headView)
+        .heightIs(35);
+       
+        
+        
+        
+        
+        //取消
+        UIButton * backBtn =[UIButton buttonWithType:UIButtonTypeCustom];
+        backBtn.sd_cornerRadius=@(3);
+        backBtn.backgroundColor=[UIColor lightGrayColor];
+        [backBtn setTitle:@"取消" forState:0];
+        [backBtn addTarget:self action:@selector(queRenBtn:) forControlEvents:UIControlEventTouchUpInside];
+        backBtn.tag=0;
+        backBtn.titleLabel.font=[UIFont systemFontOfSize:15];
+        [headView sd_addSubviews:@[backBtn]];
+        backBtn.sd_layout
+        .widthIs(70)
+        .leftSpaceToView(headView,10)
+        .centerYEqualToView(headView)
+        .heightIs(35);
+        
+        
+        
+        //中间label
+        UILabel * titlabel =[UILabel new];
+        titlabel.text=@"请在下方签字";
+        titlabel.textAlignment=1;
+        titlabel.textColor=[UIColor blackColor];
+        [headView sd_addSubviews:@[titlabel]];
+        titlabel.sd_layout
+        .leftSpaceToView(backBtn,10)
+        .rightSpaceToView(sureBtn,10)
+        .centerYEqualToView(headView)
+        .heightIs(35);
+//        
+        
+        self.imageView=[[UIImageView alloc]initWithFrame:CGRectMake(0, 45, ScreenWidth, 300)];
+        self.imageView.backgroundColor=[UIColor whiteColor];
+        self.imageView.layer.borderWidth = 1.0;
+        self.imageView.layer.borderColor =[[UIColor colorWithRed:0x33/255.0 green:0x33/255.0 blue:0x33/255.0 alpha:1] CGColor];
+        [self addSubview:self.imageView];
+       // [self sd_addSubviews:@[self.imageView]];
+//        self.imageView.sd_layout
+//        .leftSpaceToView(self,0)
+//        .rightSpaceToView(self,0)
+//        .bottomSpaceToView(self,0)
+//        .topSpaceToView(headView,0);
+        self.backgroundColor=[UIColor whiteColor];
+    }
+    return self;
 }
-//-(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
-//{
-//    //新建贝塞斯曲线
-//    self.bezier = [UIBezierPath bezierPath];
-//    
-//    //获取触摸的点
-//    UITouch *myTouche = [touches anyObject];
-//    CGPoint point = [myTouche locationInView:self.imageView];
-//    
-//    //把刚触摸的点设置为bezier的起点
-//    [self.bezier moveToPoint:point];
-//    
-//    //把每条线存入字典中
-//    NSMutableDictionary *tempDic = [[NSMutableDictionary alloc] initWithCapacity:3];
-//    [tempDic setObject:[UIColor blackColor] forKey:@"color"];
-//    [tempDic setObject:[NSNumber numberWithFloat:5] forKey:@"lineWidth"];
-//    [tempDic setObject:self.bezier forKey:@"line"];
-//    
-//    //把线加入数组中
-//    [self.allLine addObject:tempDic];
-//    
-//}
+
+
+-(void)queRenBtn:(UIButton*)button{
+    
+    if (button.tag==0) {
+        //清空
+        [_xPoints removeAllObjects];
+        [_yPoints removeAllObjects];
+        [_cancleArray removeAllObjects];
+        self.imageView.image=nil;
+    }
+    
+    
+    if ([_delegate respondsToSelector:@selector(buttonClinkTwo:)]) {
+        [_delegate buttonClinkTwo:button];
+    }
+
+}
+
 -(void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
 {
     self.isSwiping    = false;
@@ -128,7 +162,7 @@
         self.imageView.image = UIGraphicsGetImageFromCurrentImageContext();
         UIGraphicsEndImageContext();
     }
-
+    
 }
 #pragma mark getter && setter
 -(NSMutableArray*)xPoints
@@ -154,9 +188,7 @@
     }else{
         NSLog(@"代理没有实现changeStatus:方法");
     }
-    
-    
-    
-    
 }
+
+
 @end

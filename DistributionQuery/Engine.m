@@ -929,6 +929,7 @@
     NSString * token =[NSUSE_DEFO objectForKey:@"token"];
     if (token==nil) {
         [LCProgressHUD showMessage:@"34个人中心已买到的标的详情页我token"];
+        return;
     }
     [dic setObject:token forKey:@"user_id"];
     [dic setObject:@"ios" forKey:@"osType"];
@@ -946,8 +947,213 @@
         
     }];
 }
+#pragma mark --35个人中心我已买到的标的(交易明细)
++(void)jiaoYiMingXiBiaoDiID:(NSString*)biaoID success:(SuccessBlock)aSuccess error:(ErrorBlock)aError{
+    
+    NSString * urlStr =[NSString stringWithFormat:@"%@entrust/app_qryMyPurchasedTargetTransactionDetail.action",SER_VICE];
+    
+    AFHTTPRequestOperationManager * manager =[AFHTTPRequestOperationManager manager];
+    NSMutableDictionary * dic =[NSMutableDictionary new];
+    NSString * token =[NSUSE_DEFO objectForKey:@"token"];
+    if (token==nil) {
+        [LCProgressHUD showMessage:@"35个人中心我已买到的标的(交易明细)token"];
+        return;
+    }
+    [dic setObject:token forKey:@"user_id"];
+    [dic setObject:@"ios" forKey:@"osType"];
+    [dic setObject:biaoID forKey:@"target_id"];
+    
+    [manager POST:urlStr parameters:dic success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSData *data = [NSJSONSerialization dataWithJSONObject:responseObject options:NSJSONWritingPrettyPrinted error:nil];
+        NSString *str = [[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding];
+        NSLog(@"35个人中心我已买到的标的(交易明细)%@",str);
+        
+        aSuccess(responseObject);
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"35个人中心我已买到的标的(交易明细)%@",error);
+        aError(error);
+        
+    }];
+    
+    
+}
+#pragma mark --36个人中心我已买到的标的(交割管理)
++(void)jiaoGeGuanLiBiaoDiID:(NSString*)biaoID success:(SuccessBlock)aSuccess error:(ErrorBlock)aError{
+    
+    NSString * urlStr =[NSString stringWithFormat:@"%@entrust/app_qryMyPurchasedTargetDeliveryDetail.action",SER_VICE];
+    
+    AFHTTPRequestOperationManager * manager =[AFHTTPRequestOperationManager manager];
+    NSMutableDictionary * dic =[NSMutableDictionary new];
+    NSString * token =[NSUSE_DEFO objectForKey:@"token"];
+    if (token==nil) {
+        [LCProgressHUD showMessage:@"36个人中心我已买到的标的(交割管理)token"];
+        return;
+    }
+    [dic setObject:token forKey:@"user_id"];
+    [dic setObject:@"ios" forKey:@"osType"];
+    [dic setObject:biaoID forKey:@"target_id"];
+    
+    [manager POST:urlStr parameters:dic success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSData *data = [NSJSONSerialization dataWithJSONObject:responseObject options:NSJSONWritingPrettyPrinted error:nil];
+        NSString *str = [[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding];
+        NSLog(@"36个人中心我已买到的标的(交割管理)%@",str);
+        
+        aSuccess(responseObject);
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"36个人中心我已买到的标的(交割管理)%@",error);
+        aError(error);
+        
+    }];
+    
+}
+
+#pragma mark --37个人中心->我已买到的标的->标的详情页_交割管理页面_查看拍卖成交确认书
++(void)chaKanQueRenShuBiaoDiID:(NSString*)biaoDi success:(SuccessBlock)aSuccess error:(ErrorBlock)aError{
+    NSString * urlStr =[NSString stringWithFormat:@"%@entrust/app_qryMyPurchasedTargetTransactionBookInfo.action",SER_VICE];
+    
+    AFHTTPRequestOperationManager * manager =[AFHTTPRequestOperationManager manager];
+    NSMutableDictionary * dic =[NSMutableDictionary new];
+    NSString * token =[NSUSE_DEFO objectForKey:@"token"];
+    if (token==nil) {
+        [LCProgressHUD showMessage:@"37token"];
+        return;
+    }
+    [dic setObject:token forKey:@"user_id"];
+    [dic setObject:@"ios" forKey:@"osType"];
+    [dic setObject:biaoDi forKey:@"target_id"];
+    
+    [manager POST:urlStr parameters:dic success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSData *data = [NSJSONSerialization dataWithJSONObject:responseObject options:NSJSONWritingPrettyPrinted error:nil];
+        NSString *str = [[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding];
+        NSLog(@"37个人中心->我已买到的标的->标的详情页_交割管理页面_查看拍卖成交确认书%@",str);
+        
+        aSuccess(responseObject);
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"37错误%@",error);
+        aError(error);
+        
+    }];
+    
+}
 
 
+#pragma mark --39我委托的标的->标的详情页数据
++(void)myWeiTuoXiangQingBiaoDiID:(NSString*)biaoDiID success:(SuccessBlock)aSuccess error:(ErrorBlock)aError{
+    
+    NSString * urlStr =[NSString stringWithFormat:@"%@entrust/app_qryMyEntrustTargetDetail.action",SER_VICE];
+    
+    AFHTTPRequestOperationManager * manager =[AFHTTPRequestOperationManager manager];
+    NSMutableDictionary * dic =[NSMutableDictionary new];
+    NSString * token =[NSUSE_DEFO objectForKey:@"token"];
+    if (token==nil) {
+        [LCProgressHUD showMessage:@"39我委托的标的->标的详情页数据token"];
+        return;
+    }
+    [dic setObject:token forKey:@"user_id"];
+    [dic setObject:@"ios" forKey:@"osType"];
+    [dic setObject:biaoDiID forKey:@"target_id"];
+    
+    [manager POST:urlStr parameters:dic success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSData *data = [NSJSONSerialization dataWithJSONObject:responseObject options:NSJSONWritingPrettyPrinted error:nil];
+        NSString *str = [[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding];
+        NSLog(@"39我委托的标的->标的详情页数据%@",str);
+        
+        aSuccess(responseObject);
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"39我委托的标的->标的详情页数据%@",error);
+        aError(error);
+        
+    }];
+    
+    
+}
+
+
+#pragma mark --40我委托的标的->标的详情页_交易明细页所需数据
++(void)myWeiTuoJiaoYiXiangXiID:(NSString*)biaodiID success:(SuccessBlock)aSuccess error:(ErrorBlock)aError{
+    NSString * urlStr =[NSString stringWithFormat:@"%@entrust/app_qryMyEntrustTargetTransactionDetail.action",SER_VICE];
+    
+    AFHTTPRequestOperationManager * manager =[AFHTTPRequestOperationManager manager];
+    NSMutableDictionary * dic =[NSMutableDictionary new];
+    NSString * token =[NSUSE_DEFO objectForKey:@"token"];
+    if (token==nil) {
+        [LCProgressHUD showMessage:@"40我委托的标的token"];
+        return;
+    }
+    [dic setObject:token forKey:@"user_id"];
+    [dic setObject:@"ios" forKey:@"osType"];
+    [dic setObject:biaodiID forKey:@"target_id"];
+    
+    [manager POST:urlStr parameters:dic success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSData *data = [NSJSONSerialization dataWithJSONObject:responseObject options:NSJSONWritingPrettyPrinted error:nil];
+        NSString *str = [[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding];
+        NSLog(@"40我委托的标的%@",str);
+        
+        aSuccess(responseObject);
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"40我委托的标的%@",error);
+        aError(error);
+        
+    }];
+    
+}
+#pragma mark --41. 个人中心->我委托的标的->标的详情页_交割管理页面所需数据
++(void)myWeiTuoJiaoGeGuanLiID:(NSString*)biaodiID success:(SuccessBlock)aSuccess error:(ErrorBlock)aError{
+    
+    NSString * urlStr =[NSString stringWithFormat:@"%@entrust/app_qryMyEntrustTargetDeliveryDetail.action",SER_VICE];
+    
+    AFHTTPRequestOperationManager * manager =[AFHTTPRequestOperationManager manager];
+    NSMutableDictionary * dic =[NSMutableDictionary new];
+    NSString * token =[NSUSE_DEFO objectForKey:@"token"];
+    if (token==nil) {
+        [LCProgressHUD showMessage:@"41接口token"];
+        return;
+    }
+    [dic setObject:token forKey:@"user_id"];
+    [dic setObject:@"ios" forKey:@"osType"];
+    [dic setObject:biaodiID forKey:@"target_id"];
+    
+    [manager POST:urlStr parameters:dic success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSData *data = [NSJSONSerialization dataWithJSONObject:responseObject options:NSJSONWritingPrettyPrinted error:nil];
+        NSString *str = [[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding];
+        NSLog(@"41接口%@",str);
+        
+        aSuccess(responseObject);
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"41接口%@",error);
+        aError(error);
+        
+    }];
+    
+}
+#pragma mark --42 个人中心->我委托的标的 _获取委托拍卖合同信息
++(void)myWeiTuoHtmlBtnBiaoDiID:(NSString*)biaodiID success:(SuccessBlock)aSuccess error:(ErrorBlock)aError{
+    NSString * urlStr =[NSString stringWithFormat:@"%@entrust/app_qryMyEntrustTargetContractInfo.action",SER_VICE];
+    
+    AFHTTPRequestOperationManager * manager =[AFHTTPRequestOperationManager manager];
+    NSMutableDictionary * dic =[NSMutableDictionary new];
+    NSString * token =[NSUSE_DEFO objectForKey:@"token"];
+    if (token==nil) {
+        [LCProgressHUD showMessage:@"42接口token"];
+        return;
+    }
+    [dic setObject:token forKey:@"user_id"];
+    [dic setObject:@"ios" forKey:@"osType"];
+    [dic setObject:biaodiID forKey:@"target_id"];
+    
+    [manager POST:urlStr parameters:dic success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSData *data = [NSJSONSerialization dataWithJSONObject:responseObject options:NSJSONWritingPrettyPrinted error:nil];
+        NSString *str = [[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding];
+        NSLog(@"42接口%@",str);
+        
+        aSuccess(responseObject);
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"42接口%@",error);
+        aError(error);
+        
+    }];
+    
+}
 #pragma  mark --34socket长连接
 +(void)socketLianJieJsonStr:(NSString*)str success:(SuccessBlock)aSuccess {
     

@@ -1,42 +1,67 @@
 //
-//  BuyXiangQingVC.m
+//  MyWeiTuoXiangQingVC.m
 //  DistributionQuery
 //
-//  Created by Macx on 16/11/29.
-//  Copyright © 2016年 Macx. All rights reserved.
+//  Created by Macx on 17/4/18.
+//  Copyright © 2017年 Macx. All rights reserved.
 //
 
-#import "BuyXiangQingVC.h"
+#import "MyWeiTuoXiangQingVC.h"
 #import "JiaoGeGuanLiVC.h"//交割管理
 #import "MingXiViewController.h"//交易明细
-#import "BuyBiaoDiModel.h"
 #import "HtmlViewController.h"
-@interface BuyXiangQingVC ()<SDCycleScrollViewDelegate,UITableViewDelegate,UITableViewDataSource>
-
+#import "MyWeiTuoBiaoDiModel.h"
+#import "QueRenChengJiaoVC.h"//签字界面Html
+@interface MyWeiTuoXiangQingVC ()<SDCycleScrollViewDelegate,UITableViewDelegate,UITableViewDataSource>
 @property(nonatomic,strong)UIView * view1;
 @property(nonatomic,strong)UIView * view2;
 @property(nonatomic,strong)UIView * view3;
 @property(nonatomic,strong)UITableView * tableView;
 @property(nonatomic,strong)NSMutableArray * dataArr;
-@property(nonatomic,strong)BuyBiaoDiModel * model;
+@property(nonatomic,strong)MyWeiTuoBiaoDiModel * model;
 @end
 
-@implementation BuyXiangQingVC
+@implementation MyWeiTuoXiangQingVC
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    self.title=@"我已买到的标的详情";
+    self.title=@"委托标的详情";
+    self.view.backgroundColor=[UIColor whiteColor];
     NSArray * arr1 =@[@"交易明细",@"交割管理"];
-      NSArray * arr2 =@[@"竞买须知",@"竞买公告",@"标的物介绍"];
+    NSArray * arr2 =@[@"竞买须知",@"竞买公告",@"标的物介绍"];
     _dataArr=[[NSMutableArray alloc]initWithObjects:arr1,arr2, nil];
     [self CreatTableView];
-   
+    [self CreatButton];
+
 }
+
+#pragma mark --创建底部按钮
+-(void)CreatButton{
+    UIButton * button =[UIButton buttonWithType:UIButtonTypeCustom];
+    button.backgroundColor=[UIColor redColor];
+    [button setTitle:@"签订委托拍卖合同" forState:0];
+    button.titleLabel.font=[UIFont systemFontOfSize:15];
+    button.sd_cornerRadius=@(3);
+    [button addTarget:self action:@selector(hetong) forControlEvents:UIControlEventTouchUpInside];
+    [self.view sd_addSubviews:@[button]];
+    button.sd_layout
+    .widthIs(150)
+    .heightIs(40)
+    .bottomSpaceToView(self.view,5)
+    .centerXEqualToView(self.view);
+}
+-(void)hetong{
+    QueRenChengJiaoVC * vc =[QueRenChengJiaoVC new];
+    vc.tagg=2;
+    [self.navigationController pushViewController:vc animated:YES];
+}
+
+
 #pragma mark --创建表
 -(void)CreatTableView{
     if (!_tableView) {
-        _tableView=[[UITableView alloc]initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight-64) style:UITableViewStylePlain];
+        _tableView=[[UITableView alloc]initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight-64-50) style:UITableViewStylePlain];
     }
     _tableView.dataSource=self;
     _tableView.delegate=self;
@@ -75,10 +100,12 @@
         if (indexPath.row==0) {
             //交易明细
             MingXiViewController * vc =[MingXiViewController new];
+            vc.tagg=2;
             [self.navigationController pushViewController:vc animated:YES];
         }else{
             //交割管理
             JiaoGeGuanLiVC * vc =[JiaoGeGuanLiVC new];
+            vc.tagg=2;
             [self.navigationController pushViewController:vc animated:YES];
         }
     }else{
@@ -89,26 +116,26 @@
             [self.navigationController pushViewController:vc animated:YES];
         }else  if (indexPath.row==1){
             //竞买公告
-             HtmlViewController * vc =[HtmlViewController new];
-             vc.str=_model.xqgonggao;
-              [self.navigationController pushViewController:vc animated:YES];
+            HtmlViewController * vc =[HtmlViewController new];
+            vc.str=_model.xqgonggao;
+            [self.navigationController pushViewController:vc animated:YES];
         }else{
             //标的物介绍
-             HtmlViewController * vc =[HtmlViewController new];
-             vc.str=_model.xqjieshao;
+            HtmlViewController * vc =[HtmlViewController new];
+            vc.str=_model.xqjieshao;
             [self.navigationController pushViewController:vc animated:YES];
         }
     }
 }
-
-
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
     if (section==0) {
         return 0;
     }else{
-      return 10;
+        return 10;
     }
 }
+
+
 -(UIView*)CreatTableHeadView{
     UIView * headView =[UIView new];
     headView.backgroundColor=BG_COLOR;
@@ -117,7 +144,7 @@
     .leftSpaceToView(self.view,0)
     .rightSpaceToView(self.view,0)
     .topSpaceToView(self.view,0);
-   
+    
     if (ScreenWidth==414) {
         headView.sd_layout.heightIs(468);
     }else if (ScreenWidth==375){
@@ -211,16 +238,16 @@
     .leftSpaceToView(tixingLabel,30)
     .heightIs(20);
     [liuLanLabel setSingleLineAutoResizeWithMaxWidth:200];
-//    //开拍提醒
-//    UIButton * tixingBtn =[UIButton buttonWithType:UIButtonTypeCustom];
-//    [tixingBtn setBackgroundImage:[UIImage imageNamed:@"biaodi_bt1"] forState:0];
-//    // [tixingBtn addTarget:self action:@selector(wangji) forControlEvents:UIControlEventTouchUpInside];
-//    [_view1 sd_addSubviews:@[tixingBtn]];
-//    tixingBtn.sd_layout
-//    .rightSpaceToView(_view1,20)
-//    .topEqualToView(titleLable)
-//    .widthIs(100/2)
-//    .heightIs(78/2);
+    //    //开拍提醒
+    //    UIButton * tixingBtn =[UIButton buttonWithType:UIButtonTypeCustom];
+    //    [tixingBtn setBackgroundImage:[UIImage imageNamed:@"biaodi_bt1"] forState:0];
+    //    // [tixingBtn addTarget:self action:@selector(wangji) forControlEvents:UIControlEventTouchUpInside];
+    //    [_view1 sd_addSubviews:@[tixingBtn]];
+    //    tixingBtn.sd_layout
+    //    .rightSpaceToView(_view1,20)
+    //    .topEqualToView(titleLable)
+    //    .widthIs(100/2)
+    //    .heightIs(78/2);
     [_view1 setupAutoHeightWithBottomView:liuLanLabel bottomMargin:10];
     //view2
     _view2=[UIView new];
@@ -317,64 +344,120 @@
     //        NSLog(@"输出左边%f",rect.size.height+rect.origin.y);
     //    };
     
-    //还得找标的ID
-    [Engine mycenterMyBuyBiaoDiXiangQingBiaoDiID:@"10" success:^(NSDictionary *dic) {
+    
+    
+    [Engine myWeiTuoXiangQingBiaoDiID:@"10" success:^(NSDictionary *dic) {
         NSString * code =[NSString stringWithFormat:@"%@",[dic objectForKey:@"code"]];
-        if ([code isEqualToString:@"1"]) {
-            NSDictionary * dicc =[dic objectForKey:@"content"];
-            BuyBiaoDiModel * md =[[BuyBiaoDiModel alloc]initWithBiaoDiXiangQingDic:dicc];
-            _model=md;
-            //轮播图
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                cycleScrollView2.imageURLStringsGroup = md.xqImage;
-            });
-            //标题
-             titleLable.text=md.xqtitlename;
-            //起拍价
-            qiPaiJiaLable.text=[NSString stringWithFormat:@"起拍价：%@",md.xqprice];//@"起拍价：14万";
-            qiPaiJiaLable.attributedText= [ToolClass attrStrFrom:qiPaiJiaLable.text intFond:13 Color:[UIColor blackColor] numberStr:@"起拍价："];
-            //报名人数
-            baoming.text=[NSString stringWithFormat:@"%@报名人数",md.xqbaoming];
-            //提醒
-            tixingLabel.text=[NSString stringWithFormat:@"%@设置提醒",md.xqtixing];
-            //浏览次数
-            liuLanLabel.text=[NSString stringWithFormat:@"%@浏览次数",md.xqliulan];
-            //评估价
-            pinggujia.text=[NSString stringWithFormat:@"评估价:%@",md.xqpinggu];
-            //加价幅度
-            jiaLable.text=[NSString stringWithFormat:@"加价幅度:%@",md.xqjiajia];
-            //保证金
-            baozhengjin.text=[NSString stringWithFormat:@"保证金:%@",md.xqbaozhengjin];
-            //类型
-            typeLabel.text=[NSString stringWithFormat:@"类型:%@",md.xqleixing];
-            //自由竞价
-            ziyouLabel.text=[NSString stringWithFormat:@"自由竞价:%@",md.xqziyou];
-            //保留价
-            baoLiu.text=[NSString stringWithFormat:@"自由竞价:%@",md.xqbaoliujia];
-            //限时竞价
-            xianshiLabel.text=[NSString stringWithFormat:@"限时竞价:%@",md.xqxianshi];
-            //优先购买
-            youXian.text=[NSString stringWithFormat:@"优先购买权人:%@",md.xqyouxian];//@"优先购买权人:无";
-            [_tableView reloadData];
-        }else{
-            [LCProgressHUD showMessage:[dic objectForKey:@"msg"]];
-        }
+                if ([code isEqualToString:@"1"]) {
+                    NSDictionary * dicc =[dic objectForKey:@"content"];
+                    MyWeiTuoBiaoDiModel * md =[[MyWeiTuoBiaoDiModel alloc]initWithBiaoDiXiangQingDic:dicc];
+                    _model=md;
+                    //轮播图
+                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                        cycleScrollView2.imageURLStringsGroup = md.xqImage;
+                    });
+                    //标题
+                    titleLable.text=md.xqtitlename;
+                    //起拍价
+                    qiPaiJiaLable.text=[NSString stringWithFormat:@"起拍价：%@",md.xqprice];//@"起拍价：14万";
+                    qiPaiJiaLable.attributedText= [ToolClass attrStrFrom:qiPaiJiaLable.text intFond:13 Color:[UIColor blackColor] numberStr:@"起拍价："];
+                    //报名人数
+                    baoming.text=[NSString stringWithFormat:@"%@报名人数",md.xqbaoming];
+                    //提醒
+                    tixingLabel.text=[NSString stringWithFormat:@"%@设置提醒",md.xqtixing];
+                    //浏览次数
+                    liuLanLabel.text=[NSString stringWithFormat:@"%@浏览次数",md.xqliulan];
+                    //评估价
+                    pinggujia.text=[NSString stringWithFormat:@"评估价:%@",md.xqpinggu];
+                    //加价幅度
+                    jiaLable.text=[NSString stringWithFormat:@"加价幅度:%@",md.xqjiajia];
+                    //保证金
+                    baozhengjin.text=[NSString stringWithFormat:@"保证金:%@",md.xqbaozhengjin];
+                    //类型
+                    typeLabel.text=[NSString stringWithFormat:@"类型:%@",md.xqleixing];
+                    //自由竞价
+                    ziyouLabel.text=[NSString stringWithFormat:@"自由竞价:%@",md.xqziyou];
+                    //保留价
+                    baoLiu.text=[NSString stringWithFormat:@"自由竞价:%@",md.xqbaoliujia];
+                    //限时竞价
+                    xianshiLabel.text=[NSString stringWithFormat:@"限时竞价:%@",md.xqxianshi];
+                    //优先购买
+                    youXian.text=[NSString stringWithFormat:@"优先购买权人:%@",md.xqyouxian];//@"优先购买权人:无";
+                    [_tableView reloadData];
+                }else{
+                    [LCProgressHUD showMessage:[dic objectForKey:@"msg"]];
+                }
+
     } error:^(NSError *error) {
         
     }];
     
     
+    
+    
+    
+    
+    //还得找标的ID
+//    [Engine mycenterMyBuyBiaoDiXiangQingBiaoDiID:@"10" success:^(NSDictionary *dic) {
+//        NSString * code =[NSString stringWithFormat:@"%@",[dic objectForKey:@"code"]];
+//        if ([code isEqualToString:@"1"]) {
+//            NSDictionary * dicc =[dic objectForKey:@"content"];
+////            BuyBiaoDiModel * md =[[BuyBiaoDiModel alloc]initWithBiaoDiXiangQingDic:dicc];
+//          //  _model=md;
+//            //轮播图
+//            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//                cycleScrollView2.imageURLStringsGroup = md.xqImage;
+//            });
+//            //标题
+//            titleLable.text=md.xqtitlename;
+//            //起拍价
+//            qiPaiJiaLable.text=[NSString stringWithFormat:@"起拍价：%@",md.xqprice];//@"起拍价：14万";
+//            qiPaiJiaLable.attributedText= [ToolClass attrStrFrom:qiPaiJiaLable.text intFond:13 Color:[UIColor blackColor] numberStr:@"起拍价："];
+//            //报名人数
+//            baoming.text=[NSString stringWithFormat:@"%@报名人数",md.xqbaoming];
+//            //提醒
+//            tixingLabel.text=[NSString stringWithFormat:@"%@设置提醒",md.xqtixing];
+//            //浏览次数
+//            liuLanLabel.text=[NSString stringWithFormat:@"%@浏览次数",md.xqliulan];
+//            //评估价
+//            pinggujia.text=[NSString stringWithFormat:@"评估价:%@",md.xqpinggu];
+//            //加价幅度
+//            jiaLable.text=[NSString stringWithFormat:@"加价幅度:%@",md.xqjiajia];
+//            //保证金
+//            baozhengjin.text=[NSString stringWithFormat:@"保证金:%@",md.xqbaozhengjin];
+//            //类型
+//            typeLabel.text=[NSString stringWithFormat:@"类型:%@",md.xqleixing];
+//            //自由竞价
+//            ziyouLabel.text=[NSString stringWithFormat:@"自由竞价:%@",md.xqziyou];
+//            //保留价
+//            baoLiu.text=[NSString stringWithFormat:@"自由竞价:%@",md.xqbaoliujia];
+//            //限时竞价
+//            xianshiLabel.text=[NSString stringWithFormat:@"限时竞价:%@",md.xqxianshi];
+//            //优先购买
+//            youXian.text=[NSString stringWithFormat:@"优先购买权人:%@",md.xqyouxian];//@"优先购买权人:无";
+//            [_tableView reloadData];
+//        }else{
+//            [LCProgressHUD showMessage:[dic objectForKey:@"msg"]];
+//        }
+//    } error:^(NSError *error) {
+//        
+//    }];
+    
+    
     return headView;
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
+
+
+
 -(void)LabelShuXing:(UILabel*)lab{
     lab.alpha=.6;
     lab.font=[UIFont systemFontOfSize:13];
     
+}
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
 }
 
 /*

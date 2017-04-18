@@ -98,6 +98,27 @@ typedef void (^ErrorBlock)(NSError*error);
 
 #pragma mark --34个人中心我已买到的标的(17接口详情页)
 +(void)mycenterMyBuyBiaoDiXiangQingBiaoDiID:(NSString*)biaoDiID success:(SuccessBlock)aSuccess error:(ErrorBlock)aError;
+
+
+#pragma mark --35个人中心我已买到的标的(交易明细)
++(void)jiaoYiMingXiBiaoDiID:(NSString*)biaoID success:(SuccessBlock)aSuccess error:(ErrorBlock)aError;
+
+
+#pragma mark --36个人中心我已买到的标的(交割管理)
++(void)jiaoGeGuanLiBiaoDiID:(NSString*)biaoID success:(SuccessBlock)aSuccess error:(ErrorBlock)aError;
+#pragma mark --37个人中心->我已买到的标的->标的详情页_交割管理页面_查看拍卖成交确认书
++(void)chaKanQueRenShuBiaoDiID:(NSString*)biaoDi success:(SuccessBlock)aSuccess error:(ErrorBlock)aError;
+
+#pragma mark --39我委托的标的->标的详情页数据
++(void)myWeiTuoXiangQingBiaoDiID:(NSString*)biaoDiID success:(SuccessBlock)aSuccess error:(ErrorBlock)aError;
+
+#pragma mark --40我委托的标的->标的详情页_交易明细页所需数据
++(void)myWeiTuoJiaoYiXiangXiID:(NSString*)biaodiID success:(SuccessBlock)aSuccess error:(ErrorBlock)aError;
+#pragma mark --41. 个人中心->我委托的标的->标的详情页_交割管理页面所需数据
++(void)myWeiTuoJiaoGeGuanLiID:(NSString*)biaodiID success:(SuccessBlock)aSuccess error:(ErrorBlock)aError;
+#pragma mark --42 个人中心->我委托的标的 _获取委托拍卖合同信息
++(void)myWeiTuoHtmlBtnBiaoDiID:(NSString*)biaodiID success:(SuccessBlock)aSuccess error:(ErrorBlock)aError;
+
 #pragma  mark --socket长连接
 +(void)socketLianJieJsonStr:(NSString*)str success:(SuccessBlock)aSuccess ;
 

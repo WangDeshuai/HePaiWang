@@ -24,6 +24,7 @@
 #define JXColor(r, g, b, a) [UIColor colorWithRed:(r)/255.0 green:(g)/255.0 blue:(b)/255.0 alpha:(a)]
 //192.168.1.103 119.29.83.154
 #define SER_VICE @"http://192.168.1.103:8080/HePai/"
+#define SOCRT @"192.168.1.103"
 /*
  *   头文件
  */

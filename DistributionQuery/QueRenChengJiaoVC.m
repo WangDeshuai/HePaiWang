@@ -28,7 +28,7 @@
     self.view.backgroundColor=[UIColor whiteColor];
     _myScrollView=[[UIScrollView alloc]initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight-64-50)];
     _myScrollView.userInteractionEnabled=YES;
-    _myScrollView.backgroundColor=[UIColor redColor];
+    _myScrollView.backgroundColor=[UIColor whiteColor];
     [self.view addSubview:_myScrollView];
     
     
@@ -46,7 +46,7 @@
     .heightIs(40);
     
     UIWebView * webview =[[UIWebView alloc]initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight-64-50)];
-    webview.backgroundColor=[UIColor yellowColor];
+    webview.backgroundColor=[UIColor whiteColor];
     webview.delegate=self;
 
     [_myScrollView addSubview:webview];
@@ -121,7 +121,7 @@
     UIScrollView *tempView = (UIScrollView *)[webView.subviews objectAtIndex:0];
      tempView.scrollEnabled = NO;
    //改变滚动试图的滑动
-    self.myScrollView.contentSize = CGSizeMake(ScreenWidth, height+200);
+    self.myScrollView.contentSize = CGSizeMake(ScreenWidth, height+20);
 }
 
 

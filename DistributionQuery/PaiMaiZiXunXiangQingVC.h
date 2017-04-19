@@ -9,5 +9,5 @@
 #import "BaseViewController.h"
 
 @interface PaiMaiZiXunXiangQingVC : BaseViewController
-
+@property(nonatomic,copy)NSString *zixunID;
 @end

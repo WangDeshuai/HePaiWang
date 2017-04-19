@@ -71,6 +71,26 @@
         [self.navigationController pushViewController:vc animated:YES];
     }else{
         //确认收货
+        
+        UIAlertController * actionview=[UIAlertController alertControllerWithTitle:@"" message:@"是否确认收货" preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction * action =[UIAlertAction actionWithTitle:@"是" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            [Engine myCenterYiMaiDaoSureShouHuoBiaoDiID:@"10" success:^(NSDictionary *dic) {
+                [LCProgressHUD showMessage:[dic objectForKey:@"msg"]];
+            } error:^(NSError *error) {
+                
+            }];
+        }];
+        UIAlertAction * action2 =[UIAlertAction actionWithTitle:@"否" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            
+        }];
+        [actionview addAction:action2];
+        [actionview addAction:action];
+        [self presentViewController:actionview animated:YES completion:nil];
+        
+        
+        
+        
+       
     }
 }
 //已买到的--交割管理

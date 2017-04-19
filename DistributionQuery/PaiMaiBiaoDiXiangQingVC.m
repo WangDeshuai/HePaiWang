@@ -474,7 +474,7 @@
     //开拍提醒
     UIButton * tixingBtn =[UIButton buttonWithType:UIButtonTypeCustom];
     [tixingBtn setBackgroundImage:[UIImage imageNamed:@"biaodi_bt1"] forState:0];
-   // [tixingBtn addTarget:self action:@selector(wangji) forControlEvents:UIControlEventTouchUpInside];
+    tixingBtn.hidden=YES;
     [_view1 sd_addSubviews:@[tixingBtn]];
     tixingBtn.sd_layout
     .rightSpaceToView(_view1,20)

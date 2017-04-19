@@ -127,8 +127,8 @@
 }
 -(void)viewWillAppear:(BOOL)animated
 {
-    _phoneText.text=@"15176862165";
-    _pwdText.text=@"123456";
+//    _phoneText.text=@"15176862165";
+//    _pwdText.text=@"123456";
 }
 #pragma mark --登录按钮
 -(void)loginBtn{

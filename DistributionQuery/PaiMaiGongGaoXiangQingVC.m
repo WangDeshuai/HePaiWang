@@ -10,6 +10,7 @@
 #import "PaiMaiBiaoDiModel.h"
 #import "XYAlertView.h"
 #import "HtmlViewController.h"
+#import "PaiMaiBiaoDiXiangQingVC.h"
 @interface PaiMaiGongGaoXiangQingVC ()<UITableViewDelegate,UITableViewDataSource>
 {
     dispatch_source_t _timer;
@@ -25,6 +26,7 @@
 @property(nonatomic,strong) NSMutableArray * dataArr;//存上一篇，下一篇
 @property(nonatomic,strong) NSMutableArray * dataArrID;//存上一篇ID，下一篇ID
 @property(nonatomic,copy)NSString * htmlStr;
+@property(nonatomic,strong)NSMutableArray * modelArr;//存放横着的滚动试图的arr
 @end
 
 @implementation PaiMaiGongGaoXiangQingVC
@@ -38,7 +40,7 @@
    
     _dataArr=[NSMutableArray new];
     _dataArrID=[NSMutableArray new];
-    
+    _modelArr=[NSMutableArray new];
      [self CreatTableView];
      [self twoBtn];
     
@@ -182,6 +184,16 @@
         [xv show];
     }else{
         //查看联系方式
+        UIAlertController * actionview=[UIAlertController alertControllerWithTitle:@"15032735032" message:@"是否进行拨打" preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction * action =[UIAlertAction actionWithTitle:@"是" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            [ToolClass tellPhone:@"15032735032"];
+        }];
+        UIAlertAction * action2 =[UIAlertAction actionWithTitle:@"否" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            
+        }];
+        [actionview addAction:action];
+        [actionview addAction:action2];
+        [self presentViewController:actionview animated:YES completion:nil];
     }
 }
 #pragma mark --区头
@@ -603,13 +615,14 @@
         for (int i =0; i<contentAr.count; i++) {
             NSDictionary * dicc =contentAr[i];
             PaiMaiBiaoDiModel * model =[[PaiMaiBiaoDiModel alloc]initWithBiaoDiDic:dicc];
+            [_modelArr addObject:model];
             UIButton * bgView =[UIButton new];
             bgView.backgroundColor=[UIColor magentaColor];
             bgView.tag=i;
             bgView.layer.borderWidth=.5;
             bgView.layer.borderColor=JXColor(205, 131, 137, 1).CGColor;
             bgView.backgroundColor=JXColor(247, 247, 247, 1);
-           // [bgView addTarget:self action:@selector(bgviewClick:) forControlEvents:UIControlEventTouchUpInside];
+            [bgView addTarget:self action:@selector(bgviewClick:) forControlEvents:UIControlEventTouchUpInside];
             [priceScrollview sd_addSubviews:@[bgView]];
             bgView.sd_layout
             .leftSpaceToView(priceScrollview,15+(140+15)*i)
@@ -677,7 +690,13 @@
 
 }
 
-
+-(void)bgviewClick:(UIButton*)btn{
+    PaiMaiBiaoDiModel * md =_modelArr[btn.tag];
+    PaiMaiBiaoDiXiangQingVC* vc =[PaiMaiBiaoDiXiangQingVC new];
+    vc.biaoDiID=md.biaoDiID;
+    vc.paiMaiID=md.paiMaiID;
+    [self.navigationController pushViewController:vc animated:YES];
+}
 
 #pragma mark --公告详情
 -(void)tapp{

@@ -109,6 +109,10 @@ typedef void (^ErrorBlock)(NSError*error);
 #pragma mark --37个人中心->我已买到的标的->标的详情页_交割管理页面_查看拍卖成交确认书
 +(void)chaKanQueRenShuBiaoDiID:(NSString*)biaoDi success:(SuccessBlock)aSuccess error:(ErrorBlock)aError;
 
+#pragma mark --38个人中心->我已买到的标的->标的详情页_交割管理页面_确认收货
++(void)myCenterYiMaiDaoSureShouHuoBiaoDiID:(NSString*)biaoDi  success:(SuccessBlock)aSuccess error:(ErrorBlock)aError;
+
+
 #pragma mark --39我委托的标的->标的详情页数据
 +(void)myWeiTuoXiangQingBiaoDiID:(NSString*)biaoDiID success:(SuccessBlock)aSuccess error:(ErrorBlock)aError;
 
@@ -118,6 +122,12 @@ typedef void (^ErrorBlock)(NSError*error);
 +(void)myWeiTuoJiaoGeGuanLiID:(NSString*)biaodiID success:(SuccessBlock)aSuccess error:(ErrorBlock)aError;
 #pragma mark --42 个人中心->我委托的标的 _获取委托拍卖合同信息
 +(void)myWeiTuoHtmlBtnBiaoDiID:(NSString*)biaodiID success:(SuccessBlock)aSuccess error:(ErrorBlock)aError;
+
+#pragma mark --43. 拍卖资讯列表
++(void)paiMaiZiXunListViewPage:(NSString*)page success:(SuccessBlock)aSuccess error:(ErrorBlock)aError;
+#pragma mark --44拍卖资讯详情
++(void)paiMaiZiXunXiangQingMessageID:(NSString*)idd success:(SuccessBlock)aSuccess error:(ErrorBlock)aError;
+
 
 #pragma  mark --socket长连接
 +(void)socketLianJieJsonStr:(NSString*)str success:(SuccessBlock)aSuccess ;

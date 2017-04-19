@@ -7,7 +7,7 @@
 //
 
 #import "PaiMaiZiXunXiangQingVC.h"
-
+#import "PaiMaiZiXunModel.h"
 @interface PaiMaiZiXunXiangQingVC ()
 
 @end
@@ -68,7 +68,7 @@
     UILabel * contentLabel =[UILabel new];
     contentLabel.text=@"19日下午，中央委员会中共中央总书记习近平参加了会议，在会议中习近平强调了以下几点，第一加强党的建设和发展第二19日下午，中央委员会中共中央总书记习近平参加了会议，在会议中习近平强调了以下几点，第一加强党的建设和发展第二19日下午，中央委员会中共中央总书记习近平参加了会议，在会议中习近平强调了以下几点，第一加强党的建设和发展第二";
  //   contentLabel.attributedText=[ToolClass hangJianJuStr:contentLabel.text JuLi:5];
-    contentLabel.font=[UIFont  systemFontOfSize:15];
+    contentLabel.font=[UIFont  systemFontOfSize:17];
     contentLabel.alpha=.7;
     contentLabel.numberOfLines=0;
     [view1 sd_addSubviews:@[contentLabel]];
@@ -80,6 +80,22 @@
     
     [view1 setupAutoHeightWithBottomView:contentLabel bottomMargin:15];
     
+    
+    
+    
+    [Engine paiMaiZiXunXiangQingMessageID:_zixunID success:^(NSDictionary *dic) {
+        NSString * code =[NSString stringWithFormat:@"%@",[dic objectForKey:@"code"]];
+        if ([code isEqualToString:@"1"]) {
+            NSDictionary * dicc =[dic objectForKey:@"content"];
+            PaiMaiZiXunModel * model =[[PaiMaiZiXunModel alloc]initWithPaiMaiZiXunDic:dicc];
+            titleLabel.text=model.titlelabel;
+            timeLabel.text=model.fabuTime;
+            contentLabel.attributedText=[ToolClass HTML:model.content];
+            
+        }
+    } error:^(NSError *error) {
+        
+    }];
     
 }
 

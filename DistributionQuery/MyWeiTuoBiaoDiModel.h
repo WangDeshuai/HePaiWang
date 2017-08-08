@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 //我委托的标的
 @interface MyWeiTuoBiaoDiModel : NSObject
-@property(nonatomic,copy)NSString * messageID;
+@property(nonatomic,copy)NSString * biaoDiID;
 @property(nonatomic,copy)NSString * headImage;
 @property(nonatomic,copy)NSString * titleName;
 @property(nonatomic,copy)NSString * priceName;
@@ -17,22 +17,20 @@
 @property(nonatomic,copy)NSString * timeName;
 -(id)initWithMyWeiTuoDic:(NSDictionary*)dic;
 //已买到的标的详情
-@property(nonatomic,copy)NSString *xqtitlename;//标题
-@property(nonatomic,copy)NSString *xqprice;//起拍价
-@property(nonatomic,copy)NSString *xqbaoming;//报名人数
-@property(nonatomic,copy)NSString *xqtixing;//提醒人数
-@property(nonatomic,copy)NSString *xqliulan;//浏览人数
-@property(nonatomic,copy)NSString *xqpinggu;//评估价
-@property(nonatomic,copy)NSString *xqjiajia;//加价幅度
-@property(nonatomic,copy)NSString *xqbaozhengjin;//保证金
-@property(nonatomic,copy)NSString *xqleixing;//类型
-@property(nonatomic,copy)NSString *xqziyou;//自由竞价
-@property(nonatomic,copy)NSString *xqbaoliujia;//保留价
-@property(nonatomic,copy)NSString *xqxianshi;//限时竞价
-@property(nonatomic,copy)NSString *xqyouxian;//优先购买权
-@property(nonatomic,copy)NSString *xqjingmai;//竞买须知
-@property(nonatomic,copy)NSString *xqgonggao;//竞买公告
-@property(nonatomic,copy)NSString *xqjieshao;//标的物介绍
-@property(nonatomic,strong)NSArray * xqImage;//轮播图
+@property(nonatomic,copy)NSString *xqlianxiren;//联系人
+@property(nonatomic,copy)NSString *xqphone;//手机号
+@property(nonatomic,copy)NSString *xqbiaoDiName;//标的名称
+@property(nonatomic,copy)NSString *xqbiaoDiMiaoShu;//标的描述
+@property(nonatomic,copy)NSString *xqxiaCi;//瑕疵说明
+@property(nonatomic,copy)NSString *xqShengName;//
+@property(nonatomic,copy)NSString *xqCityName;//
+@property(nonatomic,copy)NSString *xqXianName;//
+@property(nonatomic,copy)NSString *xqShengCode;//
+@property(nonatomic,copy)NSString *xqCityCode;//
+@property(nonatomic,copy)NSString *xqXianCode;//
+@property(nonatomic,copy)NSString *xqBaoLiuJia;//保留价
+@property(nonatomic,copy)NSString *xqPingGuJia;//评估价
+@property(nonatomic,copy)NSString * xqBiaoDiID;
+@property(nonatomic,strong)NSMutableArray * xqImage;//图片
 -(id)initWithBiaoDiXiangQingDic:(NSDictionary*)dic;
 @end

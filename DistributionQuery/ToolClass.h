@@ -37,6 +37,7 @@
  */
 +(NSMutableAttributedString *)attrStrFrom:(NSString *)titleStr intFond:(int)fond Color:(UIColor*)color numberStr:(NSString *)numberStr;
 
++(NSString*)baoLiuJia:(NSString*)str;
 #pragma mark --Label行间距设置
 /*
  默认黑色
@@ -72,6 +73,14 @@
 +(void)exitApplication2;
 #pragma mark --html解析
 +(NSAttributedString * )HTML:(NSString*)string1;
+#pragma mark --去标签html
++(NSString *)flattenHTML:(NSString *)html;
 #pragma mark --毫秒数转化为时间
 +(NSString *)ConvertStrToTime:(long  long)timeStr;
+#pragma mark --保证图片不变形
++(UIImage *)compressImageWith:(UIImage *)image width:(float)width height:(float)height;
+//#pragma mark --检验版本更新(YES代表更新，NO代表不更新)
++(BOOL)versionGenXinAppID:(NSString*)appID;
+#pragma mark --判断字符串是不是数字
++(BOOL)isPureInt:(NSString*)string;
 @end

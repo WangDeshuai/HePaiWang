@@ -21,7 +21,7 @@
 #import "BaseNavigationController.h"
 #import "ChangeThePasswordVC.h"//修改密码
 #import "SignTextViewController.h"//签名
-#import "PhotoXuanZeViewController.h"
+//#import "PhotoXuanZeViewController.h"
 //#import "<#header#>"
 @interface MyVC ()<UITableViewDelegate,UITableViewDataSource>
 {
@@ -42,23 +42,108 @@
 -(void)viewWillAppear:(BOOL)animated{
      self.navigationController.navigationBarHidden=YES;
     _tableView.tableHeaderView=[self tableViewHead];
+    [self addFooterButton];
 
+    
+    
 }
-- (void)viewDidLoad {
+
+
+
+
+
+
+/**
+ *  添加底部按钮
+ */
+-(void)addFooterButton
+{
+   
+    UIView * footView =[UIView new];
+    footView.backgroundColor=BG_COLOR;
+    footView.frame=CGRectMake(0, 10, ScreenWidth, 100);
+    
+   // 1.初始化Button
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+//    //2.设置文字和文字颜色
+    [button setTitle:@"退出登录" forState:UIControlStateNormal];
+    [button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+//    //3.设置圆角幅度
+    button.layer.cornerRadius = 10.0;
+//
+    [button addTarget:self action:@selector(buttonClink) forControlEvents:UIControlEventTouchUpInside];
+//    //4.设置frame
+    button.frame =CGRectMake(30, 30, ScreenWidth-60, 40);;
+//
+//    //5.设置背景色
+    button.backgroundColor = [UIColor redColor];
+   
+    if ([ToolClass isLogin]) {
+         [footView addSubview:button];
+    }else{
+        [button removeFromSuperview];
+    }
+   
+    self.tableView.tableFooterView = footView;
+}
+
+
+
+-(void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.backHomeBtn.hidden=YES;
    
-   
+   //2764109822@qq.com   2764109822
+    //
+    [self tankuang];
     [self dataArr];
     [self CreatTableView];
-    self.view.backgroundColor=[UIColor blackColor];
+    UIView*backView =[[UIView alloc]initWithFrame:CGRectMake(0, 0, ScreenWidth, 20)];
+    backView.backgroundColor=[UIColor blackColor];
+    [self.view addSubview:backView];
+    self.view.backgroundColor=[UIColor whiteColor];
+//[self addFooterButton];
 }
+
+
+#pragma mark --弹框
+-(void)tankuang{
+    if ([ToolClass isLogin]==YES) {
+        [Engine weiDuMessageTanKuangsuccess:^(NSDictionary *dic) {
+            NSString * code =[NSString stringWithFormat:@"%@",[dic objectForKey:@"code"]];
+            if ([code isEqualToString:@"1"]) {
+                if ([dic objectForKey:@"content"]==[NSNull null]) {
+                    return ;
+                }else{
+                    NSDictionary * dicContent =[dic objectForKey:@"content"];
+                    NSString *str =[ToolClass isString:[NSString stringWithFormat:@"%@",[dicContent objectForKey:@"remaindMsg"]]];
+                    if ([str isEqualToString:@""]) {
+                        
+                    }else{
+                        UIAlertController * actionView =[UIAlertController alertControllerWithTitle:@"温馨提示" message:str preferredStyle:UIAlertControllerStyleAlert];
+                        UIAlertAction * action1 =[UIAlertAction actionWithTitle:@"我知道了" style:UIAlertActionStyleDefault handler:nil];
+                        
+                        [actionView addAction:action1];
+                        [self presentViewController:actionView animated:YES completion:nil];
+                    }
+                    
+                    
+                    
+                    
+                }
+            }
+        } error:^(NSError *error) {
+            
+        }];
+    }
+}
+
 #pragma mark --创建数据源
 -(void)dataArr{
     NSArray * arr1 =@[@"发布新标的",@"发布预告"];
     NSArray * arr2 =@[@"个人信息",@"实名认证"];
-    NSArray * arr3=@[@"消息列表",@"账户信息"];
+    NSArray * arr3=@[@"消息列表",@"账户消息"];
     NSArray * arr4=@[@"修改密码"];
     
      NSArray * image1 =@[@"person_mg",@"person_fb"];
@@ -72,14 +157,14 @@
 }
 -(void)CreatTableView{
     if (!_tableView) {
-        _tableView=[[UITableView alloc]initWithFrame:CGRectMake(0, 20, ScreenWidth, ScreenHeight) style:UITableViewStylePlain];
+        _tableView=[[UITableView alloc]initWithFrame:CGRectMake(0, 20, ScreenWidth, ScreenHeight-49-20) style:UITableViewStylePlain];
     }
     _tableView.dataSource=self;
     _tableView.delegate=self;
 //    _tableView.bounces=NO;
     _tableView.backgroundColor=BG_COLOR;
    // _tableView.tableHeaderView=[self tableViewHead];
-    _tableView.tableFooterView=[UIView new];
+//    _tableView.tableFooterView=[UIView new];
     [self.view addSubview:_tableView];
     
 }
@@ -122,10 +207,18 @@
     namelable.sd_layout
     .leftSpaceToView(imageview,10)
     .centerYEqualToView(imageview)
-    .heightIs(20);
-    [namelable setSingleLineAutoResizeWithMaxWidth:120];
+    .heightIs(20)
+    .rightSpaceToView(cell,40);//17186013071
+//    [namelable setSingleLineAutoResizeWithMaxWidth:120];
     cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
     cell.selectionStyle=UITableViewCellSelectionStyleNone;
+//    if (indexPath.section==3) {
+//        if (indexPath.row==1) {
+//            namelable.font=[UIFont systemFontOfSize:17];
+//            namelable.textAlignment=1;
+//            namelable.textColor=[UIColor redColor];
+//        }
+//    }
     return cell;
 }
 
@@ -177,10 +270,11 @@
     }else{
         if (indexPath.row==0) {
             //修改密码ChangeThePasswordVC   SignTextViewController PhotoXuanZeViewController
-            SignTextViewController * vc =[SignTextViewController new];
+            ChangeThePasswordVC * vc =[ChangeThePasswordVC new];
            // vc.tagg=0;
             vc.hidesBottomBarWhenPushed=YES;
             [self.navigationController pushViewController:vc animated:YES];
+        }else if (indexPath.row==1){
         }
     }
 }
@@ -221,7 +315,7 @@
     
     if ([ToolClass isLogin]) {
         NSDictionary * baseInfoDic =[ToolClass duquPlistWenJianPlistName:@"baseInfo"];
-        
+        ;
         //已登录
         UILabel * accountLab =[UILabel new];
         accountLab.text=[baseInfoDic objectForKey:@"account"];
@@ -245,13 +339,45 @@
         .topSpaceToView(accountLab,5)
         .heightIs(20);
         [nameLabel setSingleLineAutoResizeWithMaxWidth:120];
-        
-        
-       // [headImage setImageWithURL:[NSURL URLWithString:[baseInfoDic objectForKey:@"head_img"]] placeholderImage:[UIImage imageNamed:@"headImage"]];
         [headImage setImageForState:0 withURL:[NSURL URLWithString:[baseInfoDic objectForKey:@"head_img"]] placeholderImage:[UIImage imageNamed:@"headImage"]];
+        
+        //认证图片
+        UIImageView * renZheng =[UIImageView new];
+        [bgImage sd_addSubviews:@[renZheng]];
+        renZheng.sd_layout
+        .centerXEqualToView(bgImage)
+        .topSpaceToView(nameLabel,10)
+        .widthIs(54)
+        .heightIs(15);
+        
+        [Engine houQuShiMingRenZhengUserIDsuccess:^(NSDictionary *dic) {
+            NSString * code =[NSString stringWithFormat:@"%@",[dic objectForKey:@"code"]];
+            if ([code isEqualToString:@"1"]) {
+                NSString * contentStr =[ToolClass isString:[NSString stringWithFormat:@"%@",[dic objectForKey:@"content"]]];
+                //-1未认证 0未通过  1已认证   2待审核
+                if ([contentStr isEqualToString:@"-1"]) {
+                    renZheng.image=[UIImage imageNamed:@"person_rz_no"];
+                }else if ([contentStr isEqualToString:@"0"]){
+                    
+                    renZheng.image=[UIImage imageNamed:@"person_rz_none"];
+                }else if ([contentStr isEqualToString:@"1"]){
+                     renZheng.image=[UIImage imageNamed:@"person_rz"];
+                }else if ([contentStr isEqualToString:@"2"]){
+                     renZheng.image=[UIImage imageNamed:@"person_rz_sh"];
+                }
+                
+            }
+        } error:^(NSError *error) {
+            
+        }];
+        
+        
+        
+        
     }else{
         //未登录
         //立即登录
+    
         UIButton * loginBtn =[UIButton buttonWithType:UIButtonTypeCustom];
         [loginBtn setBackgroundImage:[UIImage imageNamed:@"person_login"] forState:0];
         [loginBtn addTarget:self action:@selector(btnn:) forControlEvents:UIControlEventTouchUpInside];
@@ -347,7 +473,28 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
-
+#pragma mark --退出
+-(void)buttonClink{
+    UIAlertController * alertView =[UIAlertController alertControllerWithTitle:@"" message:@"是否确认退出" preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction * action1 =[UIAlertAction actionWithTitle:@"是" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+        //1.清楚token
+        [NSUSE_DEFO removeObjectForKey:@"token"];
+        [NSUSE_DEFO removeObjectForKey:@"people"];
+        [NSUSE_DEFO removeObjectForKey:@"phone"];
+        [NSUSE_DEFO synchronize];
+        //2.清楚plist文件
+        [ToolClass deleagtePlistName:@"baseInfo"];
+        [ToolClass deleagtePlistName:@"shiMingInfo"];
+        //                [self.navigationController popViewControllerAnimated:YES];
+        self.tabBarController.selectedIndex=0;
+    }];
+    UIAlertAction * action2 =[UIAlertAction actionWithTitle:@"否" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        
+    }];
+    [alertView addAction:action2];
+    [alertView addAction:action1];
+    [self presentViewController:alertView animated:YES completion:nil];
+}
 /*
 #pragma mark - Navigation
 

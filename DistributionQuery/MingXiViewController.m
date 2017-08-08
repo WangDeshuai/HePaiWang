@@ -38,7 +38,7 @@
 
 //交易明细数据请求 已买到的
 -(void)jiaoYiMingXiData{
-    [Engine jiaoYiMingXiBiaoDiID:@"10" success:^(NSDictionary *dic) {
+    [Engine jiaoYiMingXiBiaoDiID:_biaoDiID success:^(NSDictionary *dic) {
         NSString * code =[NSString stringWithFormat:@"%@",[dic objectForKey:@"code"]];
         if ([code isEqualToString:@"1"]) {
             NSDictionary * contentDic =[dic objectForKey:@"content"];
@@ -54,7 +54,7 @@
 }
 //交易明细数据,我委托的
 -(void)jiaoYiMingXiDataMyweiTuo{
-    [Engine myWeiTuoJiaoYiXiangXiID:@"10" success:^(NSDictionary *dic) {
+    [Engine myWeiTuoJiaoYiXiangXiID:_biaoDiID success:^(NSDictionary *dic) {
         NSString * code =[NSString stringWithFormat:@"%@",[dic objectForKey:@"code"]];
         if ([code isEqualToString:@"1"]) {
             NSDictionary * contentDic =[dic objectForKey:@"content"];

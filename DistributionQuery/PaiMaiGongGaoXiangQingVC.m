@@ -11,6 +11,8 @@
 #import "XYAlertView.h"
 #import "HtmlViewController.h"
 #import "PaiMaiBiaoDiXiangQingVC.h"
+#import "XieYiJingMaiVC.h"
+#import "ShiMingRenZhengVC.h"
 @interface PaiMaiGongGaoXiangQingVC ()<UITableViewDelegate,UITableViewDataSource>
 {
     dispatch_source_t _timer;
@@ -25,6 +27,7 @@
 @property(nonatomic,strong) UILabel *secondLabel;//秒
 @property(nonatomic,strong) NSMutableArray * dataArr;//存上一篇，下一篇
 @property(nonatomic,strong) NSMutableArray * dataArrID;//存上一篇ID，下一篇ID
+@property(nonatomic,copy)NSString * datasoue;
 @property(nonatomic,copy)NSString * htmlStr;
 @property(nonatomic,strong)NSMutableArray * modelArr;//存放横着的滚动试图的arr
 @end
@@ -60,7 +63,7 @@
     _tableView.dataSource=self;
     _tableView.backgroundColor=BG_COLOR;
     _tableView.tableFooterView=[UIView new];
-    _tableView.tableHeaderView=[self CreatView1:_messageID];
+    _tableView.tableHeaderView=[self CreatView1:_paiMaiHuiID];
     [self.view addSubview:_tableView];
 }
 
@@ -110,7 +113,27 @@
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     NSLog(@"输出ID=%@",_dataArrID[indexPath.row]);
-    _tableView.tableHeaderView=[self CreatView1:_dataArrID[indexPath.row]];
+    if (indexPath.row==0) {
+        //上一篇
+        NSString * str =_dataArrID[indexPath.row];
+        if ([str isEqualToString:@"-1"]) {
+            [LCProgressHUD showMessage:@"没有数据"];
+        }else{
+             _tableView.tableHeaderView=[self CreatView1:_dataArrID[indexPath.row]];
+        }
+        
+    }else if (indexPath.row==1){
+        //下一篇
+        NSString * str =_dataArrID[indexPath.row];
+        if ([str isEqualToString:@"-1"]) {
+            [LCProgressHUD showMessage:@"没有数据"];
+        }else{
+            _tableView.tableHeaderView=[self CreatView1:_dataArrID[indexPath.row]];
+        }
+    }
+    
+    
+   
 }
 //-(UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
 //    UIView * bgView =[UIView new];
@@ -164,29 +187,63 @@
 #pragma mark --2个按钮点击状态
 -(void)btnClinkwo:(UIButton*)btn{
     if (btn.tag==0) {
-        //立即报名
-        XYAlertView * xv =[[XYAlertView alloc]initWithTitle:@"我要报名" alerMessage:@"提交信息" canCleBtn:@"提交信息" otheBtn:@""];
-         __weak __typeof(xv)weakSelf = xv;
-        xv.NameBlock=^(NSString*people,NSString*phone,NSString*other){
-         // 调用接口
-            [LCProgressHUD showMessage:@"正在发布..."];
-            [Engine BaoMingCanJianPaiMaiID:_messageID BiaoDiID:@"" Phone:phone PeopleName:people MessageName:other success:^(NSDictionary *dic) {
-                [LCProgressHUD showMessage:[dic objectForKey:@"msg"]];
+        if ([ToolClass isLogin]==NO) {
+            //未登录，提示登录
+            [self alertViewTiXing];
+        }else{
+            [Engine houQuShiMingRenZhengUserIDsuccess:^(NSDictionary *dic) {
                 NSString * code =[NSString stringWithFormat:@"%@",[dic objectForKey:@"code"]];
+                
                 if ([code isEqualToString:@"1"]) {
-                    [weakSelf dissmiss];
+                    // 1已通过认证 0 有认证资料但未通过认证 -1 无认证资料  2
+                    NSString * contentStr =[NSString stringWithFormat:@"%@",[dic objectForKey:@"content"]];
+                    if ([contentStr isEqualToString:@"1"]) {
+                        ;
+                        //认证通过了(跳转竞买协议界面)
+                        [Engine PanDuanBaoMingPaiMaiHuiID:_paiMaiHuiID BiaoDiID:_baioDiID DataSoure:_datasoue  success:^(NSDictionary *dic) {
+                            NSString * code =[NSString stringWithFormat:@"%@",[dic objectForKey:@"content"]];
+                            if ([code isEqualToString:@"1"]) {
+                                //(跳转竞买协议界面)
+                                XieYiJingMaiVC * vc =[XieYiJingMaiVC new];
+                                vc.paiMaiHuiID=_paiMaiHuiID;
+                                vc.biaoDiID=_baioDiID;
+                                [self.navigationController pushViewController:vc animated:YES];
+                            }else{
+                                [LCProgressHUD showMessage:[dic objectForKey:@"msg"]];
+                            }
+                        } error:^(NSError *error) {
+                            
+                        }];
+                        
+                        
+//                        XieYiJingMaiVC * vc =[XieYiJingMaiVC new];
+//                        vc.paiMaiHuiID=_paiMaiHuiID;
+//                        vc.biaoDiID=_baioDiID;
+//                        [self.navigationController pushViewController:vc animated:YES];
+                        // [self BaoMing];
+                    }else if ([contentStr isEqualToString:@"-1"]){
+                        //没有认证资料(弹框去认证)
+                        [self shiMingRenZhengMessage:@"您还没有认证资料，是否去填写" Bools:YES];
+                    }else if ([contentStr isEqualToString:@"0"]){
+                        //有认证资料，但是没有通过(弹框)
+                        [self shiMingRenZhengMessage:@"您还未认证通过，是否修改认证资料" Bools:YES];
+                        
+                    }else if ([contentStr isEqualToString:@"2"]){
+                         [self shiMingRenZhengMessage:@"您的资料正在等待审核" Bools:NO];
+                    }
+                }else{
+                    [LCProgressHUD showMessage:[dic objectForKey:@"msg"]];
                 }
             } error:^(NSError *error) {
                 
             }];
-        };
-        
-        [xv show];
+            
+        }
     }else{
         //查看联系方式
-        UIAlertController * actionview=[UIAlertController alertControllerWithTitle:@"15032735032" message:@"是否进行拨打" preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertController * actionview=[UIAlertController alertControllerWithTitle:PHONE message:@"是否进行拨打" preferredStyle:UIAlertControllerStyleAlert];
         UIAlertAction * action =[UIAlertAction actionWithTitle:@"是" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-            [ToolClass tellPhone:@"15032735032"];
+            [ToolClass tellPhone:PHONE];
         }];
         UIAlertAction * action2 =[UIAlertAction actionWithTitle:@"否" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
             
@@ -196,6 +253,65 @@
         [self presentViewController:actionview animated:YES completion:nil];
     }
 }
+
+//未登录，提示登录
+-(void)alertViewTiXing{
+    UIAlertController * actionview=[UIAlertController alertControllerWithTitle:@"温馨提示" message:@"您还未登录，是否进行登录" preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction * action =[UIAlertAction actionWithTitle:@"是" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        LoginViewController * vc =[LoginViewController new];
+        [self.navigationController pushViewController:vc animated:YES];
+    }];
+    UIAlertAction * action2 =[UIAlertAction actionWithTitle:@"否" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        
+    }];
+    [actionview addAction:action];
+    [actionview addAction:action2];
+    [self presentViewController:actionview animated:YES completion:nil];
+}
+//未认证，提示认证
+-(void)shiMingRenZhengMessage:(NSString*)mess Bools:(BOOL)isfor{
+    UIAlertController * actionview=[UIAlertController alertControllerWithTitle:@"温馨提示" message:mess preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction * action =[UIAlertAction actionWithTitle:@"是" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        if (isfor ==YES) {
+            ShiMingRenZhengVC * vc =[ShiMingRenZhengVC new];
+            [self.navigationController pushViewController:vc animated:YES];
+   
+        }
+    }];
+    UIAlertAction * action2 =[UIAlertAction actionWithTitle:@"否" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        
+    }];
+    [actionview addAction:action];
+    if (isfor==YES) {
+         [actionview addAction:action2];
+    }
+   
+    [self presentViewController:actionview animated:YES completion:nil];
+}
+
+/*
+ 
+ //立即报名
+ XYAlertView * xv =[[XYAlertView alloc]initWithTitle:@"我要报名" alerMessage:@"提交信息" canCleBtn:@"提交信息" otheBtn:@""];
+ __weak __typeof(xv)weakSelf = xv;
+ xv.NameBlock=^(NSString*people,NSString*phone,NSString*other){
+ // 调用接口
+ [LCProgressHUD showMessage:@"正在发布..."];
+ [Engine BaoMingCanJianPaiMaiID:_paiMaiHuiID BiaoDiID:@"" Phone:phone PeopleName:people MessageName:other success:^(NSDictionary *dic) {
+ [LCProgressHUD showMessage:[dic objectForKey:@"msg"]];
+ NSString * code =[NSString stringWithFormat:@"%@",[dic objectForKey:@"code"]];
+ if ([code isEqualToString:@"1"]) {
+ [weakSelf dissmiss];
+ }
+ } error:^(NSError *error) {
+ 
+ }];
+ };
+ 
+ [xv show];
+
+ 
+ */
 #pragma mark --区头
 -(UIView*)CreatView1:(NSString*)messageID{
     _view1=[UIView new];
@@ -336,7 +452,7 @@
 
    
     [LCProgressHUD showMessage:@"正在加载..."];
-    [Engine PaiMaiPublicMessageID:messageID success:^(NSDictionary *dic) {
+    [Engine PaiMaiPublicMessageID:messageID DataSoure:_datasoure success:^(NSDictionary *dic) {
        
         NSString * code =[NSString stringWithFormat:@"%@",[dic objectForKey:@"code"]];
         if ([code isEqualToString:@"1"]) {
@@ -364,14 +480,29 @@
             NSDictionary *infoDic =[contetDic objectForKey:@"auctionInfo"];
             //标题
             titleLabel.text=[ToolClass isString:[NSString stringWithFormat:@"%@",[infoDic objectForKey:@"auction_name"]]];
+            _datasoue=[ToolClass isString:[NSString stringWithFormat:@"%@",[infoDic objectForKey:@"dataSource"]]];
             //公告时间
              timeLabel.text=[ToolClass isString:[NSString stringWithFormat:@"公告时间   %@",[infoDic objectForKey:@"auction_add_time"]]];
             //开始日期
              [self dataRiqiTime:[ToolClass isString:[NSString stringWithFormat:@"%@",[infoDic objectForKey:@"auction_begin_time"]]]];
             //赋值
-            NSString * str1 =[NSString stringWithFormat:@"保证金     %@",[ToolClass isString:[NSString stringWithFormat:@"%@",[infoDic objectForKey:@"auction_deposit_value"]]]];
-            NSString * str2 =[NSString stringWithFormat:@"保留价     %@",[ToolClass isString:[NSString stringWithFormat:@"%@",[infoDic objectForKey:@"auction_use_reserve_price"]]]];
-            NSString * str3 =[NSString stringWithFormat:@"优先购买权   %@",[ToolClass isString:[NSString stringWithFormat:@"%@",[infoDic objectForKey:@"auction_use_preferential_buy"]]]];
+            NSString * str1 =[NSString stringWithFormat:@"保证金     %@元",[ToolClass isString:[NSString stringWithFormat:@"%@",[infoDic objectForKey:@"auction_deposit_value"]]]];
+            NSString * bl =[ToolClass isString:[NSString stringWithFormat:@"%@",[infoDic objectForKey:@"auction_use_reserve_price"]]];//[NSString stringWithFormat:@"保留价     %@",];
+              NSString * str2 ;
+            if ([bl isEqualToString:@"0"]) {
+                str2=@"保留价     无";
+            }else{
+                str2=@"保留价     有";
+            }
+          
+            
+            NSString * yx=[ToolClass isString:[NSString stringWithFormat:@"%@",[infoDic objectForKey:@"auction_use_preferential_buy"]]];//[NSString stringWithFormat:@"优先购买权   %@",[ToolClass isString:[NSString stringWithFormat:@"%@",[infoDic objectForKey:@"auction_use_preferential_buy"]]]];
+            NSString * str3;
+            if ([yx isEqualToString:@"0"]) {
+                str3=@"优先购买权    无";
+            }else{
+                str3=@"优先购买权    有";
+            }
             NSString * str4 =[NSString stringWithFormat:@"预展地点     %@",[ToolClass isString:[NSString stringWithFormat:@"%@",[infoDic objectForKey:@"auction_preview_cityname"]]]];
             NSString * str5 =[NSString stringWithFormat:@"报名截止   %@",[ToolClass isString:[NSString stringWithFormat:@"%@",[infoDic objectForKey:@"auction_preview_end_time"]]]];
             NSString * str6 =[NSString stringWithFormat:@"预展时间   %@",[ToolClass isString:[NSString stringWithFormat:@"%@至%@",[infoDic objectForKey:@"auction_preview_begin_time"],[infoDic objectForKey:@"auction_preview_end_time"]]]];
@@ -521,7 +652,7 @@
     //拍卖地点
     UILabel * paiMaiLabel =[UILabel new];
    ;
-    paiMaiLabel.text=[NSString stringWithFormat:@"拍卖地点  %@%@", [dic objectForKey:@"auction_provname"],[dic objectForKey:@"auction_cityname"]];//@"拍卖地点     河北石家庄长安区";
+    paiMaiLabel.text=[NSString stringWithFormat:@"拍卖地点  %@%@%@", [dic objectForKey:@"auction_provname"],[dic objectForKey:@"auction_cityname"],[dic objectForKey:@"auction_addr"]];//@"拍卖地点     河北石家庄长安区";
     paiMaiLabel.alpha=.6;
     paiMaiLabel.font=[UIFont systemFontOfSize:15];
     [addressView sd_addSubviews:@[paiMaiLabel]];
@@ -693,8 +824,10 @@
 -(void)bgviewClick:(UIButton*)btn{
     PaiMaiBiaoDiModel * md =_modelArr[btn.tag];
     PaiMaiBiaoDiXiangQingVC* vc =[PaiMaiBiaoDiXiangQingVC new];
+    NSLog(@"拍卖公告>>>%@>>>%@",md.biaoDiID,md.paiMaiID);
     vc.biaoDiID=md.biaoDiID;
     vc.paiMaiID=md.paiMaiID;
+    vc.dataScore=md.dataSoure;
     [self.navigationController pushViewController:vc animated:YES];
 }
 
@@ -702,6 +835,7 @@
 -(void)tapp{
     HtmlViewController * html =[HtmlViewController new];
     html.str=_htmlStr;
+    html.titlename=@"公告详情";
     [self.navigationController pushViewController:html animated:YES];
 }
 

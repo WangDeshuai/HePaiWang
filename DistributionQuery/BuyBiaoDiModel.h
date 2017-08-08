@@ -16,6 +16,7 @@
 @property(nonatomic,copy)NSString *diqu;
 @property(nonatomic,copy)NSString *time;
 @property(nonatomic,copy)NSString * biaoDiId;
+@property(nonatomic,copy)NSString * leiXing;
 -(id)initWithBiaoDiDic:(NSDictionary*)dic;
 //已买到的标的详情
 @property(nonatomic,copy)NSString *xqtitlename;//标题
@@ -34,7 +35,7 @@
 @property(nonatomic,copy)NSString *xqjingmai;//竞买须知
 @property(nonatomic,copy)NSString *xqgonggao;//竞买公告
 @property(nonatomic,copy)NSString *xqjieshao;//标的物介绍
-@property(nonatomic,strong)NSArray * xqImage;//轮播图
+@property(nonatomic,strong)NSMutableArray * xqImage;//轮播图
 -(id)initWithBiaoDiXiangQingDic:(NSDictionary*)dic;
 //交易明细
 @property(nonatomic,copy)NSString * mxBianHao;//明细编号

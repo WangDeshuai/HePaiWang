@@ -100,7 +100,15 @@
     NSString *CellIdentifier = [NSString stringWithFormat:@"Cell%ld%ld", (long)[indexPath section], (long)[indexPath row]];
     
     MyWeiTuoTableViewCell * cell =[MyWeiTuoTableViewCell cellWithTableView:tableView CellID:CellIdentifier];
+    cell.jiaoGeImage.hidden=NO;
+    
     BuyBiaoDiModel * md =_dataArray[indexPath.row];
+    if ([md.leiXing isEqualToString:@"0"]) {
+        cell.jiaoGeImage.image=[UIImage imageNamed:@"buy_bt2"];
+    }else if ([md.leiXing isEqualToString:@"1"]){
+        cell.jiaoGeImage.image=[UIImage imageNamed:@"buy_bt1"];
+    }
+    
     cell.model=md;
     return cell;
 }

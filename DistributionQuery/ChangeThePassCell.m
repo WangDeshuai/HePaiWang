@@ -48,7 +48,6 @@
     .widthIs(26)
     .heightIs(32);
     
-    
     _textfield.sd_layout
     .leftSpaceToView(_leftImage,15)
     .rightSpaceToView(self.contentView,5)

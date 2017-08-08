@@ -92,7 +92,7 @@
     .leftEqualToView(_titleLabel)
     .topSpaceToView(_titleLabel,15)
     .rightSpaceToView(self.contentView,15)
-    .heightIs(20);
+    .autoHeightRatio(0);
     //会线条
     _lineView.sd_layout
     .leftSpaceToView(self.contentView,0)

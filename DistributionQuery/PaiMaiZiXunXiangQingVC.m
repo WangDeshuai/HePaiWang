@@ -8,8 +8,9 @@
 
 #import "PaiMaiZiXunXiangQingVC.h"
 #import "PaiMaiZiXunModel.h"
-@interface PaiMaiZiXunXiangQingVC ()
 
+@interface PaiMaiZiXunXiangQingVC ()<UIWebViewDelegate>
+@property(nonatomic,strong)UIWebView * webView;
 @end
 
 @implementation PaiMaiZiXunXiangQingVC
@@ -18,6 +19,10 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.title=@"拍卖资讯详情";
+    
+   
+//    [self.webView loadHTMLString:html_str baseURL:nil];
+   
     [self CreatView];
 }
 
@@ -39,8 +44,9 @@
     titleLabel.sd_layout
     .leftSpaceToView(view1,15)
     .topSpaceToView(view1,20)
-    .heightIs(20);
-    [titleLabel setSingleLineAutoResizeWithMaxWidth:300];
+    .rightSpaceToView(view1,15)
+    .autoHeightRatio(0);
+//    [titleLabel setSingleLineAutoResizeWithMaxWidth:300];
     //时间
     UILabel * timeLabel =[UILabel new];
     timeLabel.text=@"2016-11-20";
@@ -62,23 +68,35 @@
     .rightSpaceToView(view1,0)
     .topSpaceToView(timeLabel,15)
     .heightIs(1);
+     [view1 setupAutoHeightWithBottomView:lineView bottomMargin:15];
     
-    //内容
+    _webView = [[UIWebView alloc] init];//WithFrame:CGRectMake(100, 100, 100, 100)];
+    _webView.delegate=self;
+    [self.view sd_addSubviews:@[self.webView]];
     
-    UILabel * contentLabel =[UILabel new];
-    contentLabel.text=@"19日下午，中央委员会中共中央总书记习近平参加了会议，在会议中习近平强调了以下几点，第一加强党的建设和发展第二19日下午，中央委员会中共中央总书记习近平参加了会议，在会议中习近平强调了以下几点，第一加强党的建设和发展第二19日下午，中央委员会中共中央总书记习近平参加了会议，在会议中习近平强调了以下几点，第一加强党的建设和发展第二";
- //   contentLabel.attributedText=[ToolClass hangJianJuStr:contentLabel.text JuLi:5];
-    contentLabel.font=[UIFont  systemFontOfSize:17];
-    contentLabel.alpha=.7;
-    contentLabel.numberOfLines=0;
-    [view1 sd_addSubviews:@[contentLabel]];
-    contentLabel.sd_layout
-    .leftEqualToView(titleLabel)
-    .topSpaceToView(lineView,15)
-    .rightSpaceToView(view1,0)
-    .autoHeightRatio(0);
+    _webView.sd_layout
+    .leftSpaceToView(self.view,0)
+    .rightSpaceToView(self.view,0)
+    .topSpaceToView(lineView,10)
+    .bottomSpaceToView(self.view,0);
     
-    [view1 setupAutoHeightWithBottomView:contentLabel bottomMargin:15];
+    
+//    //内容
+//    
+//    UILabel * contentLabel =[UILabel new];
+//    contentLabel.text=@"19日下午，中央委员会中共中央总书记习近平参加了会议，在会议中习近平强调了以下几点，第一加强党的建设和发展第二19日下午，中央委员会中共中央总书记习近平参加了会议，在会议中习近平强调了以下几点，第一加强党的建设和发展第二19日下午，中央委员会中共中央总书记习近平参加了会议，在会议中习近平强调了以下几点，第一加强党的建设和发展第二";
+// //   contentLabel.attributedText=[ToolClass hangJianJuStr:contentLabel.text JuLi:5];
+//    contentLabel.font=[UIFont  systemFontOfSize:17];
+//    contentLabel.alpha=.7;
+//    contentLabel.numberOfLines=0;
+//    [view1 sd_addSubviews:@[contentLabel]];
+//    contentLabel.sd_layout
+//    .leftEqualToView(titleLabel)
+//    .topSpaceToView(lineView,15)
+//    .rightSpaceToView(view1,0)
+//    .autoHeightRatio(0);
+    
+   
     
     
     
@@ -90,7 +108,8 @@
             PaiMaiZiXunModel * model =[[PaiMaiZiXunModel alloc]initWithPaiMaiZiXunDic:dicc];
             titleLabel.text=model.titlelabel;
             timeLabel.text=model.fabuTime;
-            contentLabel.attributedText=[ToolClass HTML:model.content];
+            [self.webView loadHTMLString:model.content baseURL:nil];
+           // contentLabel.text=[self flattenHTML:model.content];//[ToolClass HTML:model.content];
             
         }
     } error:^(NSError *error) {
@@ -98,7 +117,12 @@
     }];
     
 }
-
+-(void)webViewDidFinishLoad:(UIWebView *)webView{
+    for (int i =0; i<20; i++) {
+        NSString *meta = [NSString stringWithFormat:@"document.getElementsByTagName('img')[%d].style.width = '100%%'", i];
+        [webView stringByEvaluatingJavaScriptFromString:meta];
+    }
+}
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.

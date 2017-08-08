@@ -10,4 +10,5 @@
 
 @interface HtmlViewController : BaseViewController
 @property(nonatomic,copy)NSString * str;
+@property(nonatomic,copy)NSString * titlename;
 @end

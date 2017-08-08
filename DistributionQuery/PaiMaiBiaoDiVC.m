@@ -13,6 +13,7 @@
 #import "RightMyAddressCell.h"
 #import "ShengCityModel.h"
 #import "PaiMaiBiaoDiModel.h"
+#import "WeiTuoPaiMaiVC.h"
 @interface PaiMaiBiaoDiVC ()<UITableViewDelegate,UITableViewDataSource,UITextFieldDelegate>
 @property(nonatomic,strong)UITableView * tableView;
 @property(nonatomic,strong)UIButton * lastBtn;
@@ -59,6 +60,7 @@
     logoBtn2.frame=CGRectMake(0, 0, 76/2, 44/2);
     [logoBtn2 setImage:[UIImage imageNamed:@"liebiao_phone"] forState:0];
     UIBarButtonItem *leftBtn2 =[[UIBarButtonItem alloc]initWithCustomView:logoBtn2];
+    [logoBtn2 addTarget:self action:@selector(logoBtnClink) forControlEvents:UIControlEventTouchUpInside];
      self.navigationItem.rightBarButtonItems=@[leftBtn2];
     
     self.textHomeField.hidden=NO;
@@ -89,6 +91,20 @@
     [self CreatBtnTitle:titleArr];
     [self shuChu];
 }
+#pragma mark --拨打电话
+-(void)logoBtnClink{
+    UIAlertController * actionview=[UIAlertController alertControllerWithTitle:@"4008081957" message:@"是否进行拨打客服电话" preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction * action =[UIAlertAction actionWithTitle:@"是" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [ToolClass tellPhone:@"4008081957"];
+    }];
+    UIAlertAction * action2 =[UIAlertAction actionWithTitle:@"否" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        
+    }];
+    [actionview addAction:action];
+    [actionview addAction:action2];
+    [self presentViewController:actionview animated:YES completion:nil];
+}
+
 #pragma mark --灰色按钮点击取消
 -(void)bgViewBtn{
     [self dissmiss];
@@ -266,11 +282,20 @@
     UIButton * fabu =[UIButton buttonWithType:UIButtonTypeCustom];
     fabu.backgroundColor=[UIColor whiteColor];
     _lastBtn=fabu;
+    [fabu addTarget:self action:@selector(fabuClink) forControlEvents:UIControlEventTouchUpInside];
     fabu.frame=CGRectMake(0, ScreenHeight-55-64, ScreenWidth, 55);
     [fabu setImage:[UIImage imageNamed:@"liebiaonav_bottom "] forState:0];
     [self.view addSubview:fabu];
    
 }
+
+-(void)fabuClink{
+//     self.tabBarController.selectedIndex=1;
+    WeiTuoPaiMaiVC * vc =[WeiTuoPaiMaiVC new];
+    vc.tagg=1;
+    [self.navigationController pushViewController:vc animated:YES];
+}
+
 #pragma mark --创建左边表格
 -(void)CreatLeftTableVeiw{
     
@@ -399,6 +424,7 @@
         NSString *CellIdentifier = [NSString stringWithFormat:@"Cell%ld%ld", (long)[indexPath section], (long)[indexPath row]];
         
         PaiMaiBiaoDiCell * cell =[PaiMaiBiaoDiCell cellWithTableView:tableView CellID:CellIdentifier];
+        cell.paimaiLabel.text=@"所在地区";
         PaiMaiBiaoDiModel * md =_dataArray[indexPath.row];
         cell.twoModel=md;
         return cell;
@@ -450,7 +476,9 @@
             }
             [_dataArray removeAllObjects];
             [_tableView reloadData];
-            [self getInterDataPage:_AAA Search:@"" BiaoDiFenLeiStyle:[ToolClass isString:_biaoDiFenLeiText] shengCode:[ToolClass isString:_shengcode] CityCode:[ToolClass isString:_citycode] PaiMaiStyle:[ToolClass isString:_paiMaiStyleText]];
+//            NSLog(@">>>筛选的时候AAA=%d",_AAA);
+            _AAA=1;
+            [self getInterDataPage:_AAA Search:self.textHomeField.text BiaoDiFenLeiStyle:[ToolClass isString:_biaoDiFenLeiText] shengCode:[ToolClass isString:_shengcode] CityCode:[ToolClass isString:_citycode] PaiMaiStyle:[ToolClass isString:_paiMaiStyleText]];
             [self shuChu];
         }else if (_btntag==1){
             //地区
@@ -469,7 +497,8 @@
             }
             [_dataArray removeAllObjects];
             [_tableView reloadData];
-            [self getInterDataPage:_AAA Search:@"" BiaoDiFenLeiStyle:[ToolClass isString:_biaoDiFenLeiText] shengCode:[ToolClass isString:_shengcode] CityCode:[ToolClass isString:_citycode] PaiMaiStyle:[ToolClass isString:_paiMaiStyleText]];
+            _AAA=1;
+            [self getInterDataPage:_AAA Search:self.textHomeField.text BiaoDiFenLeiStyle:[ToolClass isString:_biaoDiFenLeiText] shengCode:[ToolClass isString:_shengcode] CityCode:[ToolClass isString:_citycode] PaiMaiStyle:[ToolClass isString:_paiMaiStyleText]];
            [self shuChu];
         }else{
             //拍卖状态
@@ -488,7 +517,8 @@
             }
             [_dataArray removeAllObjects];
             [_tableView reloadData];
-            [self getInterDataPage:_AAA Search:@"" BiaoDiFenLeiStyle:[ToolClass isString:_biaoDiFenLeiText] shengCode:[ToolClass isString:_shengcode] CityCode:[ToolClass isString:_citycode] PaiMaiStyle:[ToolClass isString:_paiMaiStyleText]];
+            _AAA=1;
+            [self getInterDataPage:_AAA Search:self.textHomeField.text BiaoDiFenLeiStyle:[ToolClass isString:_biaoDiFenLeiText] shengCode:[ToolClass isString:_shengcode] CityCode:[ToolClass isString:_citycode] PaiMaiStyle:[ToolClass isString:_paiMaiStyleText]];
            [self shuChu];
         }
         
@@ -496,8 +526,10 @@
     }else{
         PaiMaiBiaoDiModel * model =_dataArray[indexPath.row];
         PaiMaiBiaoDiXiangQingVC * vc =[PaiMaiBiaoDiXiangQingVC new];
+        NSLog(@">>>>%@>>>%@",model.paiMaiID,model.biaoDiID);
         vc.paiMaiID=model.paiMaiID;
         vc.biaoDiID=model.biaoDiID;
+        vc.dataScore=model.dataSoure;
         [self.navigationController pushViewController:vc animated:YES];
     }
     
@@ -589,6 +621,9 @@
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     [textField resignFirstResponder];//关闭键盘
     NSLog(@"点击了搜索十几号");
+    [_dataArray removeAllObjects];
+    [_tableView reloadData];
+    _AAA=1;
      [self getInterDataPage:_AAA Search:textField.text BiaoDiFenLeiStyle:@"" shengCode:@"" CityCode:@"" PaiMaiStyle:@""];
     //[self getMainTableViewDataPage:_AAA Search:textField.text LeiXing:@"" proCode:@"" CityCode:@"" TimeStr:@""];
     

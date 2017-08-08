@@ -41,7 +41,7 @@
     _nameLabel.font=[UIFont systemFontOfSize:15];
     _nameLabel.alpha=.5;
     _textfield.alpha=.7;
-    _textfield.font=[UIFont systemFontOfSize:15];
+    _textfield.font=[UIFont systemFontOfSize:14];
     
     _nameLabel.sd_layout
     .leftSpaceToView(self.contentView,15)
@@ -51,12 +51,12 @@
     //[_nameLabel setSingleLineAutoResizeWithMaxWidth:120];
     
     _textfield.sd_layout
-    .rightSpaceToView(self.contentView,0)
+    .rightSpaceToView(self.contentView,15)
     .centerYEqualToView(self.contentView)
-    .leftSpaceToView(_nameLabel,10)
-    .heightIs(20);
+    .widthIs(180)
+    .heightIs(30);
     
-    
+    _headImage.hidden=YES;
     _headImage.sd_cornerRadius=@(130/4);
     _headImage.sd_layout
     .rightSpaceToView(self.contentView,15)

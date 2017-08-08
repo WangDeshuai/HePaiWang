@@ -9,5 +9,6 @@
 #import "BaseViewController.h"
 #import "MyPublicYuGaoModel.h"
 @interface YuGaoXiangQingVC : BaseViewController
-@property(nonatomic,strong)MyPublicYuGaoModel * model;
+@property(nonatomic,copy)NSString * idd;
+//@property(nonatomic,strong)MyPublicYuGaoModel * model;
 @end

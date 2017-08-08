@@ -99,6 +99,7 @@
     //密码
     _pwdText=[UITextField new];
     _pwdText.placeholder=@"请输入密码";
+    _pwdText.secureTextEntry=YES;
     _pwdText.font=[UIFont systemFontOfSize:16];
     _pwdText.leftView =[self imageViewNameStr:@"zhuce_mima"];
     _pwdText.leftViewMode = UITextFieldViewModeAlways;
@@ -114,6 +115,7 @@
     _pwddText=[UITextField new];
     _pwddText.placeholder=@"请再次输入密码";
     _pwddText.font=[UIFont systemFontOfSize:16];
+    _pwddText.secureTextEntry=YES;
     _pwddText.leftView =[self imageViewNameStr:@"zhuce_mima"];
     _pwddText.leftViewMode = UITextFieldViewModeAlways;
 //    _pwddText.backgroundColor=[UIColor redColor];

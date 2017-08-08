@@ -17,5 +17,6 @@
 @property(nonatomic,copy)NSString *time;
 @property(nonatomic,copy)NSString * paiMaiID;
 @property(nonatomic,copy)NSString * biaoDiID;
+@property(nonatomic,copy)NSString * dataSoure;
 -(id)initWithBiaoDiDic:(NSDictionary*)dic;
 @end

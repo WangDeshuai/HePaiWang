@@ -71,11 +71,22 @@
     .widthIs(ScreenWidth/4);
     
     _rightLabel.sd_layout
-    .rightSpaceToView(self.contentView,0)
+    .rightSpaceToView(self.contentView,5)
     .topSpaceToView(self.contentView,12)
-    .widthIs(ScreenWidth/3.5*1.5)
+    .widthIs(ScreenWidth/3.5*1.5+10)
     .heightIs(20);
    // [_rightLabel setSingleLineAutoResizeWithMaxWidth:220];
+    
+    if (ScreenWidth==320) {
+         _centerLabel.sd_layout
+        .leftSpaceToView(_leftLabel,0)
+        .topEqualToView(_leftLabel)
+        .heightIs(20)
+        .widthIs(ScreenWidth/4);
+    }
+    
+    
+    
     
 }
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {

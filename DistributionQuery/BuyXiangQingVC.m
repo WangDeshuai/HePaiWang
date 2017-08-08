@@ -75,10 +75,12 @@
         if (indexPath.row==0) {
             //交易明细
             MingXiViewController * vc =[MingXiViewController new];
+            vc.biaoDiID=_biaoDiid;
             [self.navigationController pushViewController:vc animated:YES];
         }else{
             //交割管理
             JiaoGeGuanLiVC * vc =[JiaoGeGuanLiVC new];
+            vc.biaoDiID=_biaoDiid;
             [self.navigationController pushViewController:vc animated:YES];
         }
     }else{
@@ -86,16 +88,19 @@
             //竞买须知
             HtmlViewController * vc =[HtmlViewController new];
             vc.str=_model.xqjingmai;
+            vc.titlename=@"竞买须知";
             [self.navigationController pushViewController:vc animated:YES];
         }else  if (indexPath.row==1){
             //竞买公告
              HtmlViewController * vc =[HtmlViewController new];
              vc.str=_model.xqgonggao;
+            vc.titlename=@"竞买公告";
               [self.navigationController pushViewController:vc animated:YES];
         }else{
             //标的物介绍
              HtmlViewController * vc =[HtmlViewController new];
              vc.str=_model.xqjieshao;
+            vc.titlename=@"标的物介绍";
             [self.navigationController pushViewController:vc animated:YES];
         }
     }
@@ -318,7 +323,7 @@
     //    };
     
     //还得找标的ID
-    [Engine mycenterMyBuyBiaoDiXiangQingBiaoDiID:@"10" success:^(NSDictionary *dic) {
+    [Engine mycenterMyBuyBiaoDiXiangQingBiaoDiID:_biaoDiid success:^(NSDictionary *dic) {
         NSString * code =[NSString stringWithFormat:@"%@",[dic objectForKey:@"code"]];
         if ([code isEqualToString:@"1"]) {
             NSDictionary * dicc =[dic objectForKey:@"content"];
@@ -331,30 +336,42 @@
             //标题
              titleLable.text=md.xqtitlename;
             //起拍价
-            qiPaiJiaLable.text=[NSString stringWithFormat:@"起拍价：%@",md.xqprice];//@"起拍价：14万";
+            qiPaiJiaLable.text=[NSString stringWithFormat:@"起拍价：%@元",md.xqprice];//@"起拍价：14万";
             qiPaiJiaLable.attributedText= [ToolClass attrStrFrom:qiPaiJiaLable.text intFond:13 Color:[UIColor blackColor] numberStr:@"起拍价："];
             //报名人数
-            baoming.text=[NSString stringWithFormat:@"%@报名人数",md.xqbaoming];
+            baoming.text=[NSString stringWithFormat:@"%@人报名",md.xqbaoming];
             //提醒
-            tixingLabel.text=[NSString stringWithFormat:@"%@设置提醒",md.xqtixing];
+            tixingLabel.text=[NSString stringWithFormat:@"%@人设置提醒",md.xqtixing];
             //浏览次数
-            liuLanLabel.text=[NSString stringWithFormat:@"%@浏览次数",md.xqliulan];
+            liuLanLabel.text=[NSString stringWithFormat:@"%@人浏览",md.xqliulan];
             //评估价
-            pinggujia.text=[NSString stringWithFormat:@"评估价:%@",md.xqpinggu];
+            pinggujia.text=[NSString stringWithFormat:@"评估价:%@元",md.xqpinggu];
             //加价幅度
-            jiaLable.text=[NSString stringWithFormat:@"加价幅度:%@",md.xqjiajia];
+            jiaLable.text=[NSString stringWithFormat:@"加价幅度:%@元",md.xqjiajia];
             //保证金
-            baozhengjin.text=[NSString stringWithFormat:@"保证金:%@",md.xqbaozhengjin];
+            baozhengjin.text=[NSString stringWithFormat:@"保证金:%@元",md.xqbaozhengjin];
             //类型
             typeLabel.text=[NSString stringWithFormat:@"类型:%@",md.xqleixing];
             //自由竞价
-            ziyouLabel.text=[NSString stringWithFormat:@"自由竞价:%@",md.xqziyou];
+            ziyouLabel.text=[NSString stringWithFormat:@"自由竞价:%@分钟",md.xqziyou];
             //保留价
-            baoLiu.text=[NSString stringWithFormat:@"自由竞价:%@",md.xqbaoliujia];
+            NSString * bl =md.xqbaoliujia;
+            if ([bl isEqualToString:@"1"]) {
+                 baoLiu.text=[NSString stringWithFormat:@"保留价: 有"];
+            }else{
+                 baoLiu.text=[NSString stringWithFormat:@"保留价: 无"];
+            }
+           
             //限时竞价
-            xianshiLabel.text=[NSString stringWithFormat:@"限时竞价:%@",md.xqxianshi];
+            xianshiLabel.text=[NSString stringWithFormat:@"限时竞价:%@分钟",md.xqxianshi];
             //优先购买
-            youXian.text=[NSString stringWithFormat:@"优先购买权人:%@",md.xqyouxian];//@"优先购买权人:无";
+            NSString * strr =md.xqyouxian;
+            if ([strr isEqualToString:@"1"]) {
+                youXian.text=[NSString stringWithFormat:@"优先购买权人:有"];
+            }else{
+                youXian.text=[NSString stringWithFormat:@"优先购买权人:无"];
+            }
+            //@"优先购买权人:无";
             [_tableView reloadData];
         }else{
             [LCProgressHUD showMessage:[dic objectForKey:@"msg"]];

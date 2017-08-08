@@ -15,6 +15,8 @@
 @property(nonatomic,copy)NSString * timeName;
 @property(nonatomic,copy)NSString * yuGaoPeople;
 @property(nonatomic,copy)NSString * yuGaoContent;
+@property(nonatomic,copy)NSString * phone;
 @property(nonatomic,copy)NSString * yuGaoImage;//预告详情图片
+@property(nonatomic,strong)NSMutableArray * imageArr;
 -(id)initWithMyPublicDic:(NSDictionary*)dic;
 @end

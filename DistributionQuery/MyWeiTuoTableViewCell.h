@@ -13,4 +13,5 @@
 +(instancetype)cellWithTableView:(UITableView*)tableView CellID:(NSString*)cellID;
 @property(nonatomic,strong)BuyBiaoDiModel * model;
 @property(nonatomic,strong)MyWeiTuoBiaoDiModel * md ;
+@property(nonatomic,strong)UIImageView * jiaoGeImage;
 @end

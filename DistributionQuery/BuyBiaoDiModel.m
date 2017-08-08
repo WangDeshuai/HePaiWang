@@ -23,7 +23,7 @@
         }else{
             _price=[NSString stringWithFormat:@"%@元",str];
         }
-        
+        _leiXing=[ToolClass isString:[NSString stringWithFormat:@"%@",[dic objectForKey:@"target_delivery_status"]]];
         _diqu=[ToolClass isString:[NSString stringWithFormat:@"%@",[dic objectForKey:@"auction_cityname"]]];
         _time=[ToolClass isString:[NSString stringWithFormat:@"%@",[dic objectForKey:@"auction_begin_time"]]];
         _biaoDiId=[ToolClass isString:[NSString stringWithFormat:@"%@",[dic objectForKey:@"target_id"]]];

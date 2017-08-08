@@ -10,6 +10,7 @@
 #import "MyWeiTuoTableViewCell.h"
 #import "MyWeiTuoBiaoDiModel.h"
 #import "MyWeiTuoXiangQingVC.h"
+#import "WeiTuoPaiMaiVC.h"
 @interface MyBiaoDiWeiTuoViC ()<UITableViewDelegate,UITableViewDataSource>
 @property(nonatomic,strong)UITableView * tableView;
 @property(nonatomic,strong)UIButton * lastBtn;
@@ -109,10 +110,31 @@
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    MyWeiTuoXiangQingVC * vc =[MyWeiTuoXiangQingVC new];
-    [self.navigationController pushViewController:vc animated:YES];
-}
+    MyWeiTuoBiaoDiModel * md =_dataArray[indexPath.row];
+    
+    [self baiDiID:md.biaoDiID];
 
+   
+}
+-(void)baiDiID:(NSString*)bdid{
+    [LCProgressHUD showLoading:@"请稍后..."];
+    [Engine myWeiTuoXiangQingBiaoDiID:bdid success:^(NSDictionary *dic) {
+        NSString * code =[NSString stringWithFormat:@"%@",[dic objectForKey:@"code"]];
+        if ([code isEqualToString:@"1"]) {
+            NSDictionary * contentDic =[dic objectForKey:@"content"];
+            MyWeiTuoBiaoDiModel * md =[[MyWeiTuoBiaoDiModel alloc]initWithBiaoDiXiangQingDic:contentDic];
+            WeiTuoPaiMaiVC * vc =[WeiTuoPaiMaiVC new];
+            vc.tagg=1;
+            vc.model=md;
+             [self.navigationController pushViewController:vc animated:YES];
+            [LCProgressHUD hide];
+        }else{
+            [LCProgressHUD showMessage:[dic objectForKey:@"msg"]];
+        }
+    } error:^(NSError *error) {
+        
+    }];
+}
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     return 120;

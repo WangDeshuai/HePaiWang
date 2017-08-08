@@ -11,6 +11,9 @@
 @interface ScanCodeCell : UITableViewCell
 +(instancetype)cellWithTableView:(UITableView*)tableView CellID:(NSString*)cellID;
 @property(nonatomic,strong)UILabel * leftLabel;
-@property(nonatomic,strong)UITextView * textview;
+@property(nonatomic,strong)UITextField * textview;
 @property(nonatomic,strong)UIScrollView * bgScrollview;
+@property (nonatomic, strong) UICollectionView *collectionView;
+@property(nonatomic,assign) id deleteTe;
+@property(nonatomic,strong)void(^photoArrImageBlock)(NSMutableArray*arr);
 @end

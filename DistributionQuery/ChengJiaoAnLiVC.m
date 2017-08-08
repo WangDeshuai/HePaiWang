@@ -9,6 +9,7 @@
 #import "ChengJiaoAnLiVC.h"
 #import "PaiMaiBiaoDiCell.h"
 #import "ChengJiaoAnLiModel.h"
+#import "PaiMaiBiaoDiXiangQingVC.h"
 @interface ChengJiaoAnLiVC ()<UITableViewDelegate,UITableViewDataSource>
 @property(nonatomic,strong)UITableView * tableView;
 @property (nonatomic, strong) MJRefreshComponent *myRefreshView;
@@ -100,12 +101,23 @@
     NSString *CellIdentifier = [NSString stringWithFormat:@"Cell%ld%ld", (long)[indexPath section], (long)[indexPath row]];
     
     PaiMaiBiaoDiCell * cell =[PaiMaiBiaoDiCell cellWithTableView:tableView CellID:CellIdentifier];
+    cell.qipaiLabel.text=@"成交价格";
     cell.model=_dataArray[indexPath.row];
+    cell.chengJiaoImage.hidden=NO;
     return cell;
 }
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     return 120;
+}
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    ChengJiaoAnLiModel * md=_dataArray[indexPath.row];
+    PaiMaiBiaoDiXiangQingVC * vc =[PaiMaiBiaoDiXiangQingVC new];
+    vc.paiMaiID=md.paiMaiHuiID;
+    vc.biaoDiID=md.biaoDiID;
+    vc.dataScore=md.dataSoure;
+    [self.navigationController pushViewController:vc animated:YES];
 }
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

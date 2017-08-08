@@ -11,10 +11,10 @@
 @property(nonatomic,strong)UIImageView * leftImage;//左边图片
 @property(nonatomic,strong)UILabel * titleLabel;//标题
 @property(nonatomic,strong)UIImageView * imagedan;//起拍价图标
-@property(nonatomic,strong)UILabel * qipaiLabel;//起拍价
+//@property(nonatomic,strong)UILabel * qipaiLabel;//起拍价
 @property(nonatomic,strong)UILabel * priceLabel;//价格
 @property(nonatomic,strong)UIImageView * imagedw;//定位图标
-@property(nonatomic,strong)UILabel * paimaiLabel;//拍卖地区
+
 @property(nonatomic,strong)UILabel * cityLabel;//定位城市
 @property(nonatomic,strong)UIImageView * strImage;//开拍图标
 @property(nonatomic,strong)UILabel * strLabel;//开拍时间
@@ -109,18 +109,39 @@
     _timeLabel.text=@"2016/11/17";
     
     [self frameLabel];
+    
+    
+    _chengJiaoImage=[UIImageView new];
+    _chengJiaoImage.hidden=YES;
+    _chengJiaoImage.image=[UIImage imageNamed:@"chengjiao_bz"];
+    [_leftImage sd_addSubviews:@[_chengJiaoImage]];
+    _chengJiaoImage.sd_layout
+    .rightSpaceToView(_leftImage,10)
+    .bottomSpaceToView(_leftImage,10)
+    .widthIs(50)
+    .heightIs(34);
+    
 }
 -(void)frameLabel{
     int g =15;
-    //左边图片
-    _leftImage.sd_layout
-    .leftSpaceToView(self.contentView,10)
-    .centerYEqualToView(self.contentView)
-    .widthIs(280/2)
-    .heightIs(210/2);
+    
+    if (ScreenWidth==320) {
+         g =10;
+    }else{
+        g=15;
+    }
+   
+        //左边图片
+        _leftImage.sd_layout
+        .leftSpaceToView(self.contentView,10)
+        .centerYEqualToView(self.contentView)
+        .widthIs(280/2)
+        .heightIs(210/2);
+    
+    
     //titleLabel
     _titleLabel.sd_layout
-    .leftSpaceToView(_leftImage,15)
+    .leftSpaceToView(_leftImage,10)
     .topSpaceToView(self.contentView,10)
     .heightIs(20);
     [_titleLabel setSingleLineAutoResizeWithMaxWidth:ScreenWidth-150];
@@ -138,7 +159,7 @@
     [_qipaiLabel setSingleLineAutoResizeWithMaxWidth:100];
     //价格
     _priceLabel.sd_layout
-    .leftSpaceToView(_qipaiLabel,10)
+    .leftSpaceToView(_qipaiLabel,5)
     .centerYEqualToView(_imagedan)
     .heightIs(20);
     [_priceLabel setSingleLineAutoResizeWithMaxWidth:250];
@@ -183,6 +204,17 @@
 //     [_strLabel setSingleLineAutoResizeWithMaxWidth:250];
     
     [self setupAutoHeightWithBottomView:_strLabel bottomMargin:10];
+
+    if (ScreenWidth==320) {
+        _timeLabel.font=[UIFont systemFontOfSize:11];
+        _leftImage.sd_layout
+        .leftSpaceToView(self.contentView,10)
+        .centerYEqualToView(self.contentView)
+        .widthIs(280/3)
+        .heightIs(210/3);
+    }
+
+
 }
 -(void)setModel:(ChengJiaoAnLiModel *)model
 {

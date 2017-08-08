@@ -20,9 +20,10 @@
             _moneyName=[NSString stringWithFormat:@"%@元",yuan];
 //        }
         
-        
+         _moneyPrice=[NSString stringWithFormat:@"%@",yuan];
         _jingPaiNum=[ToolClass isString:[NSString stringWithFormat:@"%@",[dic objectForKey:@"compete_number"]]];
         _timeName=[ToolClass isString:[NSString stringWithFormat:@"%@",[dic objectForKey:@"bid_time"]]];
+        _userID=[ToolClass isString:[NSString stringWithFormat:@"%@",[dic objectForKey:@"user_id"]]];
     }
     
     return self;

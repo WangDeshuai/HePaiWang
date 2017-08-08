@@ -9,5 +9,5 @@
 #import "BaseViewController.h"
 
 @interface ScanCodeVC : BaseViewController
-
+@property(nonatomic,assign)NSInteger tagg;
 @end

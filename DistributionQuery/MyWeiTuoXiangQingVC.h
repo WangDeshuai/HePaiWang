@@ -9,5 +9,5 @@
 #import "BaseViewController.h"
 
 @interface MyWeiTuoXiangQingVC : BaseViewController
-
+@property(nonatomic,copy)NSString * biaoDiID;
 @end

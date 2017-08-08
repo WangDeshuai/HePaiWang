@@ -30,7 +30,7 @@
         }
 
         
-        
+        _dataSoure=[ToolClass isString:[NSString stringWithFormat:@"%@",[dic objectForKey:@"dataSource"]]];
         _diqu=[ToolClass isString:[NSString stringWithFormat:@"%@",[dic objectForKey:@"cityname"]]];
         _time=[ToolClass isString:[NSString stringWithFormat:@"%@",[dic objectForKey:@"auction_begin_time"]]];
         _paiMaiID=[ToolClass isString:[NSString stringWithFormat:@"%@",[dic objectForKey:@"auction_id"]]];

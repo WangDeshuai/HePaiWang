@@ -8,7 +8,7 @@
 
 #import "HtmlViewController.h"
 
-@interface HtmlViewController ()
+@interface HtmlViewController ()<UIWebViewDelegate>
 
 @end
 
@@ -17,25 +17,33 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    self.title=@"公告详情";
+    self.title=_titlename;
     NSLog(@"输出>>>%@",_str);
     
-    UILabel * gongGaoXiangQing =[UILabel new];
-//    gongGaoXiangQing.font=[UIFont systemFontOfSize:16];
-    gongGaoXiangQing.alpha=.6;
-//    gongGaoXiangQing.text=_str;
-    gongGaoXiangQing.attributedText=[ToolClass HTML:_str];
-    [self.view sd_addSubviews:@[gongGaoXiangQing]];
-    gongGaoXiangQing.sd_layout
-    .leftSpaceToView(self.view,0)
-    .rightSpaceToView(self.view,0)
-    .topSpaceToView(self.view,0)
-    .autoHeightRatio(0);
+//    UILabel * gongGaoXiangQing =[UILabel new];
+////    gongGaoXiangQing.font=[UIFont systemFontOfSize:16];
+//    gongGaoXiangQing.alpha=.6;
+////    gongGaoXiangQing.text=_str;
+//    gongGaoXiangQing.attributedText=[ToolClass HTML:_str];
+//    [self.view sd_addSubviews:@[gongGaoXiangQing]];
+//    gongGaoXiangQing.sd_layout
+//    .leftSpaceToView(self.view,0)
+//    .rightSpaceToView(self.view,0)
+//    .topSpaceToView(self.view,0)
+//    .autoHeightRatio(0);
     
-    
-    
+    UIWebView * webview =[[UIWebView alloc]initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight-64)];
+    webview.backgroundColor=[UIColor whiteColor];
+    webview.delegate=self;
+    [self.view addSubview:webview];
+     [webview loadHTMLString:_str baseURL:nil];
 }
-
+-(void)webViewDidFinishLoad:(UIWebView *)webView{
+    for (int i =0; i<20; i++) {
+        NSString *meta = [NSString stringWithFormat:@"document.getElementsByTagName('img')[%d].style.width = '100%%'", i];
+        [webView stringByEvaluatingJavaScriptFromString:meta];
+    }
+}
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.

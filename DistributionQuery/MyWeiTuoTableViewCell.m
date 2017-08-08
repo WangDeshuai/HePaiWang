@@ -109,16 +109,37 @@
     _timeLabel.text=@"2016/11/17";
     
     [self frameLabel];
+    _jiaoGeImage=[UIImageView new];
+    _jiaoGeImage.hidden=YES;
+    [_leftImage sd_addSubviews:@[_jiaoGeImage]];
+    _jiaoGeImage.sd_layout
+    .leftSpaceToView(_leftImage,0)
+    .topSpaceToView(_leftImage,0)
+    .widthIs(60/2)
+    .heightIs(65/2);
 }
 -(void)frameLabel{
-    int g =15;
+    int g =0;
     //左边图片
-    _leftImage.sd_layout
-    .leftSpaceToView(self.contentView,10)
-    .centerYEqualToView(self.contentView)
-    .widthIs(280/2)
-    .heightIs(210/2);
-    //titleLabel
+    
+    if (ScreenWidth==320) {
+        
+        _leftImage.sd_layout
+        .leftSpaceToView(self.contentView,5)
+        .centerYEqualToView(self.contentView)
+        .widthIs(280/2-20)
+        .heightIs(210/2-20);
+        g=10;
+    }else{
+        g=15;
+        _leftImage.sd_layout
+        .leftSpaceToView(self.contentView,10)
+        .centerYEqualToView(self.contentView)
+        .widthIs(280/2)
+        .heightIs(210/2);
+
+    }
+       //titleLabel
     _titleLabel.sd_layout
     .leftSpaceToView(_leftImage,15)
     .topSpaceToView(self.contentView,10)
@@ -138,11 +159,30 @@
     .heightIs(20);
     [_qipaiLabel setSingleLineAutoResizeWithMaxWidth:100];
     //价格
-    _priceLabel.sd_layout
-    .leftSpaceToView(_qipaiLabel,25)
-    .centerYEqualToView(_imagedan)
-    .heightIs(20);
-    [_priceLabel setSingleLineAutoResizeWithMaxWidth:250];
+    
+    if (ScreenWidth==320) {
+        _titleLabel.sd_layout
+        .leftSpaceToView(_leftImage,5)
+        .topSpaceToView(self.contentView,10)
+        .rightSpaceToView(self.contentView,15)
+        .heightIs(20);
+        
+        _priceLabel.sd_layout
+        .leftSpaceToView(_qipaiLabel,15)
+        .centerYEqualToView(_imagedan)
+        .heightIs(20);
+        [_priceLabel setSingleLineAutoResizeWithMaxWidth:250];
+
+    }else{
+        _priceLabel.sd_layout
+        .leftSpaceToView(_qipaiLabel,25)
+        .centerYEqualToView(_imagedan)
+        .heightIs(20);
+        [_priceLabel setSingleLineAutoResizeWithMaxWidth:250];
+  
+    }
+    
+    
     
     //拍卖地区图标
     _imagedw.sd_layout

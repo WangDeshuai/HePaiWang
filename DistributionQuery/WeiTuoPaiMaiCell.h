@@ -14,4 +14,9 @@
 @property(nonatomic,strong)UITextField * textfield;
 @property(nonatomic,strong)UILabel * nameLabel;
 @property(nonatomic,strong)UIScrollView * bgScrollview;
+@property (nonatomic, strong) UICollectionView *collectionView;
+@property(nonatomic,assign) id deleteTe;
+@property(nonatomic,strong)void(^photoArrImageBlock)(NSMutableArray*arr);
+@property(nonatomic,strong)NSArray* photoArray;
+
 @end

@@ -35,6 +35,32 @@
     // Do any additional setup after loading the view.
     _dataArray=[NSMutableArray new];
     _paiMaiBiaoDiArr=[NSMutableArray new];
+   
+    NSLog(@">>>%f",ScreenWidth);
+    
+    
+//    if ([ToolClass versionGenXinAppID:@"1246651525"]==YES) {
+//        UIAlertController * actionView =[UIAlertController alertControllerWithTitle:@"温馨提示" message:[NSUSE_DEFO objectForKey:@"更新内容"] preferredStyle:UIAlertControllerStyleAlert];
+//        
+//        UIAlertAction * action1 =[UIAlertAction actionWithTitle:@"立即更新" style:0 handler:^(UIAlertAction * _Nonnull action) {
+//            //跳转到AppStore
+//            NSString  *urlStr = @"https://itunes.apple.com/us/app/%E5%92%8C%E6%8B%8D%E7%BD%91/id1246651525?mt=8";
+//            NSURL *url = [NSURL URLWithString:urlStr];
+//            
+//            [[UIApplication sharedApplication]openURL:url];
+//            
+//        }];
+//        UIAlertAction * action2 =[UIAlertAction actionWithTitle:@"稍后更新" style:0 handler:nil];
+//        [actionView addAction:action2];
+//        [actionView addAction:action1];
+//        [self presentViewController:actionView animated:YES completion:nil];
+//    }else{
+//        [NSUSE_DEFO removeObjectForKey:@"更新内容"];
+//        [NSUSE_DEFO synchronize];
+//    }
+//
+    
+    
     [self.navigationItem setTitle:@""];
     [self CreatNavBtn];
     [self CreatTableView];
@@ -100,8 +126,8 @@
     .rightSpaceToView(self.view,0)
     .topSpaceToView(self.view,0);
     NSArray * arr=@[@"banner"];
-    //轮播图
-    SDCycleScrollView*  cycleScrollView = [SDCycleScrollView cycleScrollViewWithFrame:CGRectMake(0, 0, ScreenWidth, 540*ScreenWidth/1080) delegate:self placeholderImage:[UIImage imageNamed:@"banner"]];
+    //轮播图540*ScreenWidth/1080
+    SDCycleScrollView*  cycleScrollView = [SDCycleScrollView cycleScrollViewWithFrame:CGRectMake(0, 0, ScreenWidth, 64+50) delegate:self placeholderImage:[UIImage imageNamed:@"banner"]];
     cycleScrollView.pageControlAliment = SDCycleScrollViewPageContolAlimentCenter;
     cycleScrollView.currentPageDotColor = [UIColor whiteColor];
     [_headView addSubview:cycleScrollView];
@@ -202,7 +228,7 @@
     .leftSpaceToView(view2,0)
     .rightSpaceToView(view2,0)
     .topSpaceToView(lineImage,10)
-    .heightIs(160);
+    .heightIs(160+10);
     [view2 setupAutoHeightWithBottomView:priceScrollview bottomMargin:10];
    
     [Engine firstPaiMaiBiaoDiViewSearchStr:@"" BiaoDiStyle:@"" ProvCode:@"" CityCode:@"" Staus:@"" PageSize:@"5" PageIndex:@"1" success:^(NSDictionary *dic) {
@@ -222,19 +248,25 @@
                     [bgView addTarget:self action:@selector(bgviewClick:) forControlEvents:UIControlEventTouchUpInside];
                     [priceScrollview sd_addSubviews:@[bgView]];
                     bgView.sd_layout
-                    .leftSpaceToView(priceScrollview,15+(140+15)*i)
+                    .leftSpaceToView(priceScrollview,7+(175+7)*i)
                     .topSpaceToView(priceScrollview,0)
                     .bottomSpaceToView(priceScrollview,0)
-                    .widthIs(140);
+                    .widthIs(175);
                     //图片
                     UIImageView * imageview =[UIImageView new];
                     [imageview setImageWithURL:[NSURL URLWithString:model.leftImage] placeholderImage:[UIImage imageNamed:@"banner"]];
+                    [imageview setContentScaleFactor:[[UIScreen mainScreen] scale]];
+                      imageview.contentMode =  UIViewContentModeScaleAspectFill;
+                    imageview.clipsToBounds  = YES;
                     [bgView sd_addSubviews:@[imageview]];
                     imageview.sd_layout
                     .leftSpaceToView(bgView,0)
                     .rightSpaceToView(bgView,0)
                     .topSpaceToView(bgView,0)
                     .heightIs(80);
+                    
+                    
+                    
                     //标题
                     UILabel * titileLabel =[UILabel new];
                     titileLabel.numberOfLines=1;
@@ -273,14 +305,14 @@
                     timeLabel.sd_layout
                     .leftSpaceToView(bgView,5)
                     .topSpaceToView(qiPaiLabel,10)
-                    .rightSpaceToView(bgView,5)
+                    .rightSpaceToView(bgView,0)
                     .heightIs(15);
                     
                     
                     
                 }
-                //140 每一个的宽度，30两边的宽度，15*(contentAr.count-1)中间间隔的宽度
-                priceScrollview.contentSize=CGSizeMake(140*contentAr.count+30+15*(contentAr.count-1), 120);
+                //140 每一个的宽度，14两边的宽度，15*(contentAr.count-1)中间间隔的宽度
+                priceScrollview.contentSize=CGSizeMake(175*contentAr.count+14+7*(contentAr.count-1), 120);
                 
 
             }
@@ -299,13 +331,13 @@
    // NSLog(@">>>>scre=%f",ScreenWidth);
     if (ScreenWidth==414) {
         //6p
-         _headView.sd_layout.heightIs(459+40+20);
+         _headView.sd_layout.heightIs(459-30);
     }else if (ScreenWidth==375){
         //6
-         _headView.sd_layout.heightIs(459+40);
+         _headView.sd_layout.heightIs(459-20);
     }else {
         //6以下
-        _headView.sd_layout.heightIs(459+10);
+        _headView.sd_layout.heightIs(459+10+10-30-15);
     }
    
    
@@ -318,6 +350,7 @@
     PaiMaiBiaoDiXiangQingVC* vc =[PaiMaiBiaoDiXiangQingVC new];
     vc.biaoDiID=md.biaoDiID;
     vc.paiMaiID=md.paiMaiID;
+    vc.dataScore=md.dataSoure;
     vc.hidesBottomBarWhenPushed=YES;
     [self.navigationController pushViewController:vc animated:YES];
 }
@@ -401,7 +434,8 @@
     PaiMaiGongGaoModel * md =_dataArray[indexPath.row];
     PaiMaiGongGaoXiangQingVC * vc =[PaiMaiGongGaoXiangQingVC new];
       vc.hidesBottomBarWhenPushed=YES;
-    vc.messageID=md.messageID;
+    vc.paiMaiHuiID=md.paiMaiHuiID;
+    vc.datasoure=md.dataSource;
     [self.navigationController pushViewController:vc animated:YES];
 }
 -(UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{

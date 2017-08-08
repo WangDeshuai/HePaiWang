@@ -11,4 +11,5 @@
 @interface MingXiViewController : BaseViewController
 //tagg==2，委托--->交易明细..否则的话就是已买到的标的
 @property(nonatomic,assign)NSInteger tagg;
+@property(nonatomic,copy)NSString * biaoDiID;
 @end

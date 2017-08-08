@@ -136,14 +136,18 @@
 #pragma mark --详情按钮
 -(void)xiangQingBtnn:(UIButton*)btn{
     YuGaoXiangQingVC * vc =[YuGaoXiangQingVC new];
-    vc.model=_dataArray[btn.tag];
+//    vc.model=_dataArray[btn.tag];
+    MyPublicYuGaoModel * md =_dataArray[btn.tag];
+    vc.idd=md.messageID;
     [self.navigationController pushViewController:vc animated:YES];
 }
 
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    MyPublicYuGaoModel * md =_dataArray[indexPath.row];
     YuGaoXiangQingVC * vc =[YuGaoXiangQingVC new];
-    vc.model=_dataArray[indexPath.row];
+//    vc.model=_dataArray[indexPath.row];
+    vc.idd=md.messageID;
     [self.navigationController pushViewController:vc animated:YES];
 }
 

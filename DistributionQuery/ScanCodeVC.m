@@ -8,12 +8,13 @@
 
 #import "ScanCodeVC.h"
 #import "ScanCodeCell.h"
-@interface ScanCodeVC ()<UITableViewDelegate,UITableViewDataSource,UINavigationControllerDelegate,UIImagePickerControllerDelegate>
+@interface ScanCodeVC ()<UITableViewDelegate,UITableViewDataSource,UINavigationControllerDelegate,UIImagePickerControllerDelegate,UITextViewDelegate>
 @property(nonatomic,strong)UITableView * tableView;
 @property(nonatomic,strong)NSMutableArray * dataArray;
 @property(nonatomic,strong)UIView * view2;
 @property(nonatomic,strong) UIButton * imageBtn;
-@property(nonatomic,strong)UIImage * image1;
+@property(nonatomic,strong)NSMutableArray * image1;
+@property(nonatomic,strong)UITextView * contentTextview;
 
 
 @end
@@ -24,33 +25,71 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.title=@"发布预告";
-     self.backHomeBtn.hidden=YES;
+    
+    
+    if (_tagg==1) {
+         self.backHomeBtn.hidden=NO;
+    }else{
+         self.backHomeBtn.hidden=YES;
+    }
+    
+    
      [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(lianjieClink:) name:@"nil" object:nil];
     [self dataArr];
     [self CreatTableView];
-
+    [self addFooterButton];
 }
+
+-(void)addFooterButton
+{
+    
+    UIView * footView =[UIView new];
+    footView.backgroundColor=BG_COLOR;
+    footView.frame=CGRectMake(0, 10, ScreenWidth, 100);
+    
+    // 1.初始化Button
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+    //    //2.设置文字和文字颜色
+    [button setTitle:@"提交" forState:UIControlStateNormal];
+    [button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    //    //3.设置圆角幅度
+    button.layer.cornerRadius = 10.0;
+    //
+    [button addTarget:self action:@selector(commentBtnn) forControlEvents:UIControlEventTouchUpInside];
+    //    //4.设置frame
+    button.frame =CGRectMake(30, 30, ScreenWidth-60, 40);;
+    //
+    //    //5.设置背景色
+    button.backgroundColor = [UIColor redColor];
+    
+    [footView addSubview:button];
+    self.tableView.tableFooterView = footView;
+}
+
+
 #pragma mark --接收的通知1清空数据
 -(void)lianjieClink:(NSNotification*)notification{
     ScanCodeCell * cell0 =[_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
     
-    ScanCodeCell * cell1 =[_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:1]];
+    ScanCodeCell * cell1 =[_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0]];
     
-    ScanCodeCell * cell2 =[_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:1]];
-    
-    // ScanCodeCell * cell3 =[_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:2]];
+    //ScanCodeCell * cell2 =[_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:1]];
+    _contentTextview.text=@"请输入发布预告内容...";
+    _contentTextview.textColor=[UIColor lightGrayColor];
+     ScanCodeCell * cell3 =[_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:1]];
     _image1=nil;
-    
+    [_image1 removeAllObjects];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"dismiss" object:nil userInfo:nil];
     cell0.textview.text=nil;
     cell1.textview.text=nil;
-    cell2.textview.text=nil;
+    cell3.textview.text=nil;
     [_tableView reloadData];
     
 }
 -(void)dataArr{
-    NSArray * arr1 =@[@"预 告 标 题"];
-    NSArray * arr2=@[@"资产处理人",@"预 告 内 容"];
-    NSArray * arr3=@[@"预 告 图 片"];
+    NSArray * arr1 =@[@"*预告标题",@"*联系方式",@"*预告内容"];
+    NSArray * arr2=@[@"资产处置人"];
+    NSArray * arr3=@[@"预告图片"];
     _dataArray=[[NSMutableArray alloc]initWithObjects:arr1,arr2,arr3, nil];
 }
 -(void)CreatTableView{
@@ -59,11 +98,11 @@
     }
     _tableView.delegate=self;
     _tableView.dataSource=self;
-    _tableView.tableFooterView=[UIView new];
+//    _tableView.tableFooterView=[UIView new];
     _tableView.backgroundColor=BG_COLOR;
     _tableView.keyboardDismissMode=UIScrollViewKeyboardDismissModeOnDrag;
     [self.view addSubview:_tableView];
-    [self commentBtn];
+   
 }
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
     return _dataArray.count;
@@ -78,120 +117,140 @@
     ScanCodeCell * cell =[ScanCodeCell cellWithTableView:tableView CellID:CellIdentifier];
     cell.leftLabel.text=_dataArray[indexPath.section][indexPath.row];
     if (indexPath.section==0) {
-        //预告标题
+       
+        if (indexPath.row==0) {
+            //预告标题
+            cell.textview.placeholder=@"预告标题不能为空";
+        }
+        else if (indexPath.row==1){
+            //联系方式
+            cell.textview.placeholder=@"手机号不能为空";
+        }else{
+            //预告内容
+            cell.textview.hidden=YES;
+        }
     }else if (indexPath.section==1){
         if (indexPath.row==0) {
             //资产处理人
-        }else{
-            //预告内容
+            cell.textview.placeholder=@"资产请填写资产处理人姓名";
         }
     }else{
         //预告图片
         cell.textview.hidden=YES;
-        cell.bgScrollview.hidden=NO;
-        [self CreatBtn:cell];
+        cell.collectionView.hidden=NO;
+        cell.deleteTe=self;
+        cell.photoArrImageBlock=^(NSMutableArray*arr){
+            _image1=arr;
+        };
+
     }
     return cell;
 }
 
--(void)CreatBtn:(ScanCodeCell*)cell{
-    [_imageBtn removeFromSuperview];
-     UIButton *  imageBtn =[UIButton buttonWithType:UIButtonTypeCustom];
-   
-    if (_image1) {
-        [imageBtn setBackgroundImage:_image1 forState:0];
-    }else{
-      [imageBtn setBackgroundImage:[UIImage imageNamed:@"rz_pic"] forState:0];
-    }
-    _imageBtn=imageBtn;
-    [imageBtn addTarget:self action:@selector(xuanzeImageBtn) forControlEvents:UIControlEventTouchUpInside];
-    [cell.bgScrollview sd_addSubviews:@[imageBtn]];
-    imageBtn.sd_layout
-    .leftSpaceToView(cell.bgScrollview,0)
-    .topSpaceToView(cell.bgScrollview,0)
-    .widthIs(162/2)
-    .heightIs(122/2);
-}
-
-
--(void)xuanzeImageBtn{
-    UIAlertController * actionView =[UIAlertController alertControllerWithTitle:@"请选择照片来源" message:@"" preferredStyle:UIAlertControllerStyleActionSheet];
-    UIAlertAction * action1 =[UIAlertAction actionWithTitle:@"相机" style:0 handler:^(UIAlertAction * _Nonnull action) {
+-(UIView*)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
+{
+    
+    UIView * footview =[UIView new];
+    footview.backgroundColor=[UIColor whiteColor];
+    if (section==0) {
         
-        // 先判断相机是否可用
-        if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera])
-        {
-            // 把imagePicker.sourceType改为相机
-            UIImagePickerController * imagePicker=[[UIImagePickerController alloc]init];
-            imagePicker.delegate =self;
-            imagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
-            [self presentViewController:imagePicker animated:YES completion:nil];
-        }else
-        {
-            [LCProgressHUD showMessage:@"相机不可用"];
+        UIView * linview =[UIView new];
+        linview.backgroundColor=BG_COLOR;
+        [footview sd_addSubviews:@[linview]];
+        linview.sd_layout
+        .leftSpaceToView(footview,0)
+        .rightSpaceToView(footview,0)
+        .topSpaceToView(footview,1)
+        .heightIs(1);
+        
+        
+        UITextView * textview =[UITextView new];
+        textview.text=@"请输入发布预告内容...";
+        textview.textColor=[UIColor lightGrayColor];
+        textview.delegate=self;
+        _contentTextview=textview;
+        if (ScreenWidth==320) {
+             textview.font=[UIFont systemFontOfSize:13];
+        }else{
+            textview.font=[UIFont systemFontOfSize:16];
         }
+       
+        textview.backgroundColor=[UIColor whiteColor];
+        [footview sd_addSubviews:@[textview]];
+        textview.sd_layout
+        .leftSpaceToView(footview,15)
+        .rightSpaceToView(footview,15)
+        .topSpaceToView(footview,10)
+        .bottomSpaceToView(footview,5);
         
         
-    }];
-    UIAlertAction * action2 =[UIAlertAction actionWithTitle:@"相册" style:0 handler:^(UIAlertAction * _Nonnull action){
-        [self headImageClick];
-    }];
-    UIAlertAction * action3 =[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil];
-    [actionView addAction:action1];
-    [actionView addAction:action2];
-    [actionView addAction:action3];
-    [self presentViewController:actionView animated:YES completion:nil];
-    
-    
-    
-}
-#pragma mark --创建提交按钮
--(void)commentBtn{
-    
-    UIButton * imageBtn =[UIButton buttonWithType:UIButtonTypeCustom];
-    imageBtn.backgroundColor=BG_COLOR;
-   // [imageBtn setImage:[UIImage imageNamed:@"fbyg_bt"] forState:0];
-    imageBtn.layer.cornerRadius=5;
-    imageBtn.clipsToBounds=YES;
-    imageBtn.backgroundColor=[UIColor redColor];
-    [imageBtn setTitle:@"确认提交" forState:0];
-    [imageBtn addTarget:self action:@selector(commentBtnn) forControlEvents:UIControlEventTouchUpInside];
-    if (ScreenWidth==320) {
-      imageBtn.frame=CGRectMake(15, ScreenHeight-64-49-50, ScreenWidth-30, 35);
-        imageBtn.titleLabel.font=[UIFont systemFontOfSize:13];
+        return footview;
+    }else if (section==1){
+        return nil;
     }else{
-       imageBtn.frame=CGRectMake(10, ScreenHeight-64-49-50-130, ScreenWidth-20, 45);
-         imageBtn.titleLabel.font=[UIFont systemFontOfSize:15];
+        return nil;
     }
     
-   
-    [_tableView addSubview:imageBtn];
-//    imageBtn.sd_layout
-//    .leftSpaceToView(self.view,10)
-//    .rightSpaceToView(self.view,10)
-//    .topSpaceToView(_view2,30)
-//    .heightIs(45);
     
 }
+
+-(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
+{
+    if (section==0) {
+        return 80;
+    }else{
+        return 0;
+    }
+}
+
+
+
+-(void)textViewDidBeginEditing:(UITextView*)textView{
+    if ([textView.text isEqualToString:@"请输入发布预告内容..."])
+    {
+        textView.text=@"";
+        textView.textColor=[UIColor blackColor];
+    }
+}
+-(void)textViewDidEndEditing:(UITextView*)textView{
+    if(textView.text.length<1){
+        textView.text=@"请输入发布预告内容...";
+        textView.textColor=JXColor(76, 76, 76, 1);
+    }
+    
+}
+#pragma mark --提交按钮
 -(void)commentBtnn{
     NSLog(@"4>>>%@",_image1);
+    //预告标题
     ScanCodeCell * cell0 =[_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
     NSLog(@"1>>>%@",cell0.textview.text);
-    
-    ScanCodeCell * cell1 =[_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:1]];
+    //联系方式
+    ScanCodeCell * cell1 =[_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0]];
     NSLog(@"2>>>%@",cell1.textview.text);
+    //预告内容
     
-    ScanCodeCell * cell2 =[_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:1]];
-    NSLog(@"3>>>%@",cell2.textview.text);
-    [LCProgressHUD showMessage:@"正在发布..."];
-    [Engine pubulicYuGaoTitle:[ToolClass isString:[NSString stringWithFormat:@"%@",cell0.textview.text]] People:[ToolClass isString:[NSString stringWithFormat:@"%@",cell1.textview.text]] Content:[ToolClass isString:[NSString stringWithFormat:@"%@",cell2.textview.text]] Pic:_image1 success:^(NSDictionary *dic) {
+    NSLog(@"3>>>%@",_contentTextview.text);
+    //资产处置人
+     ScanCodeCell * cell3 =[_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:1]];
+    [LCProgressHUD showLoading:@"正在发布..."];
+
+    [Engine pubulicYuGaoTitle:[ToolClass isString:[NSString stringWithFormat:@"%@",cell0.textview.text]] People:[ToolClass isString:[NSString stringWithFormat:@"%@",cell3.textview.text]] Content:[ToolClass isString:[NSString stringWithFormat:@"%@",_contentTextview.text ]]Pic:_image1 Phone:[ToolClass isString:[NSString stringWithFormat:@"%@",cell1.textview.text]] success:^(NSDictionary *dic) {
         NSString * code =[NSString stringWithFormat:@"%@",[dic objectForKey:@"code"]];
-        [LCProgressHUD showMessage:[dic objectForKey:@"msg"]];
+       
         if ([code isEqualToString:@"1"]) {
              [[NSNotificationCenter defaultCenter] postNotificationName:@"nil" object:nil userInfo:dic];
             [self.navigationController popViewControllerAnimated:YES];
-        }else{
+            [LCProgressHUD hide];
+            UIAlertController * actionview=[UIAlertController alertControllerWithTitle:@"温馨提示" message:[dic objectForKey:@"msg"] preferredStyle:UIAlertControllerStyleAlert];
+            UIAlertAction * action =[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            }];
+           
+            [actionview addAction:action];
+            [self presentViewController:actionview animated:YES completion:nil];
             
+        }else{
+             [LCProgressHUD showMessage:[dic objectForKey:@"msg"]];
         }
     } error:^(NSError *error) {
         
@@ -210,7 +269,7 @@
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (indexPath.section==0) {
-        return 80;
+        return 44;
     }else if (indexPath.section==2){
         return 126;
     }
@@ -220,9 +279,9 @@
 }
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
     
-    if (section==2) {
-        return 15;
-    }
+//    if (section==2) {
+//        return 15;
+//    }
     return 5;
     
 }
@@ -236,27 +295,27 @@
     [self.view endEditing:YES];
 }
 
-#pragma mark --调用系统相册
--(void)headImageClick{
-    UIImagePickerController * imagePicker =[UIImagePickerController new];
-    
-    imagePicker.delegate = self;
-    imagePicker.sourceType=UIImagePickerControllerSourceTypeSavedPhotosAlbum;
-    imagePicker.allowsEditing=YES;
-    imagePicker.navigationController.navigationBar.barTintColor = [UIColor redColor];
-    [self presentViewController:imagePicker animated:YES completion:nil];
-    
-}
-- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingImage:(UIImage *)image editingInfo:(NSDictionary *)editingInfo
-{
-    NSLog(@"%@",editingInfo);
-    
-    //[_imageBtn setBackgroundImage:image forState:0];
-    _image1=image;
-    //虚化背景图片
-    [self dismissViewControllerAnimated:YES completion:nil];
-    [_tableView reloadData];
-}
+//#pragma mark --调用系统相册
+//-(void)headImageClick{
+//    UIImagePickerController * imagePicker =[UIImagePickerController new];
+//    
+//    imagePicker.delegate = self;
+//    imagePicker.sourceType=UIImagePickerControllerSourceTypeSavedPhotosAlbum;
+//    imagePicker.allowsEditing=YES;
+//    imagePicker.navigationController.navigationBar.barTintColor = [UIColor redColor];
+//    [self presentViewController:imagePicker animated:YES completion:nil];
+//    
+//}
+//- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingImage:(UIImage *)image editingInfo:(NSDictionary *)editingInfo
+//{
+//    NSLog(@"%@",editingInfo);
+//    
+//    //[_imageBtn setBackgroundImage:image forState:0];
+//    _image1=image;
+//    //虚化背景图片
+//    [self dismissViewControllerAnimated:YES completion:nil];
+//    [_tableView reloadData];
+//}
 /*
 #pragma mark - Navigation
 

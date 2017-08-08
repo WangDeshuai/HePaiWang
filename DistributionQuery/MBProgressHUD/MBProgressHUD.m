@@ -447,7 +447,7 @@ static const CGFloat kDetailsLabelFontSize = 12.f;
 #pragma mark - UI
 
 - (void)setupLabels {
-	label = [[UILabel alloc] initWithFrame:self.bounds];
+    label = [[UILabel alloc] init];//WithFrame:self.bounds];
 	label.adjustsFontSizeToFitWidth = NO;
 	label.textAlignment = MBLabelAlignmentCenter;
 	label.opaque = NO;
@@ -455,9 +455,15 @@ static const CGFloat kDetailsLabelFontSize = 12.f;
 	label.textColor = self.labelColor;
 	label.font = self.labelFont;
 	label.text = self.labelText;
-	[self addSubview:label];
+//	[self addSubview:label];
+    [self sd_addSubviews:@[label]];
+    label.sd_layout
+    .leftSpaceToView(self,0)
+    .rightSpaceToView(self,0)
+    .topSpaceToView(self,0)
+    .autoHeightRatio(0);
 	
-	detailsLabel = [[UILabel alloc] initWithFrame:self.bounds];
+    detailsLabel = [[UILabel alloc] init];//WithFrame:self.bounds];
 	detailsLabel.font = self.detailsLabelFont;
 	detailsLabel.adjustsFontSizeToFitWidth = NO;
 	detailsLabel.textAlignment = MBLabelAlignmentCenter;
@@ -467,7 +473,13 @@ static const CGFloat kDetailsLabelFontSize = 12.f;
 	detailsLabel.numberOfLines = 0;
 	detailsLabel.font = self.detailsLabelFont;
 	detailsLabel.text = self.detailsLabelText;
-	[self addSubview:detailsLabel];
+	//[self addSubview:detailsLabel];
+    [self sd_addSubviews:@[detailsLabel]];
+    detailsLabel.sd_layout
+    .leftSpaceToView(self,0)
+    .rightSpaceToView(self,0)
+    .topSpaceToView(self,0)
+    .autoHeightRatio(0);
 }
 
 - (void)updateIndicators {

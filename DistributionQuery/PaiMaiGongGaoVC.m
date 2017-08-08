@@ -13,6 +13,7 @@
 #import "RightMyAddressCell.h"
 #import "ShengCityModel.h"
 #import "PaiMaiGongGaoModel.h"
+#import "ScanCodeVC.h"
 @interface PaiMaiGongGaoVC ()<UITableViewDelegate,UITableViewDataSource,UITextFieldDelegate>
 @property(nonatomic,strong)UITableView *tableView;
 @property(nonatomic,strong)UIButton * lastBtn;
@@ -42,7 +43,7 @@
     // Do any additional setup after loading the view.
     
     _dataArray=[NSMutableArray new];
-     [self CreatTopButton];
+    [self CreatTopButton];
     [self CreatTabelView];
     if (_tagg==2) {
         //个人中心我参加的拍卖会
@@ -51,13 +52,29 @@
         //首页进入
         UIButton * logoBtn2 =[UIButton buttonWithType:UIButtonTypeCustom];
         logoBtn2.frame=CGRectMake(0, 0, 76/2, 50);
+        [logoBtn2 addTarget:self action:@selector(logoBtnClink) forControlEvents:UIControlEventTouchUpInside];
         [logoBtn2 setImage:[UIImage imageNamed:@"liebiao_phone"] forState:0];
         UIBarButtonItem *leftBtn2 =[[UIBarButtonItem alloc]initWithCustomView:logoBtn2];
          self.navigationItem.rightBarButtonItems=@[leftBtn2];
+        
         self.textHomeField.hidden=NO;
         self.textHomeField.delegate=self;
         [self CreatButton];
     }
+}
+
+-(void)logoBtnClink{
+    //查看联系方式
+    UIAlertController * actionview=[UIAlertController alertControllerWithTitle:PHONE message:@"是否进行拨打" preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction * action =[UIAlertAction actionWithTitle:@"是" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [ToolClass tellPhone:PHONE];
+    }];
+    UIAlertAction * action2 =[UIAlertAction actionWithTitle:@"否" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        
+    }];
+    [actionview addAction:action];
+    [actionview addAction:action2];
+    [self presentViewController:actionview animated:YES completion:nil];
 }
 #pragma mark --top3button
 -(void)CreatTopButton{
@@ -287,12 +304,17 @@
     UIButton * fabu =[UIButton buttonWithType:UIButtonTypeCustom];
     fabu.backgroundColor=[UIColor whiteColor];
      _lastBtn=fabu;
+    [fabu addTarget:self action:@selector(fabuClink) forControlEvents:UIControlEventTouchUpInside];
     fabu.frame=CGRectMake(0, ScreenHeight-55-64, ScreenWidth, 55);
     [fabu setImage:[UIImage imageNamed:@"liebiaonav_bottom "] forState:0];
     [self.view addSubview:fabu];
     
 }
-
+-(void)fabuClink{
+    ScanCodeVC * vc =[ScanCodeVC new];
+    vc.tagg=1;
+    [self.navigationController pushViewController:vc animated:YES];
+}
 #pragma mark --创建左边表格
 -(void)CreatLeftTableVeiw{
     
@@ -325,7 +347,7 @@
         //从个人中心进入
         [self myCenterComeInDataPage:_AAA LeiXing:[ToolClass isString:_biaoDiFenLeiText] ShengCode:[ToolClass isString:_shengcode] CityCode:[ToolClass isString:_citycode] TimeStr:[ToolClass isString:_paiMaiStyleText]];
     }else{
-        [self getMainTableViewDataPage:_AAA Search:@"" LeiXing:[ToolClass isString:_biaoDiFenLeiText] proCode:[ToolClass isString:_shengcode] CityCode:[ToolClass isString:_citycode] TimeStr:[ToolClass isString:_paiMaiStyleText]];
+        [self getMainTableViewDataPage:_AAA Search:self.textHomeField.text LeiXing:[ToolClass isString:_biaoDiFenLeiText] proCode:[ToolClass isString:_shengcode] CityCode:[ToolClass isString:_citycode] TimeStr:[ToolClass isString:_paiMaiStyleText]];
     }
 
 }
@@ -428,14 +450,26 @@
     }else{
         PaiMaiGongGaoCell * cell =[PaiMaiGongGaoCell cellWithTableView:tableView CellID:cellID];
         if (_tagg==2) {
-            //从个人中心进入
+            //从个人中心进入(我参加的拍卖会)
             [cell.lijiBaoMiang setBackgroundImage:[UIImage imageNamed:@"cj_bm"] forState:0];
         }
         cell.model=_dataArray[indexPath.row];
+        cell.lijiBaoMiang.tag=indexPath.row;
+        [cell.lijiBaoMiang addTarget:self action:@selector(buttonClink:) forControlEvents:UIControlEventTouchUpInside];
         return cell;
  
     }
     
+    
+}
+#pragma mark --立即报名按钮
+-(void)buttonClink:(UIButton*)btn{
+    PaiMaiGongGaoModel * md =_dataArray[btn.tag];
+    PaiMaiGongGaoXiangQingVC * vc =[PaiMaiGongGaoXiangQingVC new];
+    //        vc.messageID=md.messageID;
+    vc.paiMaiHuiID=md.paiMaiHuiID;//拍卖会ID
+    vc.baioDiID=@"";//拍卖会里面没有标的ID，所有给后台传空字符串
+    [self.navigationController pushViewController:vc animated:YES];
     
 }
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -480,6 +514,7 @@
             }
             [_dataArray removeAllObjects];
             [_tableView reloadData];
+            _AAA=1;
              [self dataInterStr];
 //             [self getMainTableViewDataPage:_AAA LeiXing:[ToolClass isString:_biaoDiFenLeiText] proCode:[ToolClass isString:_shengcode] CityCode:[ToolClass isString:_citycode] TimeStr:[ToolClass isString:_paiMaiStyleText]];
             [self shuChu];
@@ -500,6 +535,7 @@
             }
             [_dataArray removeAllObjects];
             [_tableView reloadData];
+            _AAA=1;
              [self dataInterStr];
 //             [self getMainTableViewDataPage:_AAA LeiXing:[ToolClass isString:_biaoDiFenLeiText] proCode:[ToolClass isString:_shengcode] CityCode:[ToolClass isString:_citycode] TimeStr:[ToolClass isString:_paiMaiStyleText]];;
             [self shuChu];
@@ -520,6 +556,7 @@
             }
             [_dataArray removeAllObjects];
             [_tableView reloadData];
+            _AAA=1;
              [self dataInterStr];
 //             [self getMainTableViewDataPage:_AAA LeiXing:[ToolClass isString:_biaoDiFenLeiText] proCode:[ToolClass isString:_shengcode] CityCode:[ToolClass isString:_citycode] TimeStr:[ToolClass isString:_paiMaiStyleText]];
             [self shuChu];
@@ -529,7 +566,10 @@
     }else{
         PaiMaiGongGaoModel * md =_dataArray[indexPath.row];
         PaiMaiGongGaoXiangQingVC * vc =[PaiMaiGongGaoXiangQingVC new];
-        vc.messageID=md.messageID;
+//        vc.messageID=md.messageID;
+        vc.paiMaiHuiID=md.paiMaiHuiID;//拍卖会ID
+        vc.baioDiID=@"";//拍卖会里面没有标的ID，所有给后台传空字符串
+        vc.datasoure=md.dataSource;
         [self.navigationController pushViewController:vc animated:YES];
         
     }
@@ -631,7 +671,9 @@
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     [textField resignFirstResponder];//关闭键盘
     NSLog(@"点击了搜索十几号");
-    
+    [_dataArray removeAllObjects];
+    [_tableView reloadData];
+    _AAA=1;
     [self getMainTableViewDataPage:_AAA Search:textField.text LeiXing:@"" proCode:@"" CityCode:@"" TimeStr:@""];
     
     return YES;

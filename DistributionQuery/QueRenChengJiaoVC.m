@@ -8,7 +8,7 @@
 
 #import "QueRenChengJiaoVC.h"
 #import "SignView.h"
-@interface QueRenChengJiaoVC ()<UIWebViewDelegate,ImageDalegate>
+@interface QueRenChengJiaoVC ()<UIWebViewDelegate,ImageDalegate1>
 @property(nonatomic,strong)UIScrollView * myScrollView;
 @property(nonatomic,strong) SignView * vcvc;
 @end
@@ -53,7 +53,13 @@
     [LCProgressHUD showMessage:@"请稍后..."];
     
     if (_tagg==2) {
-        [Engine myWeiTuoHtmlBtnBiaoDiID:@"10" success:^(NSDictionary *dic) {
+        [Engine myWeiTuoHtmlBtnBiaoDiID:_biaoDiID success:^(NSDictionary *dic) {
+            if ([dic objectForKey:@"content"]==[NSNull null] ||[dic objectForKey:@"content"]==nil) {
+                [LCProgressHUD showMessage:@"暂无内容"];
+                [self.navigationController popViewControllerAnimated:YES];
+                return ;
+            }
+            
             NSString * code =[NSString stringWithFormat:@"%@",[dic objectForKey:@"code"]];
             if ([code isEqualToString:@"1"]) {
                 NSString * content =[dic objectForKey:@"content"];
@@ -66,7 +72,7 @@
             
         }];
     }else{
-        [Engine chaKanQueRenShuBiaoDiID:@"10" success:^(NSDictionary *dic) {
+        [Engine chaKanQueRenShuBiaoDiID:_biaoDiID success:^(NSDictionary *dic) {
             NSString * code =[NSString stringWithFormat:@"%@",[dic objectForKey:@"code"]];
             if ([code isEqualToString:@"1"]) {
                 NSString * content =[dic objectForKey:@"content"];

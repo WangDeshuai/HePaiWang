@@ -21,9 +21,9 @@
         _endTime=[ToolClass isString:[NSString stringWithFormat:@"%@",[dic objectForKey:@"auction_begin_time"]]];
         NSString * sheng=[ToolClass isString:[NSString stringWithFormat:@"%@",[dic objectForKey:@"auction_provname"]]];
          NSString * city=[ToolClass isString:[NSString stringWithFormat:@"%@",[dic objectForKey:@"auction_cityname"]]];
-        
+        _dataSource=[ToolClass isString:[NSString stringWithFormat:@"%@",[dic objectForKey:@"dataSource"]]];
         _diqu=[NSString stringWithFormat:@"%@%@",sheng,city];
-        _messageID=[ToolClass isString:[NSString stringWithFormat:@"%@",[dic objectForKey:@"id"]]];
+        _paiMaiHuiID=[ToolClass isString:[NSString stringWithFormat:@"%@",[dic objectForKey:@"id"]]];
     }
     
     return self;

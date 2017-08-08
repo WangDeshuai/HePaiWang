@@ -18,5 +18,6 @@
 @property(nonatomic,copy)NSString * strTime;//开始拍卖时间
 @property(nonatomic,copy)NSString * headImage;//标的图片
 @property(nonatomic,copy)NSString * chengJiaoStye;//成交状态
+@property(nonatomic,copy)NSString * dataSoure;
 -(id)initWithChengJiaoAnliDic:(NSDictionary*)dic;
 @end

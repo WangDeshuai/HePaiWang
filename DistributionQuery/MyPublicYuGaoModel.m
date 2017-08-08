@@ -17,11 +17,12 @@
         _headImage=[ToolClass isString:[NSString stringWithFormat:@"%@",[dic objectForKey:@"trailer_img"]]];
          _titleName=[ToolClass isString:[NSString stringWithFormat:@"%@",[dic objectForKey:@"trailer_title"]]];
          _timeName=[ToolClass isString:[NSString stringWithFormat:@"%@",[dic objectForKey:@"add_time"]]];
-       
+        _phone=[ToolClass isString:[NSString stringWithFormat:@"%@",[dic objectForKey:@"trailer_connect_tel"]]];
         _yuGaoPeople=[ToolClass isString:[NSString stringWithFormat:@"%@",[dic objectForKey:@"asset_disposal_person"]]];
         _yuGaoContent=[ToolClass isString:[NSString stringWithFormat:@"%@",[dic objectForKey:@"trailer_content"]]];
         //预告图片会换成数组
         _yuGaoImage=[ToolClass isString:[NSString stringWithFormat:@"%@",[dic objectForKey:@"trailer_img"]]];
+        _imageArr=[NSMutableArray arrayWithArray:[dic objectForKey:@"imgList"]];
     }
     
     return self;

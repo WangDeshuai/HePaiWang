@@ -111,11 +111,13 @@
         [_yPoints removeAllObjects];
         [_cancleArray removeAllObjects];
         self.imageView.image=nil;
+    }else{
+//        NSLog(@"btn>>>%@",self.imageView.image);
     }
     
     
-    if ([_delegate respondsToSelector:@selector(buttonClinkTwo:)]) {
-        [_delegate buttonClinkTwo:button];
+    if ([_delegate respondsToSelector:@selector(buttonClinkTwo: Image:)]) {
+        [_delegate buttonClinkTwo:button Image:self.imageView.image];
     }
 
 }
@@ -182,6 +184,9 @@
 #pragma mark delegate
 - (void)showImage:(UIImage *)image
 {
+   
+    
+    NSLog(@"走没走代理image");
     //检测代理有没有实现代理方法
     if([self.delegate respondsToSelector:@selector(showImage:)]){
         [self.delegate showImage:image];

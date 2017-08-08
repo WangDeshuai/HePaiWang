@@ -9,6 +9,7 @@
 #import "JiaoGeGuanLiVC.h"
 #import "BuyBiaoDiModel.h"
 #import "QueRenChengJiaoVC.h"
+#import "WeiTuoHeTongImageVC.h"//查看成交确认书
 @interface JiaoGeGuanLiVC ()<UITableViewDataSource,UITableViewDelegate>
 @property(nonatomic,strong)UITableView * tableView;
 @property(nonatomic,strong)NSMutableArray * nameArr;
@@ -36,8 +37,8 @@
 -(void)shujuYuan{
     NSArray * arr1 =@[@"标的编号",@"标的名称",@"所 在 地"];
     NSArray * arr2 =@[@"还需缴纳尾款"];
-    NSArray * arr3=@[@"目前标的状态",@"委托人联系方式",@"交货地址"];
-    NSArray * arr4=@[@"合拍标的交割服务专员",@"联系电话"];
+    NSArray * arr3=@[@"目前标的状态"];//@"委托人联系方式",@"交货地址"
+    NSArray * arr4=@[@"和拍标的交割服务专员",@"联系电话"];
     _nameArr=[[NSMutableArray alloc]initWithObjects:arr1,arr2,arr3,arr4, nil];
 }
 
@@ -67,14 +68,16 @@
 -(void)btnClink:(UIButton*)btn{
     if (btn.tag==0) {
         //查看拍卖成交确认书
-        QueRenChengJiaoVC * vc =[QueRenChengJiaoVC new];
+        WeiTuoHeTongImageVC * vc =[WeiTuoHeTongImageVC new];
+        vc.biaoDiID=_biaoDiID;
+        vc.tagg=2;
         [self.navigationController pushViewController:vc animated:YES];
     }else{
         //确认收货
         
         UIAlertController * actionview=[UIAlertController alertControllerWithTitle:@"" message:@"是否确认收货" preferredStyle:UIAlertControllerStyleAlert];
         UIAlertAction * action =[UIAlertAction actionWithTitle:@"是" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-            [Engine myCenterYiMaiDaoSureShouHuoBiaoDiID:@"10" success:^(NSDictionary *dic) {
+            [Engine myCenterYiMaiDaoSureShouHuoBiaoDiID:_biaoDiID success:^(NSDictionary *dic) {
                 [LCProgressHUD showMessage:[dic objectForKey:@"msg"]];
             } error:^(NSError *error) {
                 
@@ -95,7 +98,7 @@
 }
 //已买到的--交割管理
 -(void)jiaoGeJieXiData{
-    [Engine jiaoGeGuanLiBiaoDiID:@"10" success:^(NSDictionary *dic) {
+    [Engine jiaoGeGuanLiBiaoDiID:_biaoDiID success:^(NSDictionary *dic) {
         NSString * code =[NSString stringWithFormat:@"%@",[dic objectForKey:@"code"]];
         if ([code isEqualToString:@"1"]) {
             NSDictionary * contentDic =[dic objectForKey:@"content"];
@@ -114,7 +117,7 @@
 
 //我的委托  交割管理
 -(void)myweituoJiaoGeData{
-    [Engine myWeiTuoJiaoGeGuanLiID:@"10" success:^(NSDictionary *dic) {
+    [Engine myWeiTuoJiaoGeGuanLiID:_biaoDiID success:^(NSDictionary *dic) {
         NSString * code =[NSString stringWithFormat:@"%@",[dic objectForKey:@"code"]];
         if ([code isEqualToString:@"1"]) {
             NSDictionary * contentDic =[dic objectForKey:@"content"];

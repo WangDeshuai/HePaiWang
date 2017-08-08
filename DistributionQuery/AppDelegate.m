@@ -8,7 +8,7 @@
 
 #import "AppDelegate.h"
 #import "ViewController.h"
-
+#import "LZQStratViewController_25.h"
 #import "HomeVC.h"
 @interface AppDelegate ()
 
@@ -65,6 +65,21 @@
 
 - (void)setupNavBar
 {
+    
+    NSString * str =[[NSUserDefaults standardUserDefaults]objectForKey:@"str"];
+    if (str==nil) {
+        LZQStratViewController_25 *lzqStartViewController = [[LZQStratViewController_25 alloc] init];
+        self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+        self.window.rootViewController = lzqStartViewController;
+        [self.window makeKeyAndVisible];
+        [[NSUserDefaults standardUserDefaults]setObject:@"str" forKey:@"str"];
+        [[NSUserDefaults standardUserDefaults]synchronize];
+    }else{
+        
+    }
+
+    
+    
     [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleLightContent;
     
     UINavigationBar *bar = [UINavigationBar appearance];

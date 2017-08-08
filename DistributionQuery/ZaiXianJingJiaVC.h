@@ -17,4 +17,7 @@
 @property(nonatomic,copy)NSString * price1;
 @property(nonatomic,copy)NSString * price2;
 @property(nonatomic,copy)NSString * price3;
+@property(nonatomic,copy)NSString * diJia;
+@property(nonatomic,copy)NSString * jingMaiPai;
+@property(nonatomic,copy)NSString * dataSoure;
 @end

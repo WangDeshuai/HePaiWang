@@ -22,7 +22,13 @@
     }
     
 }
-
++(NSString*)baoLiuJia:(NSString*)str{
+    if ([str isEqualToString:@"1"]) {
+        return @"有";
+    }else{
+        return @"无";
+    }
+}
 
 #pragma mark --判断是否登录（登录YES）
 +(BOOL)isLogin{
@@ -117,6 +123,7 @@
     NSString *allString = [NSString stringWithFormat:@"tel:%@",tell];
     NSString*telUrl =[allString stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:telUrl]];
+    
 }
 
 #pragma mark -  计算内容文本的高度方法
@@ -449,10 +456,128 @@ BOOL DeleteSingleFile(NSString *filePath){
     NSString*timeString=[formatter stringFromDate:d];
     return timeString;
 }
-
-
+//过滤后台返回字符串中的标签
++(NSString *)flattenHTML:(NSString *)html {
     
-
+    NSScanner *theScanner;
+    NSString *text = nil;
     
+    theScanner = [NSScanner scannerWithString:html];
+    
+    while ([theScanner isAtEnd] == NO) {
+        // find start of tag
+        [theScanner scanUpToString:@"<" intoString:NULL] ;
+        // find end of tag
+        [theScanner scanUpToString:@">" intoString:&text] ;
+        // replace the found tag with a space
+        //(you can filter multi-spaces out later if you wish)
+        html = [html stringByReplacingOccurrencesOfString:
+                [NSString stringWithFormat:@"%@>", text]
+                                               withString:@""];
+    }
+    return html;
+}
+
+#pragma mark --保证图片不变形
++(UIImage *)compressImageWith:(UIImage *)image width:(float)width height:(float)height
+{
+    float imageWidth = image.size.width;
+    float imageHeight = image.size.height;
+    
+    float widthScale = imageWidth /width;
+    float heightScale = imageHeight /height;
+    
+    // 创建一个bitmap的context
+    // 并把它设置成为当前正在使用的context
+    UIGraphicsBeginImageContext(CGSizeMake(width, height));
+    
+    if (widthScale > heightScale) {
+        [image drawInRect:CGRectMake(0, 0, imageWidth /heightScale , height)];
+    }
+    else {
+        [image drawInRect:CGRectMake(0, 0, width , imageHeight /widthScale)];
+    }
+    
+    // 从当前context中创建一个改变大小后的图片
+    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+    //[newImage retain];
+    [newImage copy];
+    // 使当前的context出堆栈
+    UIGraphicsEndImageContext();
+    
+    return newImage;
+    
+}
+#pragma mark --检验版本更新(YES代表更新，NO代表不更新)
++(BOOL)versionGenXinAppID:(NSString*)appID{
+    /*
+     APPID是每个APP在AppStore中的唯一标识符,复制上架的APP的连接，在连接中就能
+     找到appID
+     */
+    
+    
+    /*
+     *  获取AppStore版本号方法一
+     */
+    
+    //    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    //    [manager POST:@"http://itunes.apple.com/lookup?id=1163591027" parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+    //        NSArray *array = responseObject[@"results"];
+    //        NSDictionary *dict = [array lastObject];
+    //        NSLog(@"当前版本为：%@", dict[@"version"]);
+    //    } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
+    //
+    //    }];
+    
+    /*
+     * 获取AppStore版本号方法二
+     */
+    NSURL * chenUrl =[NSURL URLWithString:[NSString stringWithFormat:@"http://itunes.apple.com/lookup?id=%@",appID]];
+    //获取网络数据AppStore信息
+    NSString * appInfoStr =[NSString stringWithContentsOfURL:chenUrl encoding:NSUTF8StringEncoding error:nil];
+    //字符串转换为json
+    NSError * error =nil;
+    NSData * jsonData =[appInfoStr dataUsingEncoding:NSUTF8StringEncoding];
+    NSDictionary * appInfo =[NSJSONSerialization JSONObjectWithData:jsonData options:NSJSONReadingMutableLeaves error:&error];
+    if (!error && appInfo) {
+        //如果没有错误，并且字典有信息
+        NSArray * resultsAry =appInfo[@"results"];
+        NSDictionary * resultsDic =resultsAry.firstObject;
+        //AppStpre版本号
+        NSString * version =resultsDic[@"version"];
+        [NSUSE_DEFO setObject:resultsDic[@"releaseNotes"] forKey:@"更新内容"];
+        [NSUSE_DEFO synchronize];
+        return [self compareVersion:version];
+    }else{
+        return NO;
+    }
+    
+}
+
+
++(BOOL)compareVersion:(NSString*)AppStoreVer{
+    //获取当前版本号
+    NSString * appVersion =[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
+    if ([appVersion compare:AppStoreVer options:NSNumericSearch]==NSOrderedAscending) {
+        //发现新版本
+        return YES;
+    }else{
+        //没有发先新版本
+        return NO;
+    }
+    
+}
+
+#pragma mark --判断字符串是不是数字
++(BOOL)isPureInt:(NSString*)string{
+    
+    NSScanner* scan = [NSScanner scannerWithString:string];
+    
+    int val;
+    
+    return[scan scanInt:&val] && [scan isAtEnd];
+    
+}
+
 
 @end

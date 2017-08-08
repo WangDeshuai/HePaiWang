@@ -17,7 +17,16 @@
         _biaoDiID=[ToolClass isString:[NSString stringWithFormat:@"%@",[dic objectForKey:@"target_id"]]];
         _paiMaiHuiID=[ToolClass isString:[NSString stringWithFormat:@"%@",[dic objectForKey:@"auction_id"]]];
         _nameBiaoDi=[ToolClass isString:[NSString stringWithFormat:@"%@",[dic objectForKey:@"target_name"]]];
-        _priceBiaoDi=[ToolClass isString:[NSString stringWithFormat:@"%@",[dic objectForKey:@"target_start_price"]]];
+        NSString * price =[ToolClass isString:[NSString stringWithFormat:@"%@",[dic objectForKey:@"target_transaction_price"]]];
+        if ([price intValue]>10000) {
+            _priceBiaoDi=[NSString stringWithFormat:@"%d万",[price intValue]/10000];
+        }else{
+            _priceBiaoDi=[NSString stringWithFormat:@"%d元",[price intValue]];
+        }
+        _dataSoure=[ToolClass isString:[NSString stringWithFormat:@"%@",[dic objectForKey:@"dataSource"]]];
+        
+        
+        
         _diquBiaoDi=[ToolClass isString:[NSString stringWithFormat:@"%@",[dic objectForKey:@"auction_cityname"]]];
         _strTime=[ToolClass isString:[NSString stringWithFormat:@"%@",[dic objectForKey:@"auction_begin_time"]]];
         _headImage=[ToolClass isString:[NSString stringWithFormat:@"%@",[dic objectForKey:@"target_img"]]];

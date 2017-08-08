@@ -277,7 +277,7 @@
 //发送消息成功之后回调
 - (void)onSocket:(AsyncSocket *)sock didWriteDataWithTag:(long)tag
 {
-    NSLog(@"回调");
+//    NSLog(@"回调");
     //读取消息
    
     [self.socket readDataWithTimeout:-1 buffer:nil bufferOffset:0 maxLength: LONG_MAX tag:0];

@@ -157,7 +157,6 @@
         return cell2;
     }else{
         RightMyAddressCell * cell3 =[RightMyAddressCell cellWithTableView:tableView];
-        cell3.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         ShengCityModel * md =_rightArr[indexPath.row];
         cell3.name=md.xianName;
         return cell3;

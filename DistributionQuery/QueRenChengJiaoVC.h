@@ -10,4 +10,5 @@
 
 @interface QueRenChengJiaoVC : BaseViewController
 @property(nonatomic,assign)NSInteger tagg;
+@property(nonatomic,copy)NSString * biaoDiID;
 @end

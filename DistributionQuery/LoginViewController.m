@@ -63,7 +63,8 @@
     .heightIs(45);
     //密码框
     _pwdText=[UITextField new];
-    _pwdText.placeholder=@"请输入手机号/用户名";
+    _pwdText.placeholder=@"请输入密码";
+    _pwdText.secureTextEntry=YES;
     _pwdText.font=[UIFont systemFontOfSize:16];
     _pwdText.leftView =[self imageViewNameStr:@"login_password"];
     _pwdText.leftViewMode = UITextFieldViewModeAlways;
@@ -135,7 +136,7 @@
     
     NSLog(@"登录账户：%@",_phoneText.text);
     NSLog(@"密码账户：%@",_pwdText.text);
-    
+    [LCProgressHUD showLoading:@"正在登录..."];
     [Engine loginAccount:_phoneText.text Password:_pwdText.text success:^(NSDictionary *dic) {
         [LCProgressHUD showMessage:[dic objectForKey:@"msg"]];
         NSString * code =[NSString stringWithFormat:@"%@",[dic objectForKey:@"code"]];
@@ -148,6 +149,10 @@
             //2.把idd当做token存起来，用以判断是否登录
             NSString * idd =[NSString stringWithFormat:@"%@",[dicc objectForKey:@"id"]];
             [NSUSE_DEFO setObject:idd forKey:@"token"];
+            //3.把注册手机号存起来
+            [NSUSE_DEFO setObject:[ToolClass isString:[NSString stringWithFormat:@"%@",[dicAr objectForKey:@"regist_tel"]]] forKey:@"phone"];
+            //4.把联系人存起来
+            [NSUSE_DEFO setObject:[ToolClass isString:[NSString stringWithFormat:@"%@",[dicAr objectForKey:@"liaisons_name"]]] forKey:@"people"];
             [NSUSE_DEFO synchronize];
             [self.navigationController popViewControllerAnimated:YES];
         }

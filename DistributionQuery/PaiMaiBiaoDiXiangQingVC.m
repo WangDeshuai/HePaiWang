@@ -10,7 +10,10 @@
 #import "ZaiXianJingJiaVC.h"
 #import "HtmlViewController.h"
 #import "Singleton.h"
-#import "XYAlertView.h"
+
+#import "ShiMingRenZhengVC.h"
+#import "XieYiJingMaiVC.h"
+#import "AlertViewXY.h"
 @interface PaiMaiBiaoDiXiangQingVC ()<SDCycleScrollViewDelegate,UITableViewDelegate,UITableViewDataSource>
 {
      dispatch_source_t _timer;
@@ -31,14 +34,36 @@
 @property(nonatomic,copy)NSString * price1;
 @property(nonatomic,copy)NSString * price2;
 @property(nonatomic,copy)NSString * price3;
+@property(nonatomic,copy)NSString * datasouce;
 @property(nonatomic,strong)UILabel * starLabel;
 @property(nonatomic,strong)UIView *bgView;
+//s15接口，弹框自动关闭
+@property(nonatomic,assign)int secondsCountDown;
+@property(nonatomic,strong)NSTimer * countDownTimer;
+@property(nonatomic,strong)AlertViewXY * actionView;
 
+@property(nonatomic,copy)NSString * qiPaiJia;
+@property(nonatomic,copy)NSString * jingMaiPaiNum;
 @end
 
 @implementation PaiMaiBiaoDiXiangQingVC
 -(void)viewWillAppear:(BOOL)animated{
    
+    NSString * paiMaiID =[NSUSE_DEFO objectForKey:@"PMHID"];
+    NSString * biaodi =[NSUSE_DEFO objectForKey:@"BDID"];
+    if (paiMaiID==nil || biaodi==nil) {
+        
+    }else{
+        
+        _paiMaiID=paiMaiID;
+        _biaoDiID=biaodi;
+        _tableView.tableHeaderView=[self CreatTableHeadView];
+        [NSUSE_DEFO removeObjectForKey:@"PMHID"];
+        [NSUSE_DEFO removeObjectForKey:@"BDID"];
+        [NSUSE_DEFO synchronize];
+    }
+    
+    
     static dispatch_once_t hanwanjie;
     //只执行一次
     dispatch_once(&hanwanjie, ^{//119.29.83.154 192.168.1.103
@@ -90,24 +115,108 @@
     self.navigationItem.rightBarButtonItems=@[leftBtn2];
 }
 -(void)backPopBtnPop2{
-    XYAlertView * xv =[[XYAlertView alloc]initWithTitle:@"我要报名" alerMessage:@"提交信息" canCleBtn:@"提交信息" otheBtn:@""];
-    __weak __typeof(xv)weakSelf = xv;
-    xv.NameBlock=^(NSString*people,NSString*phone,NSString*other){
-        // 调用接口
-        [LCProgressHUD showMessage:@"正在发布..."];
-        [Engine BaoMingCanJianPaiMaiID:_paiMaiID BiaoDiID:_biaoDiID Phone:phone PeopleName:people MessageName:other success:^(NSDictionary *dic) {
-            [LCProgressHUD showMessage:[dic objectForKey:@"msg"]];
+    
+    if ([ToolClass isLogin]==NO) {
+        //未登录，提示登录
+        [self alertViewTiXing];
+    }else{
+        [Engine houQuShiMingRenZhengUserIDsuccess:^(NSDictionary *dic) {
             NSString * code =[NSString stringWithFormat:@"%@",[dic objectForKey:@"code"]];
+           
             if ([code isEqualToString:@"1"]) {
-                [weakSelf dissmiss];
+                 // 1已通过认证， 0有认证资料但未通过认证， -1无认证资料，  2待审核
+                NSString * contentStr =[NSString stringWithFormat:@"%@",[dic objectForKey:@"content"]];
+                if ([contentStr isEqualToString:@"1"]) {
+                    //47.认证通过了调用是否可以报名接口
+                    [Engine PanDuanBaoMingPaiMaiHuiID:_paiMaiID BiaoDiID:_biaoDiID DataSoure:_datasouce success:^(NSDictionary *dic) {
+                        NSString * code =[NSString stringWithFormat:@"%@",[dic objectForKey:@"content"]];
+                        if ([code isEqualToString:@"1"]) {
+                            //(跳转竞买协议界面)
+                            XieYiJingMaiVC * vc =[XieYiJingMaiVC new];
+                            vc.paiMaiHuiID=_paiMaiID;
+                            vc.biaoDiID=_biaoDiID;
+                            [self.navigationController pushViewController:vc animated:YES];
+                        }else{
+//                            [LCProgressHUD showMessage:[dic objectForKey:@"msg"]];
+                            [self tanKuanTiShi:[dic objectForKey:@"msg"]];
+                            
+                        }
+                    } error:^(NSError *error) {
+                        
+                    }];
+                    
+                   
+                   // [self BaoMing];
+                }else if ([contentStr isEqualToString:@"-1"]){
+                    //没有认证资料(弹框去认证)
+                    [self shiMingRenZhengMessage:@"您还没有认证资料，是否去填写" Boole:YES];
+                }else if ([contentStr isEqualToString:@"0"]){
+                    //有认证资料，但是没有通过(弹框)
+                    [self shiMingRenZhengMessage:@"您未认证通过，是否修改认证资料" Boole:YES];
+                    
+                }else if ([contentStr isEqualToString:@"2"]){
+                    [self shiMingRenZhengMessage:@"您的资料正在等待审核" Boole:NO];
+                }
+            }else{
+                [LCProgressHUD showMessage:[dic objectForKey:@"msg"]];
             }
         } error:^(NSError *error) {
             
         }];
-    };
+        
+
+
+    }
     
-    [xv show];
 }
+
+-(void)tanKuanTiShi:(NSString*)msg{
+    UIAlertController * actionview=[UIAlertController alertControllerWithTitle:@"温馨提示" message:msg preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction * action =[UIAlertAction actionWithTitle:@"我知道了" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+    }];
+    
+    [actionview addAction:action];
+    [self presentViewController:actionview animated:YES completion:nil];
+}
+
+
+//未登录，提示登录
+-(void)alertViewTiXing{
+    UIAlertController * actionview=[UIAlertController alertControllerWithTitle:@"温馨提示" message:@"您还未登录，是否进行登录" preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction * action =[UIAlertAction actionWithTitle:@"是" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        LoginViewController * vc =[LoginViewController new];
+        [self.navigationController pushViewController:vc animated:YES];
+    }];
+    UIAlertAction * action2 =[UIAlertAction actionWithTitle:@"否" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        
+    }];
+    [actionview addAction:action];
+    [actionview addAction:action2];
+    [self presentViewController:actionview animated:YES completion:nil];
+}
+//未认证，提示认证
+-(void)shiMingRenZhengMessage:(NSString*)mess Boole:(BOOL)isfor{
+    UIAlertController * actionview=[UIAlertController alertControllerWithTitle:@"温馨提示" message:mess preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction * action =[UIAlertAction actionWithTitle:@"是" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+//        ShiMingRenZhengVC * vc =[ShiMingRenZhengVC new];
+//        [self.navigationController pushViewController:vc animated:YES];
+        if (isfor ==YES) {
+            ShiMingRenZhengVC * vc =[ShiMingRenZhengVC new];
+            [self.navigationController pushViewController:vc animated:YES];
+            
+        }
+    }];
+    UIAlertAction * action2 =[UIAlertAction actionWithTitle:@"否" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        
+    }];
+    [actionview addAction:action];
+    if (isfor==YES) {
+        [actionview addAction:action2];
+    }
+    [self presentViewController:actionview animated:YES completion:nil];
+}
+
+
 
 -(NSString *)getyyyymmdd{
     NSDate *now = [NSDate date];
@@ -208,9 +317,11 @@
     [self.view addSubview:fabu];
     
 }
+#pragma mark --在线竞价
 -(void)fabu{
     
     ZaiXianJingJiaVC * vc =[ZaiXianJingJiaVC new];
+    vc.diJia=_qiPaiJia;
     vc.paiMaiID=_paiMaiID;
     vc.biaoDiID=_biaoDiID;
     vc.lunbiArr=_lunbiArr;
@@ -218,6 +329,8 @@
     vc.price1=_price1;
     vc.price2=_price2;
     vc.price3=_price3;
+    vc.jingMaiPai=_jingMaiPaiNum;
+    vc.dataSoure=[ToolClass isString:[NSString stringWithFormat:@"%@",_datasouce]];
     [self.navigationController pushViewController:vc animated:YES];
 }
 #pragma mark --创建表
@@ -255,6 +368,14 @@
 {
     HtmlViewController * vc =[HtmlViewController new];
     vc.str=_htmlArr[indexPath.row];
+    if (indexPath.row==0) {
+        vc.titlename=@"竞买须知";
+    }else if (indexPath.row==1){
+        vc.titlename=@"竞买公告";
+    }else
+    {
+        vc.titlename=@"标的物介绍";
+    }
     [self.navigationController pushViewController:vc animated:YES];
 }
 -(UIView*)CreatTableHeadView{
@@ -282,7 +403,7 @@
     .topSpaceToView(headView,0)
     .rightSpaceToView(headView,0);
 
-    
+    //15614129282
     
     //轮播图
      NSArray * arr =@[@"banner",@"banner"];
@@ -436,7 +557,7 @@
     .leftEqualToView(titleLable)
     .topSpaceToView(titleLable,10)
     .heightIs(20)
-    .widthIs(120);
+    .widthIs(220);
     //[qiPaiJiaLable setSingleLineAutoResizeWithMaxWidth:300];
     //报名人数
     UILabel * baoming =[UILabel new];
@@ -448,7 +569,7 @@
     .leftEqualToView(qiPaiJiaLable)
     .topSpaceToView(qiPaiJiaLable,10)
     .heightIs(20);
-    [baoming setSingleLineAutoResizeWithMaxWidth:200];
+    [baoming setSingleLineAutoResizeWithMaxWidth:260];
     //提醒
     UILabel * tixingLabel =[UILabel new];
     tixingLabel.text=@"0人设置提醒";
@@ -574,16 +695,28 @@
     [headView setupAutoHeightWithBottomView:_view2 bottomMargin:10];
     
     //获取网络数据
-    [Engine paiMaiLieBiaoXiangQingPaiMaiID:_paiMaiID BiaoDiID:_biaoDiID success:^(NSDictionary *dic) {
+    [LCProgressHUD showLoading:@"正在加载..."];
+    [Engine paiMaiLieBiaoXiangQingPaiMaiID:_paiMaiID BiaoDiID:_biaoDiID DataSoure:_dataScore  success:^(NSDictionary *dic) {
         NSString * code =[NSString stringWithFormat:@"%@",[dic objectForKey:@"code"]];
+        
+        if ([dic objectForKey:@"content"]==[NSNull null]) {
+            [LCProgressHUD showMessage:@"暂无数据"];
+            return ;
+        }
+        
         NSDictionary * contentDic =[dic objectForKey:@"content"];
+        
+        
+        
         if ([code isEqualToString:@"1"]) {
+            [LCProgressHUD hide];
            //1.轮播图赋值
             NSArray * arrimage =[contentDic objectForKey:@"targetImgList"];
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 cycleScrollView2.imageURLStringsGroup =arrimage ;
             });
             _lunbiArr=arrimage;
+            _datasouce=[ToolClass isString:[NSString stringWithFormat:@"%@",[contentDic objectForKey:@"dataSource"]]];
             //2.标题
              titleLable.text=[contentDic objectForKey:@"target_name"];
             _titlename=[contentDic objectForKey:@"target_name"];
@@ -591,16 +724,32 @@
             _price2=[NSString stringWithFormat:@"%@",[contentDic objectForKey:@"auction_compete_step2"]];
             _price3=[NSString stringWithFormat:@"%@",[contentDic objectForKey:@"auction_compete_step3"]];
             //3.起拍价
-             qiPaiJiaLable.text=[NSString stringWithFormat:@"起拍价：%@万",[contentDic objectForKey:@"target_start_price"]];
-            qiPaiJiaLable.attributedText= [ToolClass attrStrFrom:qiPaiJiaLable.text intFond:13 Color:[UIColor blackColor] numberStr:@"起拍价："];
+            NSString* ss =[NSString stringWithFormat:@"%@",[contentDic objectForKey:@"target_start_price"]];
+            _qiPaiJia=ss;
+            if ([ss floatValue]>10000) {
+                qiPaiJiaLable.text=[NSString stringWithFormat:@"起拍价：%.f万",[ss floatValue]/10000];
+                 qiPaiJiaLable.attributedText= [ToolClass attrStrFrom:qiPaiJiaLable.text intFond:13 Color:[UIColor blackColor] numberStr:@"起拍价："];
+            }else{
+                qiPaiJiaLable.text=[NSString stringWithFormat:@"起拍价：%@元",[contentDic objectForKey:@"target_start_price"]];
+                 qiPaiJiaLable.attributedText= [ToolClass attrStrFrom:qiPaiJiaLable.text intFond:13 Color:[UIColor blackColor] numberStr:@"起拍价："];
+            }
+            
+            
+           
             //4.报名人数
-             baoming.text=[NSString stringWithFormat:@"%@报名",[contentDic objectForKey:@"signup_number"]];
+             baoming.text=[NSString stringWithFormat:@"%@人报名",[contentDic objectForKey:@"signup_number"]];
             //5.提醒人数
              tixingLabel.text=[NSString stringWithFormat:@"%@人设置提醒",[contentDic objectForKey:@"remaind_number"]];
             //6.浏览数
              liuLanLabel.text=[NSString stringWithFormat:@"%@人浏览",[contentDic objectForKey:@"browse_number"]];
             //7.评估价
-             pinggujia.text=[NSString stringWithFormat:@"评估价:%@元",[contentDic objectForKey:@"target_estimated_price"]];
+            NSString * pg =[ToolClass isString:[NSString stringWithFormat:@"%@",[contentDic objectForKey:@"target_estimated_price"]]];
+            if ([pg isEqualToString:@""]) {
+                pinggujia.text=[NSString stringWithFormat:@"评估价:无"];
+            }else{
+                 pinggujia.text=[NSString stringWithFormat:@"评估价:%@元",[contentDic objectForKey:@"target_estimated_price"]];
+            }
+            
             //8. 加价幅度
             jiaLable.text=[NSString stringWithFormat:@"加价幅度:%@元",[contentDic objectForKey:@"auction_least_compete_step"]];
             //9.保证金
@@ -610,11 +759,13 @@
             //11.自由竞价时间
             ziyouLabel.text=[NSString stringWithFormat:@"自由竞价时间:%@分",[contentDic objectForKey:@"auction_freely_compete_time"]];
             //12.保留价
-             baoLiu.text=[NSString stringWithFormat:@"保留价:%@",[contentDic objectForKey:@"auction_use_reserve_price"]];
+            NSString * str22=  [ToolClass baoLiuJia:[NSString stringWithFormat:@"%@",[contentDic objectForKey:@"auction_use_reserve_price"]]];
+             baoLiu.text=[NSString stringWithFormat:@"保留价:%@",str22];
             //13.限时竞价时间
               xianshiLabel.text=[NSString stringWithFormat:@"限时竞价时间:%@分",[contentDic objectForKey:@"auction_limited_compete_time"]];
-            //14.优先购买权
-             youXian.text=[NSString stringWithFormat:@"优先购买权人:%@",[contentDic objectForKey:@"auction_use_preferential_buy"]];
+            //14.优先购买权baoLiuJia
+           NSString * str=  [ToolClass baoLiuJia:[NSString stringWithFormat:@"%@",[contentDic objectForKey:@"auction_use_preferential_buy"]]];
+             youXian.text=[NSString stringWithFormat:@"优先购买权人:%@",str];
             //15.竞买须知 竞买公告  标的物介绍
             NSString * str1 =[contentDic objectForKey:@"auction_compete_attention"];
             NSString * str2 =[contentDic objectForKey:@"auction_compete_declaration"];
@@ -622,10 +773,18 @@
              [_htmlArr addObject:str1];
              [_htmlArr addObject:str2];
              [_htmlArr addObject:str3];
+            
+            //竞买牌号码
+            NSString * jingMai =[ToolClass isString:[NSString stringWithFormat:@"%@",[contentDic objectForKey:@"compete_number"]]];
+//            NSLog(@">>>>%@",jingMai);
+            _jingMaiPaiNum=jingMai;
+            [LCProgressHUD hide];
             [_tableView reloadData];
+        }else{
+            [LCProgressHUD showMessage:[dic objectForKey:@"msg"]];
         }
     } error:^(NSError *error) {
-        
+        [LCProgressHUD showMessage:@"请重试"];
     }];
     
     
@@ -641,7 +800,15 @@
 }
 
 -(void)socketData{
-    NSDictionary  * param =@{@"auction_id":@"12",@"target_id":@"10"};
+    
+    NSDictionary *param=nil;
+    if ([ToolClass isLogin]==NO) {
+        param =@{@"auction_id":_paiMaiID,@"target_id":_biaoDiID,@"dataSource":_dataScore};
+    }else{
+        NSString * token =[NSUSE_DEFO objectForKey:@"token"];
+        param =@{@"auction_id":_paiMaiID,@"target_id":_biaoDiID,@"user_id":token,@"dataSource":_dataScore};
+    }
+   // NSDictionary  * param =@{@"auction_id":_paiMaiID,@"target_id":_biaoDiID};
     NSDictionary * dicc =@{@"action":@"app_connectTargetCompete",@"param":param};
     NSString * jsonStr =[ToolClass getJsonStringFromObject:dicc];
     
@@ -655,18 +822,105 @@
         if ([msgtype isEqualToString:@"push"]) {
             //推送过来的
             NSDictionary * pushinfo=[dic objectForKey:@"pushInfo"];
+            
             NSString * puhscene =[pushinfo objectForKey:@"push_scene"];
             //代表是倒计时
             if ([puhscene isEqualToString:@"resetCountDown"]) {
                 
                 NSDictionary * pushcontentDic =[pushinfo objectForKey:@"push_content"];
                 [self timeDaoJiShi:pushcontentDic Label:_starLabel uiview:_bgView];
+            }else if ([puhscene isEqualToString:@"remind"]){
+                //弹框15提醒
+                NSDictionary * push_content =[pushinfo objectForKey:@"push_content"];
+                //是否自动关闭
+                 NSString * autoClose=[NSString stringWithFormat:@"%@",[push_content objectForKey:@"autoClose"]];//
+                
+                    if ([autoClose isEqualToString:@"0"]) {
+                        //不自动关闭
+                    AlertViewXY * xy =[[AlertViewXY alloc]initWithTitle:@"温馨提示" contentName:[push_content objectForKey:@"remind_msg"] achiveBtn:@"确定"];
+                       
+                    [xy show];
+                    }else{
+                        //自动关闭
+                        NSString * time11 =[NSString stringWithFormat:@"%@",[push_content objectForKey:@"remind_duration_time"]];
+                         _secondsCountDown=[time11 intValue]/1000;
+//
+                        AlertViewXY * xy =[[AlertViewXY alloc]initWithTitle:@"温馨提示" contentName:[push_content objectForKey:@"remind_msg"] achiveBtn:@"确定"];
+                        _actionView=xy;
+                        
+                        [xy show];
+                        _countDownTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(timeFireMethod) userInfo:nil repeats:YES];
+                    }
+                    
+                
+                
+            }else if ([puhscene isEqualToString:@"confirm"]){
+                [self zidongAAA:puhscene dic:pushinfo];
+                
             }
+            
+            
         }else if ([msgtype isEqualToString:@"response"]){
             //请求相应的
         }
+        
+        
+        
+        
+        
     };
 }
+
+-(void)timeFireMethod{
+    //倒计时-1
+    _secondsCountDown--;
+    //修改倒计时标签现实内容
+   // _actionView.message=[NSString stringWithFormat:@"剩余%d秒将自动关闭",_secondsCountDown];
+    //当倒计时到0时，做需要的操作，比如验证码过期不能提交
+    if(_secondsCountDown==0){
+        [_countDownTimer invalidate];
+        [_actionView dissmiss];
+    }
+
+
+}
+
+
+-(void)zidongAAA:(NSString*)puhscene dic:(NSDictionary*)pushinfo{
+    if ([puhscene isEqualToString:@"confirm"]){
+        //弹框14提醒
+        NSDictionary * push_content =[pushinfo objectForKey:@"push_content"];
+        NSString *confirm_scene =[push_content objectForKey:@"confirm_scene"];
+        NSString * confirm_msg=[push_content objectForKey:@"confirm_msg"];
+        if ([confirm_scene isEqualToString:@"whetherEnterNextTargetCompete"]) {
+           
+            UIAlertController * actionview=[UIAlertController alertControllerWithTitle:@"温馨提示" message:confirm_msg preferredStyle:UIAlertControllerStyleAlert];
+            UIAlertAction * action =[UIAlertAction actionWithTitle:@"是" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                NSDictionary * yes_content=[push_content objectForKey:@"yes_content"];
+                //拍卖会ID
+                NSString * paiMaiHuiID =[NSString stringWithFormat:@"%@",[yes_content objectForKey:@"auction_id"]];
+                //标的id
+                NSString * baiDiID =[NSString stringWithFormat:@"%@",[yes_content objectForKey:@"next_target_id"]];
+                NSLog(@"拍卖会ID>>>>%@标的id>>>%@",paiMaiHuiID,baiDiID);
+                _paiMaiID=paiMaiHuiID;
+                _biaoDiID=baiDiID;
+                 _tableView.tableHeaderView=[self CreatTableHeadView];
+                
+            }];
+            UIAlertAction * action2 =[UIAlertAction actionWithTitle:@"否" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                
+            }];
+            [actionview addAction:action2];
+            [actionview addAction:action];
+            [self presentViewController:actionview animated:YES completion:nil];
+        }
+        
+    }
+    
+   
+    
+}
+
 -(void)timeDaoJiShi:(NSDictionary*)contentDic  Label:(UILabel*)starLabel uiview:(UIView*)bgView{
     
     //标题
@@ -710,13 +964,16 @@
     }else if ([statusStr isEqualToString:@"continue"]){
         long long  strTime;
         if (timeSr<0) {
-            strTime=-timeSr;
+            strTime=0;
         }else{
             strTime=timeSr;
         }
         NSLog(@"continue输出是%lld",strTime);
         _timer = nil;
+       
         [self dataRiqiData:[NSString stringWithFormat:@"%lld",strTime]];
+       
+        
     }else if ([statusStr isEqualToString:@"error"]){
         NSLog(@"error输出是%lld",timeSr);
         _timer = nil;
@@ -728,7 +985,15 @@
 
 
 -(void)shuju{
-    NSDictionary  * param =@{@"auction_id":@"12",@"target_id":@"10"};
+    NSDictionary *param=nil;
+    if ([ToolClass isLogin]==NO) {
+         param =@{@"auction_id":_paiMaiID,@"target_id":_biaoDiID};
+    }else{
+        NSString * token =[NSUSE_DEFO objectForKey:@"token"];
+        param =@{@"auction_id":_paiMaiID,@"target_id":_biaoDiID,@"user_id":token};
+    }
+    
+    
     NSDictionary * dicc =@{@"action":@"app_connectTargetCompete",@"param":param};
     NSString * jsonStr =[ToolClass getJsonStringFromObject:dicc];
     

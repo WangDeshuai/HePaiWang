@@ -54,19 +54,39 @@
     _textview=[[UITextView alloc]init];
     _textview.backgroundColor=[UIColor whiteColor];
     _textview.sd_cornerRadius=@(5);
-    _textview.text=_contentText;
     _textview.font=[UIFont systemFontOfSize:15];
     [self.view sd_addSubviews:@[_textview]];
-    _textview.sd_layout
-    .leftSpaceToView(self.view,5)
-    .rightSpaceToView(self.view,5)
-    .topSpaceToView(self.view,20)
-    .heightIs(135);
+    if (_neiRong) {
+        _textview.attributedText=_neiRong;
+        _textview.editable=NO;
+        _textview.sd_layout
+        .leftSpaceToView(self.view,5)
+        .rightSpaceToView(self.view,5)
+        .topSpaceToView(self.view,20)
+        .heightIs(ScreenHeight-64);
+    }else{
+        _textview.text=_contentText;
+        _textview.editable=YES;
+        _textview.sd_layout
+        .leftSpaceToView(self.view,5)
+        .rightSpaceToView(self.view,5)
+        .topSpaceToView(self.view,20)
+        .heightIs(135);
+    }
+    
+    
+    
+    
 }
 #pragma mark --创建右按钮
 -(void)CreatRigthBtn{
     UIButton *fabu=[UIButton buttonWithType:UIButtonTypeCustom];
     [fabu setTitle:@"保存" forState:0];
+    if (_neiRong) {
+        fabu.hidden=YES;
+    }else{
+        fabu.hidden=NO;
+    }
     fabu.titleLabel.font=[UIFont systemFontOfSize:15];
     [fabu setTitleColor:[UIColor whiteColor] forState:0];
     fabu.frame=CGRectMake(0,0, 70, 20);

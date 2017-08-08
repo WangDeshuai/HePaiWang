@@ -12,7 +12,7 @@
 -(id)initWithMyWeiTuoDic:(NSDictionary*)dic{
     self=[super init];
     if (self) {
-        _messageID=[ToolClass isString:[NSString stringWithFormat:@"%@",[dic objectForKey:@"id"]]];
+        _biaoDiID=[ToolClass isString:[NSString stringWithFormat:@"%@",[dic objectForKey:@"id"]]];
         _headImage=[ToolClass isString:[NSString stringWithFormat:@"%@",[dic objectForKey:@"target_img"]]];
         _titleName=[ToolClass isString:[NSString stringWithFormat:@"%@",[dic objectForKey:@"target_name"]]];
         _timeName=[ToolClass isString:[NSString stringWithFormat:@"%@",[dic objectForKey:@"add_time"]]];
@@ -34,39 +34,34 @@
     self=[super init];
     if (self) {
         //标题
-        _xqtitlename=[ToolClass isString:[NSString stringWithFormat:@"%@",[dic objectForKey:@"target_name"]]];
-        //起拍价
-        _xqprice=[ToolClass isString:[NSString stringWithFormat:@"%@",[dic objectForKey:@"target_start_price"]]];
-        //报名人数
-        _xqbaoming=[ToolClass isString:[NSString stringWithFormat:@"%@",[dic objectForKey:@"signup_number"]]];
-        //设置提醒人数
-        _xqtixing=[ToolClass isString:[NSString stringWithFormat:@"%@",[dic objectForKey:@"remaind_number"]]];
-        //浏览人数
-        _xqliulan=[ToolClass isString:[NSString stringWithFormat:@"%@",[dic objectForKey:@"browse_number"]]];
-        //评估价
-        _xqpinggu=[ToolClass isString:[NSString stringWithFormat:@"%@",[dic objectForKey:@"target_estimated_price"]]];
-        //最小加价幅度
-        _xqjiajia=[ToolClass isString:[NSString stringWithFormat:@"%@",[dic objectForKey:@"auction_least_compete_step"]]];
-        //保证金
-        _xqbaozhengjin=[ToolClass isString:[NSString stringWithFormat:@"%@",[dic objectForKey:@"auction_deposit_value"]]];
-        //标的类型名称
-        _xqleixing=[ToolClass isString:[NSString stringWithFormat:@"%@",[dic objectForKey:@"target_type_name"]]];
-        //自由竞价
-        _xqziyou=[ToolClass isString:[NSString stringWithFormat:@"%@",[dic objectForKey:@"auction_freely_compete_time"]]];
-        //限时竞价
-        _xqxianshi=[ToolClass isString:[NSString stringWithFormat:@"%@",[dic objectForKey:@"auction_limited_compete_time"]]];
+        _xqlianxiren=[ToolClass isString:[NSString stringWithFormat:@"%@",[dic objectForKey:@"target_liaisons_name"]]];
+        //手机号
+        _xqphone=[ToolClass isString:[NSString stringWithFormat:@"%@",[dic objectForKey:@"target_connect_tel"]]];
+        //标的名称
+        _xqbiaoDiName=[ToolClass isString:[NSString stringWithFormat:@"%@",[dic objectForKey:@"target_name"]]];
+        //标的描述
+        _xqbiaoDiMiaoShu=[ToolClass isString:[NSString stringWithFormat:@"%@",[dic objectForKey:@"target_description"]]];
+        //瑕疵说明
+        _xqxiaCi=[ToolClass isString:[NSString stringWithFormat:@"%@",[dic objectForKey:@"target_defect_declaration"]]];
+        //省name
+        _xqShengName=[ToolClass isString:[NSString stringWithFormat:@"%@",[dic objectForKey:@"target_provname"]]];
+        //市name
+        _xqCityName=[ToolClass isString:[NSString stringWithFormat:@"%@",[dic objectForKey:@"target_cityname"]]];
+        //县name
+        _xqXianName=[ToolClass isString:[NSString stringWithFormat:@"%@",[dic objectForKey:@"target_districtname"]]];
+        //省code
+        _xqShengCode=[ToolClass isString:[NSString stringWithFormat:@"%@",[dic objectForKey:@"target_provcode"]]];
+        //市code
+        _xqCityCode=[ToolClass isString:[NSString stringWithFormat:@"%@",[dic objectForKey:@"target_citycode"]]];
+        //县code
+        _xqXianCode=[ToolClass isString:[NSString stringWithFormat:@"%@",[dic objectForKey:@"target_districtcode"]]];
         //保留价
-        _xqbaoliujia=[ToolClass isString:[NSString stringWithFormat:@"%@",[dic objectForKey:@"auction_use_reserve_price"]]];
-        //优先购买权
-        _xqyouxian=[ToolClass isString:[NSString stringWithFormat:@"%@",[dic objectForKey:@"auction_use_preferential_buy"]]];
-        //竞买须知
-        _xqjingmai=[ToolClass isString:[NSString stringWithFormat:@"%@",[dic objectForKey:@"auction_compete_attention"]]];
-        //竞买公告
-        _xqgonggao=[ToolClass isString:[NSString stringWithFormat:@"%@",[dic objectForKey:@"auction_compete_declaration"]]];
-        //标的物介绍
-        _xqjieshao=[ToolClass isString:[NSString stringWithFormat:@"%@",[dic objectForKey:@"target_description"]]];
-        //轮播图
-        _xqImage=[dic objectForKey:@"targetImgList"];
+        _xqBaoLiuJia=[ToolClass isString:[NSString stringWithFormat:@"%@",[dic objectForKey:@"target_reserve_price"]]];
+        //评估价
+        _xqPingGuJia=[ToolClass isString:[NSString stringWithFormat:@"%@",[dic objectForKey:@"target_estimated_price"]]];
+        _xqBiaoDiID=[ToolClass isString:[NSString stringWithFormat:@"%@",[dic objectForKey:@"id"]]];
+        //
+        _xqImage=[dic objectForKey:@"imgList"];
         
     }
     

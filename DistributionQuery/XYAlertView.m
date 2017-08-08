@@ -172,7 +172,7 @@
     self.center = window.center;
     UIButton * view = [[UIButton alloc]initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight)];
     view.backgroundColor = [UIColor blackColor];
-    [view addTarget:self action:@selector(dissmiss) forControlEvents:UIControlEventTouchUpInside];
+//    [view addTarget:self action:@selector(dissmiss) forControlEvents:UIControlEventTouchUpInside];
     view.alpha = 0.5;
     view.tag=1000;
     [window addSubview:view];

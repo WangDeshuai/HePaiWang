@@ -9,5 +9,7 @@
 #import "BaseViewController.h"
 
 @interface PaiMaiGongGaoXiangQingVC : BaseViewController
-@property(nonatomic,copy)NSString * messageID;//信息ID
+@property(nonatomic,copy)NSString * paiMaiHuiID;//拍卖会ID
+@property(nonatomic,copy)NSString * baioDiID;//标的ID(接收到的是空字符串，没有标的ID)
+@property(nonatomic,copy)NSString * datasoure;
 @end

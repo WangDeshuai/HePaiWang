@@ -11,8 +11,10 @@
 @interface ZaiXianModel : NSObject
 //出价记录
 @property(nonatomic,copy)NSString *moneyName;
+@property(nonatomic,copy)NSString * moneyPrice;
 @property(nonatomic,copy)NSString *jingPaiNum;
 @property(nonatomic,copy)NSString *timeName;
+@property(nonatomic,copy)NSString * userID;
 //竞买留言专区
 @property(nonatomic,copy)NSString * faYanPeopleID;//发言ID
 @property(nonatomic,copy)NSString * faYanPeopleName;//发言名称

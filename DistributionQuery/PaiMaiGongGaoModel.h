@@ -14,6 +14,7 @@
 @property(nonatomic,copy)NSString *strTime;
 @property(nonatomic,copy)NSString *endTime;
 @property(nonatomic,copy)NSString *diqu;
-@property(nonatomic,copy)NSString * messageID;
+@property(nonatomic,copy)NSString * paiMaiHuiID;
+@property(nonatomic,copy)NSString * dataSource;
 -(id)initWithPaiMaiPublicDic:(NSDictionary*)dic;
 @end

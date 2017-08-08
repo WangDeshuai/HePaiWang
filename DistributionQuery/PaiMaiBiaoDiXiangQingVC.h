@@ -11,4 +11,5 @@
 @interface PaiMaiBiaoDiXiangQingVC : BaseViewController
 @property(nonatomic,copy)NSString * biaoDiID;
 @property(nonatomic,copy)NSString * paiMaiID;
+@property(nonatomic,copy)NSString * dataScore;
 @end
